@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
-import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
 import { Menu } from 'lucide-react';
 
 const navLinks = [
@@ -57,6 +57,9 @@ export default function Header() {
             </Button>
           </SheetTrigger>
           <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+            <SheetHeader className="hidden">
+              <SheetTitle>Menu</SheetTitle>
+            </SheetHeader>
             <div className="p-4">
               <Link href="/" className="inline-block mb-8" onClick={() => setMenuOpen(false)}>
                 <div className="flex h-10 items-center justify-center rounded-md border bg-card px-4">
