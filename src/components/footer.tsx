@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { Leaf, Twitter, Instagram, Facebook } from 'lucide-react';
+import { Twitter, Instagram, Facebook } from 'lucide-react';
 import Link from 'next/link';
 
 const footerLinks = [
@@ -17,9 +17,10 @@ export default function Footer() {
       <div className="container mx-auto px-4 py-8 sm:py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="flex flex-col items-start">
-            <Link href="/" className="flex items-center gap-2 mb-4">
-              <Leaf className="h-8 w-8 text-primary" />
-              <span className={cn('font-bold text-2xl font-headline')}>Verdant Getaways</span>
+            <Link href="/" className="mb-4">
+              <div className="flex h-12 items-center justify-center rounded-md border bg-card px-6">
+                <span className={cn('font-bold text-2xl font-headline text-primary')}>Verdant Getaways</span>
+              </div>
             </Link>
             <p className="text-foreground/70">
               Your boutique nature retreat for peace and adventure.
