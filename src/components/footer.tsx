@@ -1,6 +1,6 @@
 
 import { cn } from '@/lib/utils';
-import { Twitter, Instagram, Facebook, Linkedin } from 'lucide-react';
+import { Twitter, Instagram, Facebook, Linkedin, Phone } from 'lucide-react';
 import Link from 'next/link';
 
 const footerLinks = [
@@ -30,7 +30,7 @@ export default function Footer() {
               </div>
             </Link>
             <p className="text-foreground/70">
-              Your boutique nature retreat for peace and adventure.
+              Your family-owned sanctuary in the highlands of Tigoni, Limuru.
             </p>
           </div>
           <div className="grid grid-cols-2 md:col-span-2 gap-8">
@@ -48,26 +48,30 @@ export default function Footer() {
             </div>
             <div>
               <h3 className={cn("font-semibold text-lg font-headline mb-4")}>Connect</h3>
+               <div className="flex items-center gap-2 text-foreground/70 mb-4">
+                  <Phone className="h-5 w-5" />
+                  <a href="tel:+2547142817911" className="hover:text-primary transition-colors">+254 714 281 7911</a>
+                </div>
               <div className="flex space-x-4">
-                <Link href="#" className="text-foreground/70 hover:text-primary transition-colors">
-                  <Twitter className="h-6 w-6" />
-                  <span className="sr-only">Twitter</span>
-                </Link>
-                <Link href="#" className="text-foreground/70 hover:text-primary transition-colors">
+                <Link href="https://instagram.com/greens_green_retreat" target="_blank" rel="noopener noreferrer" className="text-foreground/70 hover:text-primary transition-colors">
                   <Instagram className="h-6 w-6" />
                   <span className="sr-only">Instagram</span>
                 </Link>
                 <Link href="#" className="text-foreground/70 hover:text-primary transition-colors">
-                  <Facebook className="h-6 w-6" />
-                  <span className="sr-only">Facebook</span>
+                    <TikTokIcon className="h-6 w-6" />
+                    <span className="sr-only">TikTok</span>
                 </Link>
                 <Link href="#" className="text-foreground/70 hover:text-primary transition-colors">
                   <Linkedin className="h-6 w-6" />
                   <span className="sr-only">LinkedIn</span>
                 </Link>
                 <Link href="#" className="text-foreground/70 hover:text-primary transition-colors">
-                    <TikTokIcon className="h-6 w-6" />
-                    <span className="sr-only">TikTok</span>
+                  <Twitter className="h-6 w-6" />
+                  <span className="sr-only">Twitter</span>
+                </Link>
+                <Link href="#" className="text-foreground/70 hover:text-primary transition-colors">
+                  <Facebook className="h-6 w-6" />
+                  <span className="sr-only">Facebook</span>
                 </Link>
               </div>
             </div>

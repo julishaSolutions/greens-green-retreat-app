@@ -25,9 +25,10 @@ import {
 import { toast } from '@/hooks/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, Info } from 'lucide-react';
 import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const bookingFormSchema = z.object({
   fullName: z.string().min(2, { message: 'Full name must be at least 2 characters.' }),
@@ -43,12 +44,10 @@ const bookingFormSchema = z.object({
 type BookingFormValues = z.infer<typeof bookingFormSchema>;
 
 const accommodations = [
-  'Forest Haven Cabin',
-  'Lakeside Serenity Villa',
-  'Mountain View Lodge',
-  'Meadow Glade Yurt',
-  'Canopy Treehouse',
-  'Riverbank Cottage',
+  'Alma 1 Cottage',
+  'Olivia Cottage',
+  'Double Alma Cottage',
+  'Alma 2 (The Treehouse)',
 ];
 
 export default function BookingPage() {
@@ -80,6 +79,19 @@ export default function BookingPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          <Alert className="mb-8">
+            <Info className="h-4 w-4" />
+            <AlertTitle className='font-bold'>Direct Booking Information</AlertTitle>
+            <AlertDescription>
+              For the most personal service, we encourage direct bookings. Please note we do not have listings on major booking platforms.
+              <ul className="list-disc pl-5 mt-2">
+                <li><strong>Phone:</strong> +254 714 281 7911</li>
+                <li><strong>Instagram:</strong> <a href="https://instagram.com/greens_green_retreat" target="_blank" rel="noopener noreferrer" className="underline">@greens_green_retreat</a></li>
+              </ul>
+              Rates start at Ksh 18,500 for two people per night.
+            </AlertDescription>
+          </Alert>
+
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <FormField
@@ -137,7 +149,7 @@ export default function BookingPage() {
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a cottage or villa" />
+                          <SelectValue placeholder="Select a cottage" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>

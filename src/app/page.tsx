@@ -2,46 +2,46 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { ArrowRight, BedDouble, Bike, MountainSnow, Star } from 'lucide-react';
+import { ArrowRight, Bird, Fish, Sailboat, Waves } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
 const accommodations = [
   {
-    name: 'Forest Cabin',
-    description: 'A cozy cabin nestled in the heart of the forest.',
+    name: 'Alma 1 Cottage',
+    description: 'A cozy hideaway for 2, perched in the valley with stunning views.',
     image: 'https://placehold.co/600x400.png',
-    hint: 'forest cabin',
+    hint: 'cozy cottage valley',
   },
   {
-    name: 'Lakeside Villa',
-    description: 'Elegant villa with stunning views of the private lake.',
+    name: 'Olivia Cottage',
+    description: 'Ideal for large families or groups, accommodating up to 8 guests.',
     image: 'https://placehold.co/600x400.png',
-    hint: 'lake villa',
+    hint: 'large family cottage',
   },
   {
-    name: 'Mountain Lodge',
-    description: 'Spacious lodge perfect for families and groups.',
+    name: 'Alma 2 (The Treehouse)',
+    description: 'A unique treetop stay for an adventurous and memorable experience.',
     image: 'https://placehold.co/600x400.png',
-    hint: 'mountain lodge',
+    hint: 'treetop treehouse forest',
   },
 ];
 
 const activities = [
   {
-    name: 'Mountain Biking',
-    description: 'Explore scenic trails on two wheels.',
-    icon: <Bike className="w-10 h-10 text-primary" />,
+    name: 'Water Slides',
+    description: 'Fun for the whole family on our exciting water slides.',
+    icon: <Waves className="w-10 h-10 text-primary" />,
   },
   {
-    name: 'Guided Hikes',
-    description: 'Discover the beauty of the surrounding nature with our expert guides.',
-    icon: <MountainSnow className="w-10 h-10 text-primary" />,
+    name: 'Boat Rides',
+    description: 'Enjoy a peaceful boat ride on the serene waters.',
+    icon: <Sailboat className="w-10 h-10 text-primary" />,
   },
   {
-    name: 'Stargazing',
-    description: 'Witness the breathtaking beauty of the night sky, far from city lights.',
-    icon: <Star className="w-10 h-10 text-primary" />,
+    name: 'Fishing',
+    description: 'Cast a line and relax while fishing in our well-stocked waters.',
+    icon: <Fish className="w-10 h-10 text-primary" />,
   },
 ];
 
@@ -76,13 +76,13 @@ export default function Home() {
         <div className="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
           <div>
             <h2 className={cn('text-3xl md:text-4xl font-bold font-headline text-primary')}>
-              Rediscover Yourself in Nature
+              A Sanctuary in the Highlands of Tigoni
             </h2>
             <p className="mt-4 text-lg text-foreground/80">
-              Green&apos;s Green Retreat offers a unique opportunity to disconnect from the hustle and bustle of city life and reconnect with the serene beauty of the natural world. Our exclusive retreat is designed to provide you with the perfect blend of comfort, adventure, and relaxation.
+              Nestled in the highlands of Tigoni, Limuru, Green's Green Retreat is a family-owned sanctuary offering a tranquil escape from city life. Set on Coomete Farm, a property with over 76 years of agricultural heritage, we provide a deep connection with nature.
             </p>
             <p className="mt-4 text-lg text-foreground/80">
-              Whether you&apos;re seeking a peaceful solo journey, a romantic getaway, or a memorable family vacation, our cottages and activities are tailored to create an unforgettable experience.
+              Despite our serene setting amidst lush tea fields, we are conveniently located just a 30-45 minute drive from Nairobi. We promise tranquility, privacy, and a chance to unwind and reconnect, waking up to birdsong and enjoying uninterrupted views.
             </p>
           </div>
           <div className="relative h-80 w-full rounded-lg overflow-hidden shadow-xl">
@@ -91,7 +91,7 @@ export default function Home() {
                 alt="A tranquil path through a sun-dappled forest"
                 fill
                 className="object-cover"
-                data-ai-hint="forest path"
+                data-ai-hint="tea fields Tigoni"
               />
           </div>
         </div>

@@ -7,7 +7,7 @@ import Footer from '@/components/footer';
 
 export const metadata: Metadata = {
   title: "Green's Green Retreat",
-  description: "Welcome to Green's Green Retreat, your boutique nature escape.",
+  description: "Escape to Green's Green Retreat, a family-owned sanctuary in the highlands of Tigoni, Limuru, offering a tranquil escape from city life.",
 };
 
 export default function RootLayout({

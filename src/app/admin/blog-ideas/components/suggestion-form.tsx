@@ -62,7 +62,7 @@ export function SuggestionForm() {
           <Textarea
             id="reviews"
             name="reviews"
-            placeholder="Paste guest reviews here... e.g., 'The cabin was so peaceful and the views were absolutely breathtaking! We loved the morning hikes and cozy evenings by the fire.'"
+            placeholder="Paste guest reviews here... e.g., 'Waking up to birdsong at Alma 1 was magical! The kids loved the water slides. Such a peaceful and beautiful place. We will be back!'"
             rows={8}
             className="mt-2"
             aria-describedby="reviews-error"
