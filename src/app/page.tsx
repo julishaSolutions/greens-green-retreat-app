@@ -1,3 +1,4 @@
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
@@ -47,14 +48,16 @@ const activities = [
 export default function Home() {
   return (
     <div className="flex flex-col">
-      <section className="relative h-[80vh] min-h-[500px] w-full flex items-center justify-center text-center text-white">
-        <Image
-          src="https://placehold.co/1920x1080.png"
-          alt="Lush green valley with a river running through it"
-          fill
-          className="object-cover -z-10"
-          data-ai-hint="nature retreat"
-        />
+      <section className="relative h-[80vh] min-h-[500px] w-full flex items-center justify-center text-center text-white overflow-hidden">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover -z-10"
+        >
+          <source src="https://res.cloudinary.com/dx6zxdlts/video/upload/v1749282824/I_promise_it_s_an_amazing_get_away_1_hm7emn.mp4" type="video/mp4" />
+        </video>
         <div className="absolute inset-0 bg-black/50 -z-10" />
         <div className="container mx-auto px-4">
           <h1 className={cn('text-5xl md:text-7xl lg:text-8xl font-bold drop-shadow-lg font-headline')}>
