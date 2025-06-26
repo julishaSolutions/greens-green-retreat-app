@@ -60,7 +60,7 @@ export default function ActivitiesPage() {
       <div className="text-center">
         <h1 className={cn('text-4xl md:text-5xl font-bold font-headline text-primary')}>Activities & Experiences</h1>
         <p className="mt-4 text-lg max-w-3xl mx-auto text-foreground/80">
-          From tranquil relaxation to thrilling adventures, Verdant Getaways offers something for everyone. Embrace the opportunity to create lasting memories.
+          From tranquil relaxation to thrilling adventures, Green&apos;s Green Retreat offers something for everyone. Embrace the opportunity to create lasting memories.
         </p>
       </div>
       <Separator className="my-12" />

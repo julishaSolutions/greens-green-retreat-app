@@ -15,7 +15,7 @@ const blogPosts = [
     slug: 'forest-bathing-guide',
   },
   {
-    title: 'Top 5 Hiking Trails at Verdant Getaways',
+    title: "Top 5 Hiking Trails at Green's Green Retreat",
     excerpt: 'Our retreat is a hiker\'s paradise. We\'ve compiled a list of our top 5 trails, from leisurely strolls to challenging ascents, each offering breathtaking views.',
     image: 'https://placehold.co/800x600.png',
     hint: 'hiking trail mountains',
@@ -62,7 +62,7 @@ export default function BlogPage() {
       <div className="text-center">
         <h1 className={cn('text-4xl md:text-5xl font-bold font-headline text-primary')}>From Our Journal</h1>
         <p className="mt-4 text-lg max-w-2xl mx-auto text-foreground/80">
-          Stories, tips, and inspiration from the heart of nature. Dive into our latest articles and discover more about the Verdant Getaways experience.
+          Stories, tips, and inspiration from the heart of nature. Dive into our latest articles and discover more about the Green&apos;s Green Retreat experience.
         </p>
       </div>
       <Separator className="my-12" />

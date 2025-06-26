@@ -76,7 +76,7 @@ export default function BookingPage() {
         <CardHeader className="text-center">
           <CardTitle className={cn("text-4xl md:text-5xl font-bold font-headline text-primary")}>Book Your Stay</CardTitle>
           <CardDescription className="mt-2 text-lg">
-            Complete the form below to request your booking at Verdant Getaways.
+            Complete the form below to request your booking at Green&apos;s Green Retreat.
           </CardDescription>
         </CardHeader>
         <CardContent>

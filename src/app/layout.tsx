@@ -6,7 +6,7 @@ import Header from '@/components/header';
 import Footer from '@/components/footer';
 
 export const metadata: Metadata = {
-  title: 'Verdant Getaways',
+  title: "Green's Green Retreat",
   description: "Welcome to Green's Green Retreat, your boutique nature escape.",
 };
 

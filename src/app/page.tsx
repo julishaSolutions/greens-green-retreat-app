@@ -76,7 +76,7 @@ export default function Home() {
               Rediscover Yourself in Nature
             </h2>
             <p className="mt-4 text-lg text-foreground/80">
-              Verdant Getaways offers a unique opportunity to disconnect from the hustle and bustle of city life and reconnect with the serene beauty of the natural world. Our exclusive retreat is designed to provide you with the perfect blend of comfort, adventure, and relaxation.
+              Green&apos;s Green Retreat offers a unique opportunity to disconnect from the hustle and bustle of city life and reconnect with the serene beauty of the natural world. Our exclusive retreat is designed to provide you with the perfect blend of comfort, adventure, and relaxation.
             </p>
             <p className="mt-4 text-lg text-foreground/80">
               Whether you&apos;re seeking a peaceful solo journey, a romantic getaway, or a memorable family vacation, our cottages and activities are tailored to create an unforgettable experience.

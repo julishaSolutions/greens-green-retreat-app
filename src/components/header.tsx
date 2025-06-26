@@ -25,7 +25,7 @@ export default function Header() {
       <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2" onClick={() => setMenuOpen(false)}>
           <div className="flex h-10 items-center justify-center rounded-md border bg-card px-4">
-            <span className={cn('font-bold text-lg font-headline text-primary')}>Verdant Getaways</span>
+            <span className={cn('font-bold text-lg font-headline text-primary')}>Green&apos;s Green Retreat</span>
           </div>
         </Link>
 
@@ -60,7 +60,7 @@ export default function Header() {
             <div className="p-4">
               <Link href="/" className="inline-block mb-8" onClick={() => setMenuOpen(false)}>
                 <div className="flex h-10 items-center justify-center rounded-md border bg-card px-4">
-                    <span className={cn('font-bold text-lg font-headline text-primary')}>Verdant Getaways</span>
+                    <span className={cn('font-bold text-lg font-headline text-primary')}>Green&apos;s Green Retreat</span>
                 </div>
               </Link>
               <nav className="flex flex-col gap-6">

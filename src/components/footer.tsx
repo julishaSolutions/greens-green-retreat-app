@@ -19,7 +19,7 @@ export default function Footer() {
           <div className="flex flex-col items-start">
             <Link href="/" className="mb-4">
               <div className="flex h-12 items-center justify-center rounded-md border bg-card px-6">
-                <span className={cn('font-bold text-2xl font-headline text-primary')}>Verdant Getaways</span>
+                <span className={cn('font-bold text-2xl font-headline text-primary')}>Green&apos;s Green Retreat</span>
               </div>
             </Link>
             <p className="text-foreground/70">
@@ -59,7 +59,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-8 pt-8 border-t text-center text-foreground/50 text-sm">
-          <p>&copy; {new Date().getFullYear()} Verdant Getaways. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Green's Green Retreat. All rights reserved.</p>
         </div>
       </div>
     </footer>
