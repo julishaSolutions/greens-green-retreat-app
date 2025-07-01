@@ -9,9 +9,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['Lato', 'sans-serif'],
+        body: ['Merriweather', 'serif'],
         headline: ['Playfair Display', 'serif'],
-        code: ['monospace'],
+        sans: ['Lato', 'sans-serif'],
       },
       colors: {
         background: 'hsl(var(--background))',

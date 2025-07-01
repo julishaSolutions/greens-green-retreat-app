@@ -5,11 +5,12 @@ import Link from 'next/link';
 
 const footerLinks = [
     { href: '/', label: 'Home' },
-    { href: '/accommodations', label: 'Accommodations' },
-    { href: '/activities', label: 'Activities' },
-    { href: '/booking', label: 'Booking' },
-    { href: '/blog', label: 'Blog' },
-    { href: '/admin/blog-ideas', label: 'Admin' },
+    { href: '/the-retreat', label: 'The Retreat' },
+    { href: '/experiences', label: 'Experiences' },
+    { href: '/our-story', label: 'Our Story' },
+    { href: '/journal', label: 'Journal' },
+    { href: '/inquire', label: 'Inquire' },
+    { href: '/admin/journal-ideas', label: 'Admin' },
   ];
 
 const TikTokIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -29,7 +30,7 @@ export default function Footer() {
                 <span className={cn('font-bold text-2xl font-headline text-primary')}>Green&apos;s Green Retreat</span>
               </div>
             </Link>
-            <p className="text-foreground/70">
+            <p className="text-foreground/70 font-sans">
               Your family-owned sanctuary in the highlands of Tigoni, Limuru.
             </p>
           </div>
@@ -39,7 +40,7 @@ export default function Footer() {
               <ul className="space-y-2">
                 {footerLinks.map(link => (
                     <li key={link.href}>
-                        <Link href={link.href} className="text-foreground/70 hover:text-primary transition-colors">
+                        <Link href={link.href} className="text-foreground/70 hover:text-primary transition-colors font-sans">
                             {link.label}
                         </Link>
                     </li>
@@ -48,7 +49,7 @@ export default function Footer() {
             </div>
             <div>
               <h3 className={cn("font-semibold text-lg font-headline mb-4")}>Connect</h3>
-               <div className="flex items-center gap-2 text-foreground/70 mb-4">
+               <div className="flex items-center gap-2 text-foreground/70 mb-4 font-sans">
                   <Phone className="h-5 w-5" />
                   <a href="tel:+2547142817911" className="hover:text-primary transition-colors">+254 714 281 7911</a>
                 </div>
@@ -77,7 +78,7 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        <div className="mt-8 pt-8 border-t text-center text-foreground/50 text-sm">
+        <div className="mt-8 pt-8 border-t text-center text-foreground/50 text-sm font-sans">
           <p>&copy; {new Date().getFullYear()} Green's Green Retreat. All rights reserved.</p>
         </div>
       </div>

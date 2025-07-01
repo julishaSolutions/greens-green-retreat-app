@@ -7,7 +7,7 @@ import Footer from '@/components/footer';
 
 export const metadata: Metadata = {
   title: "Green's Green Retreat",
-  description: "Escape to Green's Green Retreat, a family-owned sanctuary in the highlands of Tigoni, Limuru, offering a tranquil escape from city life.",
+  description: "A Sanctuary of Serenity. Escape to Green's Green Retreat, a family-owned sanctuary in the highlands of Tigoni, Limuru.",
 };
 
 export default function RootLayout({
@@ -20,7 +20,7 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
       </head>
       <body className={cn('font-body antialiased flex flex-col min-h-screen')}>
         <Header />
