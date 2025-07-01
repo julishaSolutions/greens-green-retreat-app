@@ -9,7 +9,7 @@ export default function OurStoryPage() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center">
             <h1 className={cn('text-4xl md:text-5xl font-bold font-headline text-primary')}>Our Limuru Roots</h1>
-            <p className="mt-4 text-lg max-w-3xl mx-auto text-foreground/80 font-sans">
+            <p className="mt-4 text-lg max-w-3xl mx-auto text-foreground/80 font-body">
               A story of family, heritage, and a deep connection to the land.
             </p>
           </div>
@@ -18,12 +18,12 @@ export default function OurStoryPage() {
           <div className="grid md:grid-cols-5 gap-8 items-center">
             <div className="md:col-span-3">
               <h2 className={cn('text-3xl font-bold font-headline text-primary mb-4')}>The Heart of Coomete Farm</h2>
-              <div className="space-y-6 text-foreground/80 text-lg">
+              <div className="space-y-6 text-foreground/80 text-lg font-body">
                 <p>
                   Green's Green Retreat is more than just a destination; it's a legacy. Nestled in the highlands of Tigoni, Limuru, our family-owned sanctuary is set on Coomete Farm, a property with over 76 years of agricultural heritage. This deep-rooted history is the soul of the retreat, fostering an unparalleled connection with nature.
                 </p>
                 <p>
-                  Our journey is one of stewardship—of nurturing the land that has sustained our family for generations. The lush farmland, endless tea fields, and serene plantations are not just a backdrop; they are the essence of the GGR experience. We are proud to share this unique countryside life with our guests.
+                  The family’s love of nature and the outdoors inspired the design of our four cottages, each uniquely placed to appreciate the surrounding environment. Our journey is one of stewardship—of nurturing the land that has sustained our family for generations. The lush farmland and serene tea plantations are the essence of the GGR experience.
                 </p>
               </div>
             </div>
@@ -44,12 +44,12 @@ export default function OurStoryPage() {
 
           <div className="text-center">
             <h2 className={cn('text-3xl font-bold font-headline text-primary mb-4')}>Authentic Hospitality, Rooted in Community</h2>
-             <div className="space-y-6 text-foreground/80 text-lg max-w-3xl mx-auto">
+             <div className="space-y-6 text-foreground/80 text-lg max-w-3xl mx-auto font-body">
                 <p>
-                    As a family-run retreat, we believe in a personal and heartfelt approach to hospitality. We aim to provide an individualized stay that feels both luxurious and authentic. This philosophy extends to our community. We celebrate local craftsmanship, partner with nearby artisans, and embrace a farm-to-table culinary approach that honors the bounty of Limuru.
+                  Coomete Farm produces high-quality groceries, meats, and dairy, relying on organic, home-grown produce that supports the local community. We are proud to share this unique countryside life and our sustainable farming practices with our guests through educational tours.
                 </p>
                 <p>
-                    We invite you to disconnect from the hustle of life and reconnect with what truly matters—nature, tranquility, and genuine human connection. Wake up to birdsong, savor the views from your private deck, and become part of our story.
+                    As a family-run retreat, we believe in a personal and heartfelt approach to hospitality. We invite you to disconnect from the hustle of life and reconnect with what truly matters—nature, tranquility, and genuine human connection. Wake up to birdsong, savor the views from your private deck, and become part of our story.
                 </p>
              </div>
           </div>

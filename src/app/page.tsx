@@ -1,28 +1,28 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { ArrowRight, Trees, Leaf, Sparkles } from 'lucide-react';
+import { ArrowRight, Trees, Waves, Tractor } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
 const suites = [
   {
-    name: 'Valley-View Cottages',
-    description: 'Intimate sanctuaries for couples or solo travelers, offering stunning, uninterrupted valley views.',
+    name: 'Alma 1 Cottage',
+    description: 'A cozy hideaway for couples or solo travelers, offering stunning, uninterrupted valley views.',
     image: 'https://placehold.co/600x400.png',
     hint: 'cozy cottage valley',
     link: '/the-retreat',
   },
   {
-    name: 'Family & Group Cottages',
-    description: 'Spacious and comfortable, these cottages are perfect for creating shared memories with loved ones.',
+    name: 'Double Alma Cottage',
+    description: 'Spacious and comfortable, this two-bedroom cottage is perfect for creating shared memories with family or friends.',
     image: 'https://placehold.co/600x400.png',
     hint: 'large family cottage',
     link: '/the-retreat',
   },
   {
-    name: 'The Treetop Stay',
-    description: 'A unique, adventurous experience nestled among the branches for an unforgettable escape.',
+    name: 'Alma 2 (The Treehouse)',
+    description: 'A unique, adventurous experience nestled among the branches for an unforgettable group escape.',
     image: 'https://placehold.co/600x400.png',
     hint: 'treetop treehouse forest',
     link: '/the-retreat',
@@ -31,18 +31,18 @@ const suites = [
 
 const experiences = [
   {
-    name: 'Wellness & Spa',
-    description: 'Indulge in restorative treatments that harmonize mind, body, and spirit in a tranquil setting.',
-    icon: <Sparkles className="w-10 h-10 text-primary" />,
+    name: 'Educational Farm Tours',
+    description: 'Explore Coomete Farm\'s 70-year legacy of sustainable farming with an insightful and educational tour.',
+    icon: <Tractor className="w-10 h-10 text-primary" />,
   },
   {
-    name: 'Culinary Journeys',
-    description: 'Experience authentic farm-to-table dining, celebrating the fresh, local flavors of Limuru.',
-    icon: <Leaf className="w-10 h-10 text-primary" />,
+    name: 'Water Slides & Boat Rides',
+    description: 'Enjoy a splash of fun with our custom-made waterslides or take a peaceful boat ride on the calm waters.',
+    icon: <Waves className="w-10 h-10 text-primary" />,
   },
   {
-    name: 'Tea Plantation Tours',
-    description: 'Immerse yourself in the rich heritage of the region with a guided tour of the lush tea fields.',
+    name: 'Camping & Stargazing',
+    description: 'Experience a night under the stars. Our designated camping areas provide an authentic connection with nature.',
     icon: <Trees className="w-10 h-10 text-primary" />,
   },
 ];
@@ -66,7 +66,7 @@ export default function Home() {
             Breathe. Unwind. Reconnect.
           </h1>
           <p className="mt-4 text-lg md:text-xl max-w-2xl mx-auto drop-shadow-md font-body">
-            Your sanctuary in the serene heart of Limuru's tea country.
+            Welcome to Green’s Green Retreat! A family-owned sanctuary that promises tranquility and privacy.
           </p>
           <Button asChild size="lg" className="mt-8 bg-accent hover:bg-accent/90 text-accent-foreground font-sans">
             <Link href="/the-retreat">Discover Your Retreat</Link>

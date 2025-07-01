@@ -1,6 +1,6 @@
 
 import { cn } from '@/lib/utils';
-import { Twitter, Instagram, Facebook, Linkedin, Phone } from 'lucide-react';
+import { Twitter, Instagram, Facebook, Linkedin, Phone, Mail } from 'lucide-react';
 import Link from 'next/link';
 
 const footerLinks = [
@@ -49,9 +49,13 @@ export default function Footer() {
             </div>
             <div>
               <h3 className={cn("font-semibold text-lg font-headline mb-4")}>Connect</h3>
-               <div className="flex items-center gap-2 text-foreground/70 mb-4 font-sans">
+               <div className="flex items-center gap-2 text-foreground/70 mb-2 font-sans">
                   <Phone className="h-5 w-5" />
-                  <a href="tel:+2547142817911" className="hover:text-primary transition-colors">+254 714 281 7911</a>
+                  <a href="tel:+254714281791" className="hover:text-primary transition-colors">+254 714 281 791</a>
+                </div>
+                <div className="flex items-center gap-2 text-foreground/70 mb-4 font-sans">
+                  <Mail className="h-5 w-5" />
+                  <a href="mailto:greensgreenretreat@gmail.com" className="hover:text-primary transition-colors">greensgreenretreat@gmail.com</a>
                 </div>
               <div className="flex space-x-4">
                 <Link href="https://instagram.com/greens_green_retreat" target="_blank" rel="noopener noreferrer" className="text-foreground/70 hover:text-primary transition-colors">
