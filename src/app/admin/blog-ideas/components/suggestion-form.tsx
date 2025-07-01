@@ -1,13 +1,13 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
+import { useActionState, useEffect, useRef } from 'react';
 import { getSuggestions, type FormState } from '../actions';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Label } from '@/components/ui/label';
 import { Loader2, List, Sparkles } from 'lucide-react';
-import { useEffect, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 const initialState: FormState = {
@@ -37,16 +37,16 @@ function SubmitButton() {
 }
 
 export function SuggestionForm() {
-  const [state, formAction] = useFormState(getSuggestions, initialState);
+  const [state, formAction] = useActionState(getSuggestions, initialState);
   const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     if (state.message && state.message !== 'Validation failed. Please check your input.') {
       toast({
-        title: state.errors ? 'Error' : 'Success',
+        title: state.message.startsWith('Successfully') ? 'Success' : 'Error',
         description: state.message,
-        variant: state.errors ? 'destructive' : 'default',
+        variant: state.message.startsWith('Successfully') ? 'default' : 'destructive',
       });
     }
     if (state.message === 'Successfully generated titles!') {
