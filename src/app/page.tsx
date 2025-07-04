@@ -1,53 +1,59 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { ArrowRight, Trees, Waves, Tractor } from 'lucide-react';
+import { ArrowRight, Trees, Leaf, Sparkles } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { collection, onSnapshot, query, limit } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { useEffect, useState } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 
-const suites = [
-  {
-    name: 'Alma 1 Cottage',
-    description: 'A cozy hideaway for couples or solo travelers, offering stunning, uninterrupted valley views.',
-    image: 'https://placehold.co/600x400.png',
-    hint: 'cozy cottage valley',
-    link: '/the-retreat',
-  },
-  {
-    name: 'Double Alma Cottage',
-    description: 'Spacious and comfortable, this two-bedroom cottage is perfect for creating shared memories with family or friends.',
-    image: 'https://placehold.co/600x400.png',
-    hint: 'large family cottage',
-    link: '/the-retreat',
-  },
-  {
-    name: 'Alma 2 (The Treehouse)',
-    description: 'A unique, adventurous experience nestled among the branches for an unforgettable group escape.',
-    image: 'https://placehold.co/600x400.png',
-    hint: 'treetop treehouse forest',
-    link: '/the-retreat',
-  },
-];
+type Suite = {
+  id: string;
+  name: string;
+  description: string;
+  imageUrls: string[];
+};
 
 const experiences = [
   {
-    name: 'Educational Farm Tours',
-    description: 'Explore Coomete Farm\'s 70-year legacy of sustainable farming with an insightful and educational tour.',
-    icon: <Tractor className="w-10 h-10 text-primary" />,
+    name: 'Wellness & Spa',
+    description: 'Find restoration with our holistic spa treatments, inspired by traditional techniques and local botanicals.',
+    icon: <Sparkles className="w-10 h-10 text-primary" />,
   },
   {
-    name: 'Water Slides & Boat Rides',
-    description: 'Enjoy a splash of fun with our custom-made waterslides or take a peaceful boat ride on the calm waters.',
-    icon: <Waves className="w-10 h-10 text-primary" />,
+    name: 'Culinary Journeys',
+    description: "Savor the taste of Limuru with our farm-to-table dining, where fresh, organic ingredients are transformed into culinary delights.",
+    icon: <Leaf className="w-10 h-10 text-primary" />,
   },
   {
-    name: 'Camping & Stargazing',
-    description: 'Experience a night under the stars. Our designated camping areas provide an authentic connection with nature.',
+    name: 'Tea Plantation Tours',
+    description: 'Immerse yourself in the rich heritage of Limuru’s tea culture with guided tours through the lush, serene plantations.',
     icon: <Trees className="w-10 h-10 text-primary" />,
   },
 ];
 
 export default function Home() {
+  const [suites, setSuites] = useState<Suite[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const q = query(collection(db, 'cottages'), limit(3));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const suitesData: Suite[] = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      } as Suite));
+      setSuites(suitesData);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   return (
     <div className="flex flex-col">
       <section className="relative h-[90vh] min-h-[600px] w-full flex items-center justify-center text-center text-white overflow-hidden">
@@ -74,7 +80,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="about" className="py-20 md:py-32 bg-card">
+      <section id="about" className="py-20 md:py-32 bg-background">
         <div className="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
           <div>
             <h2 className={cn('text-3xl md:text-4xl font-bold font-headline text-primary')}>
@@ -108,30 +114,48 @@ export default function Home() {
             </p>
           </div>
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {suites.map((item) => (
-              <Card key={item.name} className="overflow-hidden flex flex-col group">
-                 <CardHeader className="p-0">
-                  <div className="relative h-60 w-full overflow-hidden">
-                    <Image
-                      src={item.image}
-                      alt={item.name}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                      data-ai-hint={item.hint}
-                    />
-                  </div>
-                </CardHeader>
-                <CardContent className="pt-6 flex-grow">
-                   <CardTitle className={cn("font-headline text-2xl")}>{item.name}</CardTitle>
-                  <CardDescription className="mt-2 text-base font-body">{item.description}</CardDescription>
-                </CardContent>
-                <CardFooter>
-                  <Button asChild className="w-full font-sans" variant="secondary">
-                     <Link href={item.link}>Learn More</Link>
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
+            {loading ? (
+              Array.from({ length: 3 }).map((_, index) => (
+                <Card key={index} className="overflow-hidden flex flex-col group">
+                  <CardHeader className="p-0">
+                    <Skeleton className="h-60 w-full" />
+                  </CardHeader>
+                  <CardContent className="pt-6 flex-grow">
+                    <Skeleton className="h-7 w-3/4 mb-2" />
+                    <Skeleton className="h-4 w-full mb-1" />
+                    <Skeleton className="h-4 w-5/6" />
+                  </CardContent>
+                  <CardFooter>
+                    <Skeleton className="h-10 w-full" />
+                  </CardFooter>
+                </Card>
+              ))
+            ) : (
+              suites.map((item) => (
+                <Card key={item.id} className="overflow-hidden flex flex-col group">
+                  <CardHeader className="p-0">
+                    <div className="relative h-60 w-full overflow-hidden">
+                      <Image
+                        src={item.imageUrls?.[0] || 'https://placehold.co/600x400.png'}
+                        alt={item.name}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        data-ai-hint="luxury cottage exterior"
+                      />
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pt-6 flex-grow">
+                    <CardTitle className={cn("font-headline text-2xl")}>{item.name}</CardTitle>
+                    <CardDescription className="mt-2 text-base font-body">{item.description}</CardDescription>
+                  </CardContent>
+                  <CardFooter>
+                    <Button asChild className="w-full font-sans" variant="secondary">
+                       <Link href={`/the-retreat#${item.id}`}>Learn More</Link>
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))
+            )}
           </div>
         </div>
       </section>

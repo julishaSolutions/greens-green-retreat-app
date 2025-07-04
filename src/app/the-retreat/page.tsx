@@ -50,7 +50,7 @@ export default function TheRetreatPage() {
   }, []);
 
   return (
-    <div className="container mx-auto px-4 py-12 md:py-20">
+    <div className="container mx-auto px-4 py-12 md:py-20 scroll-mt-20">
       <div className="text-center">
         <h1 className={cn('text-4xl md:text-5xl font-bold font-headline text-primary')}>The Suites & Cottages</h1>
         <p className="mt-4 text-lg max-w-3xl mx-auto text-foreground/80 font-body">
@@ -84,24 +84,39 @@ export default function TheRetreatPage() {
               ? { href: item.whatsappLink, target: '_blank', rel: 'noopener noreferrer' }
               : { href: '/inquire' };
             const linkText = item.whatsappLink ? 'Inquire on WhatsApp' : 'Inquire Now';
+            const validImageUrls = item.imageUrls?.filter(url => !!url) || [];
 
             return (
-              <Card key={item.id} className="overflow-hidden flex flex-col shadow-lg hover:shadow-2xl transition-shadow duration-300 group">
+              <Card key={item.id} id={item.id} className="overflow-hidden flex flex-col shadow-lg hover:shadow-2xl transition-shadow duration-300 group scroll-mt-24">
                 <CardHeader className="p-0">
                   <Carousel className="w-full">
                     <CarouselContent>
-                      {item.imageUrls?.filter(url => !!url).map((imageUrl, index) => (
-                        <CarouselItem key={index}>
-                          <div className="relative h-64 w-full">
-                            <Image
-                              src={imageUrl}
-                              alt={`${item.name} - Image ${index + 1}`}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                        </CarouselItem>
-                      ))}
+                      {validImageUrls.length > 0 ? (
+                        validImageUrls.map((imageUrl, index) => (
+                          <CarouselItem key={index}>
+                            <div className="relative h-64 w-full">
+                              <Image
+                                src={imageUrl}
+                                alt={`${item.name} - Image ${index + 1}`}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                          </CarouselItem>
+                        ))
+                      ) : (
+                         <CarouselItem>
+                            <div className="relative h-64 w-full">
+                              <Image
+                                src="https://placehold.co/800x600.png"
+                                alt={`${item.name} - Placeholder Image`}
+                                fill
+                                className="object-cover"
+                                data-ai-hint="luxury cottage interior"
+                              />
+                            </div>
+                          </CarouselItem>
+                      )}
                     </CarouselContent>
                     <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex bg-background/50 hover:bg-background/80" />
                     <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex bg-background/50 hover:bg-background/80" />
