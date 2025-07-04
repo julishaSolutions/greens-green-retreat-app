@@ -90,7 +90,7 @@ export default function TheRetreatPage() {
                 <CardHeader className="p-0">
                   <Carousel className="w-full">
                     <CarouselContent>
-                      {item.imageUrls?.map((imageUrl, index) => (
+                      {item.imageUrls?.filter(url => !!url).map((imageUrl, index) => (
                         <CarouselItem key={index}>
                           <div className="relative h-64 w-full">
                             <Image
