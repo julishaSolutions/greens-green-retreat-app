@@ -21,6 +21,7 @@ type Cottage = {
   imageUrls: string[];
   description: string;
   whatsappLink?: string;
+  slug?: string;
 };
 
 const amenityIcons: { [key: string]: React.ReactNode } = {
@@ -125,7 +126,13 @@ export default function TheRetreatPage() {
                   </Carousel>
                 </CardHeader>
                 <CardContent className="p-6 flex-grow">
-                  <CardTitle className={cn("font-headline text-2xl")}>{item.name}</CardTitle>
+                  <CardTitle className={cn("font-headline text-2xl")}>
+                    {item.slug ? (
+                      <Link href={`/cottages/${item.slug}`} className="hover:text-primary transition-colors">{item.name}</Link>
+                    ) : (
+                      item.name
+                    )}
+                  </CardTitle>
                   <p className="text-lg font-semibold text-primary mt-1">Kes {item.price?.toLocaleString() || 'N/A'} / night</p>
                   <CardDescription className="mt-4 text-base font-body">{item.description}</CardDescription>
                   <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 font-sans">

@@ -16,6 +16,7 @@ type Suite = {
   name: string;
   description: string;
   imageUrls: string[];
+  slug?: string;
 };
 
 const experiences = [
@@ -155,7 +156,7 @@ export default function Home() {
                     </CardContent>
                     <CardFooter>
                       <Button asChild className="w-full font-sans" variant="secondary">
-                        <Link href={`/the-retreat#${item.id}`}>Learn More</Link>
+                        <Link href={item.slug ? `/cottages/${item.slug}` : `/the-retreat#${item.id}`}>Learn More</Link>
                       </Button>
                     </CardFooter>
                   </Card>
