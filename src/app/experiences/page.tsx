@@ -63,7 +63,7 @@ export default function ExperiencesPage() {
                     <CardHeader className="p-0">
                         <div className="relative h-64 w-full">
                         <Image
-                            src={activity.imageUrl || 'https://placehold.co/800x600.png'}
+                            src={(activity.imageUrl && activity.imageUrl.trim()) ? activity.imageUrl : 'https://placehold.co/800x600.png'}
                             alt={activity.name}
                             fill
                             className="object-cover"
