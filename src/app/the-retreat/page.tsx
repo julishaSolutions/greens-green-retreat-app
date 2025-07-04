@@ -84,7 +84,9 @@ export default function TheRetreatPage() {
               ? { href: item.whatsappLink, target: '_blank', rel: 'noopener noreferrer' }
               : { href: '/inquire' };
             const linkText = item.whatsappLink ? 'Inquire on WhatsApp' : 'Inquire Now';
-            const validImageUrls = item.imageUrls?.filter(url => !!url) || [];
+            const validImageUrls = Array.isArray(item.imageUrls)
+              ? item.imageUrls.filter(url => typeof url === 'string' && url.trim() !== '')
+              : [];
 
             return (
               <Card key={item.id} id={item.id} className="overflow-hidden flex flex-col shadow-lg hover:shadow-2xl transition-shadow duration-300 group scroll-mt-24">
@@ -148,7 +150,7 @@ export default function TheRetreatPage() {
                   </Button>
                 </CardFooter>
               </Card>
-            )
+            );
           })
         )}
       </div>

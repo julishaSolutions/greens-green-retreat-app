@@ -131,30 +131,36 @@ export default function Home() {
                 </Card>
               ))
             ) : (
-              suites.map((item) => (
-                <Card key={item.id} className="overflow-hidden flex flex-col group">
-                  <CardHeader className="p-0">
-                    <div className="relative h-60 w-full overflow-hidden">
-                      <Image
-                        src={item.imageUrls?.[0] || 'https://placehold.co/600x400.png'}
-                        alt={item.name}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        data-ai-hint="luxury cottage exterior"
-                      />
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-6 flex-grow">
-                    <CardTitle className={cn("font-headline text-2xl")}>{item.name}</CardTitle>
-                    <CardDescription className="mt-2 text-base font-body">{item.description}</CardDescription>
-                  </CardContent>
-                  <CardFooter>
-                    <Button asChild className="w-full font-sans" variant="secondary">
-                       <Link href={`/the-retreat#${item.id}`}>Learn More</Link>
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))
+              suites.map((item) => {
+                const firstValidImage = Array.isArray(item.imageUrls)
+                  ? item.imageUrls.find(url => typeof url === 'string' && url.trim() !== '')
+                  : undefined;
+
+                return (
+                  <Card key={item.id} className="overflow-hidden flex flex-col group">
+                    <CardHeader className="p-0">
+                      <div className="relative h-60 w-full overflow-hidden">
+                        <Image
+                          src={firstValidImage || 'https://placehold.co/600x400.png'}
+                          alt={item.name}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          data-ai-hint="luxury cottage exterior"
+                        />
+                      </div>
+                    </CardHeader>
+                    <CardContent className="pt-6 flex-grow">
+                      <CardTitle className={cn("font-headline text-2xl")}>{item.name}</CardTitle>
+                      <CardDescription className="mt-2 text-base font-body">{item.description}</CardDescription>
+                    </CardContent>
+                    <CardFooter>
+                      <Button asChild className="w-full font-sans" variant="secondary">
+                        <Link href={`/the-retreat#${item.id}`}>Learn More</Link>
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                );
+              })
             )}
           </div>
         </div>
