@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -21,7 +20,7 @@ type Cottage = {
   guests: number;
   imageUrls: string[];
   description: string;
-  whatsappLink: string;
+  whatsappLink?: string;
 };
 
 const amenityIcons: { [key: string]: React.ReactNode } = {
@@ -80,55 +79,62 @@ export default function TheRetreatPage() {
                 </Card>
             ))
         ) : (
-          cottages.map((item) => (
-            <Card key={item.id} className="overflow-hidden flex flex-col shadow-lg hover:shadow-2xl transition-shadow duration-300 group">
-              <CardHeader className="p-0">
-                <Carousel className="w-full">
-                  <CarouselContent>
-                    {item.imageUrls?.map((imageUrl, index) => (
-                      <CarouselItem key={index}>
-                        <div className="relative h-64 w-full">
-                          <Image
-                            src={imageUrl}
-                            alt={`${item.name} - Image ${index + 1}`}
-                            fill
-                            className="object-cover"
-                          />
+          cottages.map((item) => {
+            const linkProps = item.whatsappLink
+              ? { href: item.whatsappLink, target: '_blank', rel: 'noopener noreferrer' }
+              : { href: '/inquire' };
+            const linkText = item.whatsappLink ? 'Inquire on WhatsApp' : 'Inquire Now';
+
+            return (
+              <Card key={item.id} className="overflow-hidden flex flex-col shadow-lg hover:shadow-2xl transition-shadow duration-300 group">
+                <CardHeader className="p-0">
+                  <Carousel className="w-full">
+                    <CarouselContent>
+                      {item.imageUrls?.map((imageUrl, index) => (
+                        <CarouselItem key={index}>
+                          <div className="relative h-64 w-full">
+                            <Image
+                              src={imageUrl}
+                              alt={`${item.name} - Image ${index + 1}`}
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                    <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex bg-background/50 hover:bg-background/80" />
+                    <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex bg-background/50 hover:bg-background/80" />
+                  </Carousel>
+                </CardHeader>
+                <CardContent className="p-6 flex-grow">
+                  <CardTitle className={cn("font-headline text-2xl")}>{item.name}</CardTitle>
+                  <p className="text-lg font-semibold text-primary mt-1">Kes {item.price?.toLocaleString() || 'N/A'} / night</p>
+                  <CardDescription className="mt-4 text-base font-body">{item.description}</CardDescription>
+                  <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 font-sans">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Users className="h-4 w-4" />
+                        <span>Up to {item.guests} guests</span>
+                    </div>
+                    {staticAmenities.map(amenity => (
+                        <div key={amenity} className="flex items-center gap-2 text-sm text-muted-foreground">
+                            {amenityIcons[amenity] || null}
+                            <span>{amenity}</span>
                         </div>
-                      </CarouselItem>
                     ))}
-                  </CarouselContent>
-                  <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex bg-background/50 hover:bg-background/80" />
-                  <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex bg-background/50 hover:bg-background/80" />
-                </Carousel>
-              </CardHeader>
-              <CardContent className="p-6 flex-grow">
-                <CardTitle className={cn("font-headline text-2xl")}>{item.name}</CardTitle>
-                <p className="text-lg font-semibold text-primary mt-1">Kes {item.price?.toLocaleString() || 'N/A'} / night</p>
-                <CardDescription className="mt-4 text-base font-body">{item.description}</CardDescription>
-                <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 font-sans">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Users className="h-4 w-4" />
-                      <span>Up to {item.guests} guests</span>
                   </div>
-                  {staticAmenities.map(amenity => (
-                      <div key={amenity} className="flex items-center gap-2 text-sm text-muted-foreground">
-                          {amenityIcons[amenity] || null}
-                          <span>{amenity}</span>
-                      </div>
-                  ))}
-                </div>
-              </CardContent>
-              <CardFooter className="p-6 bg-muted/50">
-                <Button asChild className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-sans">
-                  <Link href={item.whatsappLink} target="_blank" rel="noopener noreferrer">
-                    <MessageCircle className="mr-2 h-4 w-4" />
-                    Inquire on WhatsApp
-                  </Link>
-                </Button>
-              </CardFooter>
-            </Card>
-          ))
+                </CardContent>
+                <CardFooter className="p-6 bg-muted/50">
+                  <Button asChild className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-sans">
+                    <Link {...linkProps}>
+                      <MessageCircle className="mr-2 h-4 w-4" />
+                      {linkText}
+                    </Link>
+                  </Button>
+                </CardFooter>
+              </Card>
+            )
+          })
         )}
       </div>
     </div>
