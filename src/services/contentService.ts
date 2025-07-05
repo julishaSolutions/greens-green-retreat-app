@@ -1,6 +1,6 @@
 'use server';
-import { db } from '@/lib/firebase';
-import { collection, query, where, getDocs, limit as firestoreLimit, type DocumentData, orderBy } from 'firebase/firestore';
+import { adminDb } from '@/lib/firebase-admin';
+import type { DocumentData, Query } from 'firebase-admin/firestore';
 
 export type Cottage = {
   id: string;
@@ -37,17 +37,20 @@ function docToCottage(doc: DocumentData): Cottage {
 }
 
 export async function getCottages(count?: number): Promise<Cottage[]> {
-    if (!db) {
-        console.error('Firestore is not initialized.');
+    if (!adminDb) {
+        console.error('Firestore Admin is not initialized.');
         return [];
     }
     try {
-        const cottagesRef = collection(db, 'cottages');
-        let q = query(cottagesRef, where('name', '!=', 'Olivia Cottage'), orderBy('name'));
+        let q: Query = adminDb.collection('cottages')
+            .where('name', '!=', 'Olivia Cottage')
+            .orderBy('name');
+        
         if (count) {
-            q = query(cottagesRef, where('name', '!=', 'Olivia Cottage'), orderBy('name'), firestoreLimit(count));
+            q = q.limit(count);
         }
-        const snapshot = await getDocs(q);
+
+        const snapshot = await q.get();
         return snapshot.docs.map(docToCottage);
     } catch (error) {
         console.error("Error fetching cottages: ", error);
@@ -56,13 +59,13 @@ export async function getCottages(count?: number): Promise<Cottage[]> {
 }
 
 export async function getCottageBySlug(slug: string): Promise<Cottage | null> {
-    if (!db) {
-        console.error('Firestore is not initialized.');
+    if (!adminDb) {
+        console.error('Firestore Admin is not initialized.');
         return null;
     }
     try {
-        const q = query(collection(db, 'cottages'), where('slug', '==', slug), firestoreLimit(1));
-        const snapshot = await getDocs(q);
+        const q = adminDb.collection('cottages').where('slug', '==', slug).limit(1);
+        const snapshot = await q.get();
         if (snapshot.empty) {
             console.warn(`No cottage found with slug: '${slug}'`);
             return null;
@@ -75,12 +78,12 @@ export async function getCottageBySlug(slug: string): Promise<Cottage | null> {
 }
 
 export async function getActivities(): Promise<Activity[]> {
-    if (!db) {
-        console.error('Firestore is not initialized.');
+    if (!adminDb) {
+        console.error('Firestore Admin is not initialized.');
         return [];
     }
     try {
-        const snapshot = await getDocs(collection(db, 'activities'));
+        const snapshot = await adminDb.collection('activities').get();
         return snapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data()
