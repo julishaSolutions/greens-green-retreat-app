@@ -11,21 +11,22 @@ const isFirebaseAdminConfigValid =
   serviceAccount.clientEmail &&
   serviceAccount.privateKey;
 
-if (!admin.apps.length && isFirebaseAdminConfigValid) {
-  try {
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-    });
-    console.log('Firebase Admin SDK initialized successfully.');
-  } catch (error) {
-    console.error("Error initializing Firebase Admin SDK:", error);
-  }
-} else if (!isFirebaseAdminConfigValid) {
-    console.warn("Firebase Admin configuration is incomplete. Server-side features will not have admin privileges. Please check your .env.local file.");
+if (!admin.apps.length) {
+    if (isFirebaseAdminConfigValid) {
+      try {
+        admin.initializeApp({
+          credential: admin.credential.cert(serviceAccount),
+        });
+        console.log('Firebase Admin SDK initialized successfully.');
+      } catch (error) {
+        console.error("Error initializing Firebase Admin SDK:", error);
+      }
+    } else {
+        console.warn("Firebase Admin configuration is incomplete. Server-side features will not have admin privileges. Please check your .env.local file.");
+    }
 }
 
-
-const adminDb = isFirebaseAdminConfigValid ? admin.firestore() : null;
-const adminAuth = isFirebaseAdminConfigValid ? admin.auth() : null;
+const adminDb = admin.apps.length > 0 ? admin.firestore() : null;
+const adminAuth = admin.apps.length > 0 ? admin.auth() : null;
 
 export { adminDb, adminAuth };
