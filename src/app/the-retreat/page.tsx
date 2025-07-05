@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
-import { Wifi, Users, Trees, ShieldCheck, MessageCircle } from 'lucide-react';
+import { Wifi, Users, Trees, ShieldCheck } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -88,11 +88,6 @@ export default function TheRetreatPage() {
             ))
         ) : (
           cottages.map((item) => {
-            const linkProps = item.whatsappLink
-              ? { href: item.whatsappLink, target: '_blank', rel: 'noopener noreferrer' }
-              : { href: '/inquire' };
-            const linkText = item.whatsappLink ? 'Inquire on WhatsApp' : 'Inquire Now';
-            
             const imageUrls = item.imageUrls || item['imageUrls '];
             const validImageUrls = Array.isArray(imageUrls)
               ? imageUrls.filter(url => typeof url === 'string' && url.trim() !== '')
@@ -161,10 +156,7 @@ export default function TheRetreatPage() {
                 </CardContent>
                 <CardFooter className="p-6 bg-muted/50">
                   <Button asChild className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-sans">
-                    <Link {...linkProps}>
-                      <MessageCircle className="mr-2 h-4 w-4" />
-                      {linkText}
-                    </Link>
+                    <Link href="/booking">Book Now</Link>
                   </Button>
                 </CardFooter>
               </Card>

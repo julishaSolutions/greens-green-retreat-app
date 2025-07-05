@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
-import { Wifi, Users, Trees, ShieldCheck, MessageCircle } from 'lucide-react';
+import { Wifi, Users, Trees, ShieldCheck } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -107,11 +107,6 @@ export default function CottageDetailPage() {
   const validImageUrls = Array.isArray(imageUrls)
     ? imageUrls.filter(url => typeof url === 'string' && url.trim() !== '')
     : [];
-    
-  const linkProps = cottage.whatsappLink
-    ? { href: cottage.whatsappLink, target: '_blank', rel: 'noopener noreferrer' }
-    : { href: '/inquire' };
-  const linkText = cottage.whatsappLink ? 'Inquire on WhatsApp' : 'Inquire Now';
 
   return (
     <div className="container mx-auto px-4 py-12 md:py-20">
@@ -188,9 +183,8 @@ export default function CottageDetailPage() {
                             </div>
                              <Separator />
                              <Button asChild className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-sans mt-4" size="lg">
-                                <Link {...linkProps}>
-                                <MessageCircle className="mr-2 h-4 w-4" />
-                                {linkText}
+                                <Link href="/booking">
+                                  Book Now
                                 </Link>
                             </Button>
                         </div>
