@@ -48,14 +48,19 @@ export default function CottageDetailPage() {
 
     const fetchCottage = async () => {
       setLoading(true);
-      const q = query(collection(db, 'cottages'), where('slug', '==', slug), limit(1));
-      const querySnapshot = await getDocs(q);
+      try {
+        const q = query(collection(db, 'cottages'), where('slug', '==', slug), limit(1));
+        const querySnapshot = await getDocs(q);
 
-      if (!querySnapshot.empty) {
-        const doc = querySnapshot.docs[0];
-        setCottage({ id: doc.id, ...doc.data() } as Cottage);
+        if (!querySnapshot.empty) {
+          const doc = querySnapshot.docs[0];
+          setCottage({ id: doc.id, ...doc.data() } as Cottage);
+        }
+      } catch (error) {
+        console.error("Error fetching cottage:", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchCottage();
@@ -93,9 +98,7 @@ export default function CottageDetailPage() {
     );
   }
 
-  const validImageUrls = Array.isArray(cottage.imageUrls)
-    ? cottage.imageUrls.filter(url => typeof url === 'string' && url.trim() !== '')
-    : [];
+  const validImageUrls = cottage?.imageUrls?.filter(url => typeof url === 'string' && url.trim() !== '') || [];
     
   const linkProps = cottage.whatsappLink
     ? { href: cottage.whatsappLink, target: '_blank', rel: 'noopener noreferrer' }
