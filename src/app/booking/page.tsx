@@ -21,9 +21,6 @@ import { Calendar } from '@/components/ui/calendar';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import type { DateRange } from 'react-day-picker';
 import { useFormStatus } from 'react-dom';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '@/lib/firebase';
-import Link from 'next/link';
 
 const accommodations = [
   { id: 'alma-1-cottage', name: 'Alma 1 Cottage' },
@@ -58,7 +55,6 @@ export default function BookingPage() {
   const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
   const [dates, setDates] = useState<DateRange | undefined>(undefined);
-  const [user, loading, error] = useAuthState(auth!);
 
   useEffect(() => {
     if (!state.message) return;
@@ -75,60 +71,6 @@ export default function BookingPage() {
       setDates(undefined);
     }
   }, [state, toast]);
-
-  if (!auth) {
-    return (
-      <div className="container mx-auto px-4 py-12 md:py-20 text-center">
-        <p>Booking system is currently unavailable due to a configuration issue. Please try again later.</p>
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
-        <div className="container mx-auto px-4 py-12 md:py-20 text-center">
-            <Loader2 className="mx-auto h-12 w-12 animate-spin text-primary" />
-            <p className="mt-4 text-lg">Loading user information...</p>
-        </div>
-    );
-  }
-
-  if (error) {
-     return (
-        <div className="container mx-auto px-4 py-12 md:py-20">
-            <Alert variant="destructive" className="max-w-3xl mx-auto">
-                <Info className="h-4 w-4" />
-                <AlertTitle>Authentication Error</AlertTitle>
-                <AlertDescription>
-                    There was an error loading your user information: {error.message}
-                </AlertDescription>
-            </Alert>
-        </div>
-     );
-  }
-
-  if (!user) {
-    return (
-        <div className="container mx-auto px-4 py-12 md:py-20">
-            <Card className="max-w-xl mx-auto text-center">
-                <CardHeader>
-                    <CardTitle className={cn("text-3xl font-bold font-headline text-primary")}>Please Sign In</CardTitle>
-                    <CardDescription className="mt-2 text-lg">
-                        You need to be logged in to make a booking request.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                        This prototype does not have a user-facing login page yet.
-                    </p>
-                    <Button asChild className="mt-6 bg-accent hover:bg-accent/90 text-accent-foreground font-sans">
-                        <Link href="/">Return to Home Page</Link>
-                    </Button>
-                </CardContent>
-            </Card>
-        </div>
-    );
-  }
 
   return (
     <div className="container mx-auto px-4 py-12 md:py-20">
@@ -149,7 +91,6 @@ export default function BookingPage() {
           </Alert>
 
           <form ref={formRef} action={formAction} className="space-y-8">
-            <input type="hidden" name="guestId" value={user.uid} />
             <div className="flex flex-col space-y-2">
                 <label htmlFor="dates" className="text-sm font-medium">Check-in & Check-out dates</label>
                 <Popover>
@@ -216,13 +157,13 @@ export default function BookingPage() {
 
             <div className="space-y-2">
                 <label htmlFor="fullName" className="text-sm font-medium">Full Name</label>
-                <Input id="fullName" name="fullName" defaultValue={user.displayName || ''} placeholder="John Doe" />
+                <Input id="fullName" name="fullName" placeholder="John Doe" />
                 {state.errors?.fullName && <p className="text-sm font-medium text-destructive">{state.errors.fullName[0]}</p>}
             </div>
             
             <div className="space-y-2">
                 <label htmlFor="email" className="text-sm font-medium">Email Address</label>
-                <Input id="email" name="email" type="email" defaultValue={user.email || ''} placeholder="you@example.com" />
+                <Input id="email" name="email" type="email" placeholder="you@example.com" />
                 {state.errors?.email && <p className="text-sm font-medium text-destructive">{state.errors.email[0]}</p>}
             </div>
 

@@ -7,7 +7,7 @@ const ADMIN_DB_ERROR_MESSAGE = 'Firestore Admin is not initialized. This is like
 export type Booking = {
   id?: string;
   cottageId: string;
-  guestId: string;
+  guestId?: string;
   guestName: string;
   guestEmail: string;
   guestNumber: number;

@@ -45,9 +45,7 @@ export async function getCottages(count?: number): Promise<Cottage[]> {
         return [];
     }
     
-    let q: Query = adminDb.collection('cottages')
-        .where('name', '!=', 'Olivia Cottage')
-        .orderBy('name');
+    let q: Query = adminDb.collection('cottages');
     
     if (count) {
         q = q.limit(count);
