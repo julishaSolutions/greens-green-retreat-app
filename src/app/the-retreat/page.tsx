@@ -107,6 +107,7 @@ export default function TheRetreatPage() {
                                 alt={`${item.name} - Image ${index + 1}`}
                                 fill
                                 className="object-cover"
+                                sizes="(min-width: 768px) 50vw, 100vw"
                               />
                             </div>
                           </CarouselItem>
@@ -119,6 +120,7 @@ export default function TheRetreatPage() {
                                 alt={`${item.name} - Placeholder Image`}
                                 fill
                                 className="object-cover"
+                                sizes="(min-width: 768px) 50vw, 100vw"
                                 data-ai-hint="luxury cottage interior"
                               />
                             </div>

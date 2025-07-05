@@ -103,7 +103,7 @@ export default function CottageDetailPage() {
     );
   }
 
-  const validImageUrls = cottage?.imageUrls?.filter(url => typeof url === 'string' && url.trim() !== '') || [];
+  const validImageUrls = Array.isArray(cottage?.imageUrls) ? cottage.imageUrls.filter(url => typeof url === 'string' && url.trim() !== '') : [];
     
   const linkProps = cottage.whatsappLink
     ? { href: cottage.whatsappLink, target: '_blank', rel: 'noopener noreferrer' }

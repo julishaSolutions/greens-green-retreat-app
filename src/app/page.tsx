@@ -104,6 +104,7 @@ export default function Home() {
                 alt="A tranquil path through the sun-dappled tea fields of Limuru"
                 fill
                 className="object-cover"
+                sizes="(min-width: 768px) 50vw, 100vw"
                 data-ai-hint="tea fields Limuru"
               />
           </div>
@@ -150,6 +151,7 @@ export default function Home() {
                           alt={item.name}
                           fill
                           className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                           data-ai-hint="luxury cottage exterior"
                         />
                       </div>
