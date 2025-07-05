@@ -2,6 +2,8 @@
 import { adminDb } from '@/lib/firebase-admin';
 import { Timestamp, type DocumentData } from 'firebase-admin/firestore';
 
+const ADMIN_DB_ERROR_MESSAGE = 'Firestore Admin is not initialized. This is likely due to missing or incorrect Firebase Admin credentials in your .env.local file. Please check your configuration and restart the server.';
+
 export type Booking = {
   id?: string;
   cottageId: string;
@@ -64,7 +66,7 @@ export async function checkAvailability(cottageId: string, checkInDate: Date, ch
  */
 export async function createBooking(bookingData: Omit<Booking, 'id' | 'status' | 'createdAt'>): Promise<string> {
   if (!adminDb) {
-    throw new Error('Firestore Admin is not initialized.');
+    throw new Error(ADMIN_DB_ERROR_MESSAGE);
   }
   
   const bookingsRef = adminDb.collection('bookings');

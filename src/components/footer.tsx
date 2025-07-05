@@ -57,26 +57,26 @@ export default function Footer() {
                   <a href="mailto:greensgreenretreat@gmail.com" className="hover:text-primary transition-colors">greensgreenretreat@gmail.com</a>
                 </div>
               <div className="flex space-x-4 justify-center sm:justify-start">
-                <Link href="https://instagram.com/greens_green_retreat" target="_blank" rel="noopener noreferrer" className="text-foreground/70 hover:text-primary transition-colors">
+                <a href="https://instagram.com/greens_green_retreat" target="_blank" rel="noopener noreferrer" className="text-foreground/70 hover:text-primary transition-colors">
                   <Instagram className="h-6 w-6" />
                   <span className="sr-only">Instagram</span>
-                </Link>
-                <Link href="#" className="text-foreground/70 hover:text-primary transition-colors">
+                </a>
+                <a href="#" className="text-foreground/70 hover:text-primary transition-colors">
                     <TikTokIcon className="h-6 w-6" />
                     <span className="sr-only">TikTok</span>
-                </Link>
-                <Link href="#" className="text-foreground/70 hover:text-primary transition-colors">
+                </a>
+                <a href="#" className="text-foreground/70 hover:text-primary transition-colors">
                   <Linkedin className="h-6 w-6" />
                   <span className="sr-only">LinkedIn</span>
-                </Link>
-                <Link href="#" className="text-foreground/70 hover:text-primary transition-colors">
+                </a>
+                <a href="#" className="text-foreground/70 hover:text-primary transition-colors">
                   <Twitter className="h-6 w-6" />
                   <span className="sr-only">Twitter</span>
-                </Link>
-                <Link href="#" className="text-foreground/70 hover:text-primary transition-colors">
+                </a>
+                <a href="#" className="text-foreground/70 hover:text-primary transition-colors">
                   <Facebook className="h-6 w-6" />
                   <span className="sr-only">Facebook</span>
-                </Link>
+                </a>
               </div>
             </div>
           </div>

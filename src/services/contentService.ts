@@ -2,6 +2,8 @@
 import { adminDb } from '@/lib/firebase-admin';
 import type { DocumentData, Query } from 'firebase-admin/firestore';
 
+const ADMIN_DB_ERROR_MESSAGE = 'Firestore Admin is not initialized. This is likely due to missing or incorrect Firebase Admin credentials in your .env.local file. Please check your configuration and restart the server.';
+
 export type Cottage = {
   id: string;
   name: string;
@@ -38,8 +40,7 @@ function docToCottage(doc: DocumentData): Cottage {
 
 export async function getCottages(count?: number): Promise<Cottage[]> {
     if (!adminDb) {
-        console.error('Firestore Admin is not initialized.');
-        return [];
+        throw new Error(ADMIN_DB_ERROR_MESSAGE);
     }
     try {
         let q: Query = adminDb.collection('cottages')
@@ -60,8 +61,7 @@ export async function getCottages(count?: number): Promise<Cottage[]> {
 
 export async function getCottageBySlug(slug: string): Promise<Cottage | null> {
     if (!adminDb) {
-        console.error('Firestore Admin is not initialized.');
-        return null;
+        throw new Error(ADMIN_DB_ERROR_MESSAGE);
     }
     try {
         const q = adminDb.collection('cottages').where('slug', '==', slug).limit(1);
@@ -79,8 +79,7 @@ export async function getCottageBySlug(slug: string): Promise<Cottage | null> {
 
 export async function getActivities(): Promise<Activity[]> {
     if (!adminDb) {
-        console.error('Firestore Admin is not initialized.');
-        return [];
+        throw new Error(ADMIN_DB_ERROR_MESSAGE);
     }
     try {
         const snapshot = await adminDb.collection('activities').get();
