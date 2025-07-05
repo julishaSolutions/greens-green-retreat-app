@@ -10,6 +10,7 @@ const bookingFormSchema = z.object({
   checkOutDate: z.coerce.date({ required_error: 'An end date is required.' }),
   accommodation: z.string({ required_error: 'Please select an accommodation.' }).min(1, 'Please select an accommodation.'),
   guests: z.coerce.number().min(1, { message: 'Must have at least 1 guest.' }).max(10, { message: 'Cannot exceed 10 guests.' }),
+  guestId: z.string().min(1, { message: 'User must be authenticated.' }),
 }).refine(data => data.checkOutDate > data.checkInDate, {
   message: "Check-out date must be after check-in date.",
   path: ["dates"],
@@ -26,6 +27,7 @@ export type BookingFormState = {
     checkOutDate?: string[];
     accommodation?: string[];
     guests?: string[];
+    guestId?: string[];
   };
   success: boolean;
 };
@@ -38,6 +40,7 @@ export async function submitBooking(prevState: BookingFormState, formData: FormD
       checkOutDate: formData.get('checkOutDate'),
       accommodation: formData.get('accommodation'),
       guests: formData.get('guests'),
+      guestId: formData.get('guestId'),
   });
 
   if (!validatedFields.success) {
@@ -59,7 +62,7 @@ export async function submitBooking(prevState: BookingFormState, formData: FormD
     };
   }
 
-  const { fullName, email, checkInDate, checkOutDate, accommodation, guests } = validatedFields.data;
+  const { fullName, email, checkInDate, checkOutDate, accommodation, guests, guestId } = validatedFields.data;
   
   try {
     const isAvailable = await checkAvailability(accommodation, checkInDate, checkOutDate);
@@ -76,6 +79,7 @@ export async function submitBooking(prevState: BookingFormState, formData: FormD
     
     await createBooking({
         cottageId: accommodation,
+        guestId: guestId,
         guestName: fullName,
         guestEmail: email,
         guestNumber: guests,

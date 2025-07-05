@@ -5,12 +5,14 @@ import { collection, query, where, getDocs, addDoc, Timestamp, type DocumentData
 export type Booking = {
   id?: string;
   cottageId: string;
+  guestId: string;
   guestName: string;
   guestEmail: string;
   guestNumber: number;
   checkInDate: Date;
   checkOutDate: Date;
   status: 'pending' | 'confirmed' | 'cancelled';
+  createdAt: Timestamp;
 };
 
 /**
@@ -64,7 +66,7 @@ export async function checkAvailability(cottageId: string, checkInDate: Date, ch
  * @param bookingData The data for the new booking.
  * @returns The ID of the newly created booking.
  */
-export async function createBooking(bookingData: Omit<Booking, 'id' | 'status'>): Promise<string> {
+export async function createBooking(bookingData: Omit<Booking, 'id' | 'status' | 'createdAt'>): Promise<string> {
   if (!db) {
     throw new Error('Firestore is not initialized.');
   }
@@ -75,6 +77,7 @@ export async function createBooking(bookingData: Omit<Booking, 'id' | 'status'>)
     checkInDate: Timestamp.fromDate(bookingData.checkInDate),
     checkOutDate: Timestamp.fromDate(bookingData.checkOutDate),
     status: 'pending' as const,
+    createdAt: Timestamp.now(),
   };
 
   const docRef = await addDoc(bookingsRef, newBooking);
