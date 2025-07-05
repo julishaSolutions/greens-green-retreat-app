@@ -54,7 +54,11 @@ export default function CottageDetailPage() {
 
         if (!querySnapshot.empty) {
           const doc = querySnapshot.docs[0];
-          setCottage({ id: doc.id, ...doc.data() } as Cottage);
+          const cottageData = { id: doc.id, ...doc.data() } as Cottage;
+          setCottage(cottageData);
+          console.log('Fetched cottage data:', cottageData);
+        } else {
+            console.warn(`No cottage found with slug: '${slug}'`);
         }
       } catch (error) {
         console.error("Error fetching cottage:", error);
