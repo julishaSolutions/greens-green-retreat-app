@@ -50,10 +50,15 @@ export default function Home() {
     }
     const q = query(collection(db, 'cottages'), limit(3));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const suitesData: Suite[] = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      } as Suite));
+      const suitesData: Suite[] = snapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+            id: doc.id,
+            ...data,
+            // Handle both 'imageUrls' and 'imageUrls '
+            imageUrls: data.imageUrls || data['imageUrls '] || [],
+        } as Suite;
+      });
       setSuites(suitesData);
       setLoading(false);
     });
@@ -102,12 +107,12 @@ export default function Home() {
           </div>
           <div className="relative h-96 w-full rounded-lg overflow-hidden shadow-xl">
              <Image
-                src="https://placehold.co/600x400.png"
-                alt="A tranquil path through the sun-dappled tea fields of Limuru"
+                src="https://res.cloudinary.com/dx6zxdlts/image/upload/v1751714095/Beautiful_afternoon_by_the_dam_nothing_beats_it_..._outdoorlife_outdoorliving_outdoor_hgsrny.jpg"
+                alt="A serene view of the dam at Green's Green Retreat"
                 fill
                 className="object-cover"
                 sizes="(min-width: 768px) 50vw, 100vw"
-                data-ai-hint="tea fields Limuru"
+                data-ai-hint="dam retreat"
               />
           </div>
         </div>
@@ -140,9 +145,8 @@ export default function Home() {
               ))
             ) : (
               suites.map((item) => {
-                const imageUrls = item.imageUrls || (item as any)?.['imageUrls '];
-                const firstValidImage = Array.isArray(imageUrls)
-                  ? imageUrls.find(url => typeof url === 'string' && url.trim() !== '')
+                const firstValidImage = Array.isArray(item.imageUrls)
+                  ? item.imageUrls.find(url => typeof url === 'string' && url.trim() !== '')
                   : undefined;
 
                 return (
