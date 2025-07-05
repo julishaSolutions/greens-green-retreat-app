@@ -17,6 +17,7 @@ type Suite = {
   name: string;
   description: string;
   imageUrls: string[];
+  'imageUrls '?: string[]; // Handle potential trailing space
   slug?: string;
 };
 
@@ -63,15 +64,15 @@ export default function Home() {
   return (
     <div className="flex flex-col">
       <section className="relative h-[90vh] min-h-[600px] w-full flex items-center justify-center text-center text-white overflow-hidden">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover -z-10"
-        >
-          <source src="https://res.cloudinary.com/dx6zxdlts/video/upload/v1749282824/I_promise_it_s_an_amazing_get_away_1_hm7emn.mp4" type="video/mp4" />
-        </video>
+        <Image
+          src="https://res.cloudinary.com/dx6zxdlts/image/upload/v1751711841/GGR_through_the_lens_of_a_client._happyclient_%EF%B8%8F_greens_green_retreat_8_gz71bu.jpg"
+          alt="A scenic view of Green's Green Retreat"
+          fill
+          priority
+          className="object-cover -z-10"
+          sizes="100vw"
+          data-ai-hint="retreat scenic view"
+        />
         <div className="absolute inset-0 bg-black/50 -z-10" />
         <div className="container mx-auto px-4">
           <h1 className={cn('text-5xl md:text-7xl lg:text-8xl font-bold drop-shadow-lg font-headline')}>
