@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-const LOGO_URL = 'https://storage.googleapis.com/proud-booster-357316/ggr-logo.png';
+const LOGO_URL = 'https://res.cloudinary.com/dx6zxdlts/image/upload/v1751699621/Asset_1_qan94h.png';
 
 export function Logo({ size = 40 }: { size?: number }) {
   return (
