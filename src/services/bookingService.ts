@@ -42,7 +42,7 @@ export async function checkAvailability(cottageId: string, checkInDate: Date, ch
   const overlappingBookings = querySnapshot.docs.filter(doc => {
       const booking = doc.data() as DocumentData;
       const bookingCheckoutDate = (booking.checkOutDate as Timestamp).toDate();
-      return bookingCheckoutate > checkInDate;
+      return bookingCheckoutDate > checkInDate;
   });
 
   return overlappingBookings.length === 0;
@@ -68,4 +68,32 @@ export async function createBooking(bookingData: Omit<Booking, 'id' | 'status'>)
 
   const docRef = await addDoc(bookingsRef, newBooking);
   return docRef.id;
+}
+
+/**
+ * Retrieves all confirmed bookings for a specific cottage.
+ * @param cottageId The ID of the cottage.
+ * @returns A promise that resolves to an array of booking date ranges.
+ */
+export async function getConfirmedBookings(cottageId: string): Promise<{ from: Date; to: Date }[]> {
+  if (!db) {
+    throw new Error('Firestore is not initialized.');
+  }
+
+  const bookingsRef = collection(db, 'bookings');
+  const q = query(
+    bookingsRef,
+    where('cottageId', '==', cottageId),
+    where('status', '==', 'confirmed')
+  );
+
+  const querySnapshot = await getDocs(q);
+
+  return querySnapshot.docs.map(doc => {
+    const data = doc.data();
+    return {
+      from: (data.checkInDate as Timestamp).toDate(),
+      to: (data.checkOutDate as Timestamp).toDate(),
+    };
+  });
 }
