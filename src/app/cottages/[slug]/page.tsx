@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -55,8 +56,8 @@ export default function CottageDetailPage() {
         if (!querySnapshot.empty) {
           const doc = querySnapshot.docs[0];
           const cottageData = { id: doc.id, ...doc.data() } as Cottage;
+          console.error('DEBUG: Fetched cottage data for slug ' + slug + ':', JSON.stringify(cottageData, null, 2));
           setCottage(cottageData);
-          console.log('Fetched cottage data:', cottageData);
         } else {
             console.warn(`No cottage found with slug: '${slug}'`);
         }
@@ -122,6 +123,8 @@ export default function CottageDetailPage() {
                     alt={`${cottage.name} - Image ${index + 1}`}
                     fill
                     className="object-cover"
+                    sizes="(max-width: 1280px) 90vw, 1200px"
+                    priority={index === 0}
                   />
                 </div>
               </CarouselItem>
@@ -134,6 +137,8 @@ export default function CottageDetailPage() {
                     alt={`${cottage.name} - Placeholder Image`}
                     fill
                     className="object-cover"
+                    sizes="(max-width: 1280px) 90vw, 1200px"
+                    priority
                     data-ai-hint="luxury cottage interior"
                   />
               </div>
