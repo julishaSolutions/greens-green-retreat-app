@@ -87,7 +87,7 @@ export default function BookingPage() {
                 <li><strong>Phone:</strong> +254 714 281 7911</li>
                 <li><strong>Instagram:</strong> <a href="https://instagram.com/greens_green_retreat" target="_blank" rel="noopener noreferrer" className="underline">@greens_green_retreat</a></li>
               </ul>
-              Rates start at Ksh 18,500 for two people per night.
+              Rates start at Ksh 14,000 for two people per night.
             </AlertDescription>
           </Alert>
 
@@ -149,7 +149,7 @@ export default function BookingPage() {
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select a cottage" />
-                        </SelectTrigger>
+                        </Trigger>
                       </FormControl>
                       <SelectContent>
                         {accommodations.map((item) => (

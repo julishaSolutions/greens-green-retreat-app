@@ -10,7 +10,7 @@ import Link from 'next/link';
 const accommodations = [
   {
     name: 'Alma 1 Cottage',
-    price: 18500,
+    price: 14000,
     guests: 2,
     images: [
       { src: 'https://placehold.co/800x600.png', hint: 'cozy cottage valley' },
@@ -22,7 +22,7 @@ const accommodations = [
   },
   {
     name: 'Double Alma Cottage',
-    price: 32000,
+    price: 40000,
     guests: 8,
     images: [
       { src: 'https://placehold.co/800x600.png', hint: 'modern group cabin' },
@@ -34,7 +34,7 @@ const accommodations = [
   },
   {
     name: 'Alma 2 (The Treehouse)',
-    price: 35000,
+    price: 40000,
     guests: 8,
     images: [
       { src: 'https://placehold.co/800x600.png', hint: 'treetop treehouse forest' },
