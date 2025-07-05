@@ -21,18 +21,6 @@ const accommodations = [
     amenities: ['1 Bedroom', 'Wi-Fi', 'Fully Equipped Kitchen', 'Spacious Deck', '24-hour Security'],
   },
   {
-    name: 'Olivia Cottage',
-    price: 32000,
-    guests: 8,
-    images: [
-      { src: 'https://placehold.co/800x600.png', hint: 'large family cottage' },
-      { src: 'https://placehold.co/800x600.png', hint: 'spacious living room' },
-      { src: 'https://placehold.co/800x600.png', hint: 'cottage exterior garden' },
-    ],
-    description: 'Ideal for large families or groups, Olivia Cottage accommodates up to 8 guests, offering ample space and comfort for a memorable group getaway.',
-    amenities: ['4 Bedrooms', 'Wi-Fi', 'Fully Equipped Kitchen', 'Spacious Deck', '24-hour Security'],
-  },
-  {
     name: 'Double Alma Cottage',
     price: 32000,
     guests: 8,

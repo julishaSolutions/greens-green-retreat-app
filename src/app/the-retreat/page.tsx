@@ -2,7 +2,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { collection, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,6 +20,7 @@ type Cottage = {
   price: number;
   guests: number;
   imageUrls: string[];
+  'imageUrls '?: string[]; // Handle potential trailing space
   description: string;
   whatsappLink?: string;
   slug?: string;
@@ -43,7 +44,8 @@ export default function TheRetreatPage() {
         setLoading(false);
         return;
     }
-    const unsubscribe = onSnapshot(collection(db, 'cottages'), (snapshot) => {
+    const q = query(collection(db, 'cottages'), where('name', '!=', 'Olivia Cottage'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
       const cottagesData: Cottage[] = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
@@ -60,7 +62,7 @@ export default function TheRetreatPage() {
       <div className="text-center">
         <h1 className={cn('text-4xl md:text-5xl font-bold font-headline text-primary')}>The Suites & Cottages</h1>
         <p className="mt-4 text-lg max-w-3xl mx-auto text-foreground/80 font-body">
-          Find your private haven in nature. The love of nature and the outdoors inspired the design of our four distinct cottages, each uniquely placed to appreciate the surrounding environment. Please note that Olivia Cottage is currently unavailable.
+          Find your private haven in nature. The love of nature and the outdoors inspired the design of our distinct cottages, each uniquely placed to appreciate the surrounding environment.
         </p>
       </div>
       <Separator className="my-12" />
@@ -91,7 +93,7 @@ export default function TheRetreatPage() {
               : { href: '/inquire' };
             const linkText = item.whatsappLink ? 'Inquire on WhatsApp' : 'Inquire Now';
             
-            const imageUrls = item.imageUrls || (item as any)?.['imageUrls '];
+            const imageUrls = item.imageUrls || item['imageUrls '];
             const validImageUrls = Array.isArray(imageUrls)
               ? imageUrls.filter(url => typeof url === 'string' && url.trim() !== '')
               : [];

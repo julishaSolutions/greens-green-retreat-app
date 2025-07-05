@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { ArrowRight, Trees, Leaf, Sparkles } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { collection, onSnapshot, query, limit } from 'firebase/firestore';
+import { collection, onSnapshot, query, limit, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -48,7 +48,7 @@ export default function Home() {
       setLoading(false);
       return;
     }
-    const q = query(collection(db, 'cottages'), limit(3));
+    const q = query(collection(db, 'cottages'), where('name', '!=', 'Olivia Cottage'), limit(3));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const suitesData: Suite[] = snapshot.docs.map(doc => {
         const data = doc.data();
@@ -145,8 +145,9 @@ export default function Home() {
               ))
             ) : (
               suites.map((item) => {
-                const firstValidImage = Array.isArray(item.imageUrls)
-                  ? item.imageUrls.find(url => typeof url === 'string' && url.trim() !== '')
+                const imageUrls = item.imageUrls || item['imageUrls '];
+                const firstValidImage = Array.isArray(imageUrls)
+                  ? imageUrls.find(url => typeof url === 'string' && url.trim() !== '')
                   : undefined;
 
                 return (

@@ -45,7 +45,6 @@ type BookingFormValues = z.infer<typeof bookingFormSchema>;
 
 const accommodations = [
   'Alma 1 Cottage',
-  'Olivia Cottage',
   'Double Alma Cottage',
   'Alma 2 (The Treehouse)',
 ];
