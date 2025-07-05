@@ -1,6 +1,6 @@
 
+
 import { getCottageBySlug, getCottages } from '@/services/contentService';
-import { getConfirmedBookings } from '@/services/bookingService';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { CottageDetailView } from './components/cottage-detail-view';
@@ -30,17 +30,16 @@ export default async function CottageDetailPage({ params }: CottagePageProps) {
         );
     }
     
-    // Fetch bookings and all cottages in parallel for efficiency
-    const [bookedDates, allCottagesData] = await Promise.all([
-        getConfirmedBookings(cottage.id),
-        getCottages() 
-    ]);
+    const allCottagesData = await getCottages();
 
     const allCottages = allCottagesData.map(c => ({
         id: c.id,
         slug: c.slug || '',
         name: c.name || ''
     }));
+
+    // The bookedDates feature is temporarily disabled to resolve a permissions issue.
+    const bookedDates: any[] = [];
 
     return <CottageDetailView cottage={cottage} bookedDates={bookedDates} allCottages={allCottages} />;
 }

@@ -8,8 +8,6 @@ import { Wifi, Users, Trees, ShieldCheck, ChevronLeft, ChevronRight } from 'luci
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
-import { Calendar } from '@/components/ui/calendar';
-import type { DateRange } from 'react-day-picker';
 import type { Cottage } from '@/services/contentService';
 
 type CottageNavItem = {
@@ -20,7 +18,7 @@ type CottageNavItem = {
 
 type CottageDetailViewProps = {
     cottage: Cottage;
-    bookedDates: DateRange[];
+    bookedDates: any[]; // Temporarily adjusted for stability
     allCottages: CottageNavItem[];
 };
 
@@ -33,7 +31,7 @@ const amenityIcons: { [key: string]: React.ReactNode } = {
 
 const staticAmenities = ['Wi-Fi', 'Spacious Deck', '24-hour Security'];
 
-export function CottageDetailView({ cottage, bookedDates, allCottages }: CottageDetailViewProps) {
+export function CottageDetailView({ cottage, allCottages }: CottageDetailViewProps) {
   const cottageIndex = allCottages.findIndex(c => c.slug === cottage.slug);
   let prevCottage: CottageNavItem | null = null;
   let nextCottage: CottageNavItem | null = null;
@@ -125,16 +123,6 @@ export function CottageDetailView({ cottage, bookedDates, allCottages }: Cottage
                              <div>
                                 <p className="text-2xl font-bold text-primary font-headline">Kes {cottage.price?.toLocaleString() || 'N/A'}</p>
                                 <p className="text-muted-foreground font-sans">per night</p>
-                            </div>
-                            <Separator />
-                             <h3 className="font-bold font-headline text-lg text-primary">Availability</h3>
-                            <div className="flex justify-center">
-                                <Calendar
-                                    mode="multiple"
-                                    disabled={[{ before: new Date(new Date().setDate(new Date().getDate() - 1)) }, ...bookedDates]}
-                                    className="rounded-md border p-0"
-                                    numberOfMonths={1}
-                                />
                             </div>
                             <Separator />
                              <h3 className="font-bold font-headline text-lg text-primary">Amenities</h3>
