@@ -2,6 +2,7 @@
 import { cn } from '@/lib/utils';
 import { Twitter, Instagram, Facebook, Linkedin, Phone, Mail } from 'lucide-react';
 import Link from 'next/link';
+import { Logo } from './logo';
 
 const footerLinks = [
     { href: '/', label: 'Home' },
@@ -26,9 +27,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="flex flex-col items-start">
             <Link href="/" className="mb-4">
-              <div className="flex h-12 items-center justify-center rounded-md border bg-card px-6">
-                <span className={cn('font-bold text-2xl font-headline text-primary')}>Green&apos;s Green Retreat</span>
-              </div>
+              <Logo size={80} />
             </Link>
             <p className="text-foreground/70 font-sans">
               Your family-owned sanctuary in the highlands of Tigoni, Limuru.
