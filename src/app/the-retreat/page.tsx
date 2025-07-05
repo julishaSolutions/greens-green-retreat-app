@@ -1,9 +1,4 @@
 
-'use client';
-
-import { useEffect, useState } from 'react';
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
@@ -13,18 +8,7 @@ import { Wifi, Users, Trees, ShieldCheck } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
-
-type Cottage = {
-  id: string;
-  name: string;
-  price: number;
-  guests: number;
-  imageUrls: string[];
-  'imageUrls '?: string[]; // Handle potential trailing space
-  description: string;
-  whatsappLink?: string;
-  slug?: string;
-};
+import { getCottages } from '@/services/contentService';
 
 const amenityIcons: { [key: string]: React.ReactNode } = {
     'Wi-Fi': <Wifi className="h-4 w-4" />,
@@ -35,27 +19,8 @@ const amenityIcons: { [key: string]: React.ReactNode } = {
 
 const staticAmenities = ['Wi-Fi', 'Spacious Deck', '24-hour Security'];
 
-export default function TheRetreatPage() {
-  const [cottages, setCottages] = useState<Cottage[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!db) {
-        setLoading(false);
-        return;
-    }
-    const q = query(collection(db, 'cottages'), where('name', '!=', 'Olivia Cottage'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const cottagesData: Cottage[] = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      } as Cottage));
-      setCottages(cottagesData);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
+export default async function TheRetreatPage() {
+  const cottages = await getCottages();
 
   return (
     <div className="container mx-auto px-4 py-12 md:py-20 scroll-mt-20">
@@ -67,7 +32,7 @@ export default function TheRetreatPage() {
       </div>
       <Separator className="my-12" />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {loading ? (
+        {cottages.length === 0 ? (
             Array.from({ length: 3 }).map((_, index) => (
                 <Card key={index} className="overflow-hidden flex flex-col shadow-lg">
                     <CardHeader className="p-0">
@@ -88,9 +53,8 @@ export default function TheRetreatPage() {
             ))
         ) : (
           cottages.map((item) => {
-            const imageUrls = item.imageUrls || item['imageUrls '];
-            const validImageUrls = Array.isArray(imageUrls)
-              ? imageUrls.filter(url => typeof url === 'string' && url.trim() !== '')
+            const validImageUrls = Array.isArray(item.imageUrls)
+              ? item.imageUrls.filter(url => typeof url === 'string' && url.trim() !== '')
               : [];
 
             return (

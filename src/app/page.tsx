@@ -1,25 +1,13 @@
 
-'use client';
-
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { ArrowRight, Trees, Leaf, Sparkles } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { collection, onSnapshot, query, limit, where } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getCottages, type Cottage as Suite } from '@/services/contentService';
 
-type Suite = {
-  id: string;
-  name: string;
-  description: string;
-  imageUrls: string[];
-  'imageUrls '?: string[]; // Handle potential trailing space
-  slug?: string;
-};
 
 const experiences = [
   {
@@ -39,32 +27,8 @@ const experiences = [
   },
 ];
 
-export default function Home() {
-  const [suites, setSuites] = useState<Suite[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!db) {
-      setLoading(false);
-      return;
-    }
-    const q = query(collection(db, 'cottages'), where('name', '!=', 'Olivia Cottage'), limit(3));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const suitesData: Suite[] = snapshot.docs.map(doc => {
-        const data = doc.data();
-        return {
-            id: doc.id,
-            ...data,
-            // Handle both 'imageUrls' and 'imageUrls '
-            imageUrls: data.imageUrls || data['imageUrls '] || [],
-        } as Suite;
-      });
-      setSuites(suitesData);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
+export default async function Home() {
+  const suites = await getCottages(3);
 
   return (
     <div className="flex flex-col">
@@ -127,7 +91,7 @@ export default function Home() {
             </p>
           </div>
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {loading ? (
+            {suites.length === 0 ? (
               Array.from({ length: 3 }).map((_, index) => (
                 <Card key={index} className="overflow-hidden flex flex-col group">
                   <CardHeader className="p-0">
@@ -145,9 +109,8 @@ export default function Home() {
               ))
             ) : (
               suites.map((item) => {
-                const imageUrls = item.imageUrls || item['imageUrls '];
-                const firstValidImage = Array.isArray(imageUrls)
-                  ? imageUrls.find(url => typeof url === 'string' && url.trim() !== '')
+                const firstValidImage = Array.isArray(item.imageUrls)
+                  ? item.imageUrls.find(url => typeof url === 'string' && url.trim() !== '')
                   : undefined;
 
                 return (

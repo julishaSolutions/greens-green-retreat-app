@@ -1,43 +1,13 @@
 
-'use client';
-
-import { useEffect, useState } from 'react';
-import { collection, onSnapshot } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import { getActivities } from '@/services/contentService';
 
-type Activity = {
-  id: string;
-  name: string;
-  description: string;
-  imageUrl: string | string[];
-  imageHint?: string;
-};
-
-export default function ExperiencesPage() {
-  const [activities, setActivities] = useState<Activity[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!db) {
-        setLoading(false);
-        return;
-    }
-    const unsubscribe = onSnapshot(collection(db, 'activities'), (snapshot) => {
-      const activitiesData: Activity[] = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      } as Activity));
-      setActivities(activitiesData);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
+export default async function ExperiencesPage() {
+  const activities = await getActivities();
 
   return (
     <div className="container mx-auto px-4 py-12 md:py-20">
@@ -49,7 +19,7 @@ export default function ExperiencesPage() {
       </div>
       <Separator className="my-12" />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8">
-        {loading ? (
+        {activities.length === 0 ? (
              Array.from({ length: 6 }).map((_, index) => (
                 <Card key={index} className="overflow-hidden flex flex-col shadow-lg">
                     <CardHeader className="p-0">
@@ -64,9 +34,6 @@ export default function ExperiencesPage() {
              ))
         ) : (
             activities.map((activity) => {
-                // This console log will now reliably show the data for each item.
-                console.log(`DEBUG: Activity data for "${activity.name}":`, JSON.stringify(activity, null, 2));
-
                 const imageUrlSource = (activity as any).imageUrl || (activity as any)['imageUrl '];
                 let displayUrl = 'https://placehold.co/800x600.png';
 
