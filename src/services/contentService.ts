@@ -1,3 +1,4 @@
+
 'use server';
 import { adminDb } from '@/lib/firebase-admin';
 import type { DocumentData, Query } from 'firebase-admin/firestore';
@@ -40,7 +41,8 @@ function docToCottage(doc: DocumentData): Cottage {
 
 export async function getCottages(count?: number): Promise<Cottage[]> {
     if (!adminDb) {
-        throw new Error(ADMIN_DB_ERROR_MESSAGE);
+        console.warn(ADMIN_DB_ERROR_MESSAGE);
+        return [];
     }
     
     let q: Query = adminDb.collection('cottages')
@@ -57,7 +59,8 @@ export async function getCottages(count?: number): Promise<Cottage[]> {
 
 export async function getCottageBySlug(slug: string): Promise<Cottage | null> {
     if (!adminDb) {
-        throw new Error(ADMIN_DB_ERROR_MESSAGE);
+        console.warn(ADMIN_DB_ERROR_MESSAGE);
+        return null;
     }
 
     const q = adminDb.collection('cottages').where('slug', '==', slug).limit(1);
@@ -71,7 +74,8 @@ export async function getCottageBySlug(slug: string): Promise<Cottage | null> {
 
 export async function getActivities(): Promise<Activity[]> {
     if (!adminDb) {
-        throw new Error(ADMIN_DB_ERROR_MESSAGE);
+        console.warn(ADMIN_DB_ERROR_MESSAGE);
+        return [];
     }
     
     const snapshot = await adminDb.collection('activities').get();
