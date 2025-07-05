@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import { collection, query, where, getDocs, limit } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
@@ -33,19 +34,21 @@ const amenityIcons: { [key: string]: React.ReactNode } = {
 
 const staticAmenities = ['Wi-Fi', 'Spacious Deck', '24-hour Security'];
 
-export default function CottageDetailPage({ params }: { params: { slug: string } }) {
+export default function CottageDetailPage() {
+  const params = useParams<{ slug: string }>();
   const [cottage, setCottage] = useState<Cottage | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!params.slug || !db) {
+    const slug = params.slug;
+    if (!slug || !db) {
       setLoading(false);
       return;
     }
 
     const fetchCottage = async () => {
       setLoading(true);
-      const q = query(collection(db, 'cottages'), where('slug', '==', params.slug), limit(1));
+      const q = query(collection(db, 'cottages'), where('slug', '==', slug), limit(1));
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
