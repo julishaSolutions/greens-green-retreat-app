@@ -42,53 +42,41 @@ export async function getCottages(count?: number): Promise<Cottage[]> {
     if (!adminDb) {
         throw new Error(ADMIN_DB_ERROR_MESSAGE);
     }
-    try {
-        let q: Query = adminDb.collection('cottages')
-            .where('name', '!=', 'Olivia Cottage')
-            .orderBy('name');
-        
-        if (count) {
-            q = q.limit(count);
-        }
-
-        const snapshot = await q.get();
-        return snapshot.docs.map(docToCottage);
-    } catch (error) {
-        console.error("Error fetching cottages: ", error);
-        return [];
+    
+    let q: Query = adminDb.collection('cottages')
+        .where('name', '!=', 'Olivia Cottage')
+        .orderBy('name');
+    
+    if (count) {
+        q = q.limit(count);
     }
+
+    const snapshot = await q.get();
+    return snapshot.docs.map(docToCottage);
 }
 
 export async function getCottageBySlug(slug: string): Promise<Cottage | null> {
     if (!adminDb) {
         throw new Error(ADMIN_DB_ERROR_MESSAGE);
     }
-    try {
-        const q = adminDb.collection('cottages').where('slug', '==', slug).limit(1);
-        const snapshot = await q.get();
-        if (snapshot.empty) {
-            console.warn(`No cottage found with slug: '${slug}'`);
-            return null;
-        }
-        return docToCottage(snapshot.docs[0]);
-    } catch (error) {
-        console.error(`Error fetching cottage with slug ${slug}:`, error);
+
+    const q = adminDb.collection('cottages').where('slug', '==', slug).limit(1);
+    const snapshot = await q.get();
+
+    if (snapshot.empty) {
         return null;
     }
+    return docToCottage(snapshot.docs[0]);
 }
 
 export async function getActivities(): Promise<Activity[]> {
     if (!adminDb) {
         throw new Error(ADMIN_DB_ERROR_MESSAGE);
     }
-    try {
-        const snapshot = await adminDb.collection('activities').get();
-        return snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-        } as Activity));
-    } catch (error) {
-        console.error("Error fetching activities: ", error);
-        return [];
-    }
+    
+    const snapshot = await adminDb.collection('activities').get();
+    return snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    } as Activity));
 }

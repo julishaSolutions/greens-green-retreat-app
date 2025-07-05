@@ -26,8 +26,7 @@ export type Booking = {
  */
 export async function checkAvailability(cottageId: string, checkInDate: Date, checkOutDate: Date): Promise<boolean> {
   if (!adminDb) {
-    console.warn('Firestore Admin is not initialized. Availability check is skipped.');
-    return true;
+    throw new Error(ADMIN_DB_ERROR_MESSAGE);
   }
 
   const bookingsRef = adminDb.collection('bookings');
@@ -52,10 +51,10 @@ export async function checkAvailability(cottageId: string, checkInDate: Date, ch
     return overlappingBookings.length === 0;
   } catch (error) {
     console.error("Error checking availability:", error);
-    // In case of a permissions error on the server, we can allow the booking to go through as 'pending'.
-    // This prevents the user from being blocked. The alternative is to return false and block all bookings.
-    console.warn("Could not verify availability due to an error. Allowing tentative booking.");
-    return true;
+    // In case of an error (e.g., permissions), we should assume unavailability to be safe.
+    // We will return false to prevent double bookings.
+    console.warn("Could not verify availability due to a service error. Blocking booking as a precaution.");
+    return false;
   }
 }
 
