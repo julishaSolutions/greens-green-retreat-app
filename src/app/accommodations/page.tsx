@@ -90,6 +90,7 @@ export default function AccommodationsPage() {
                           alt={`${item.name} - Image ${index + 1}`}
                           fill
                           className="object-cover"
+                          sizes="(min-width: 768px) 50vw, 100vw"
                           data-ai-hint={image.hint}
                         />
                       </div>
