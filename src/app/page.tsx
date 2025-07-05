@@ -132,7 +132,7 @@ export default async function Home() {
                       <CardDescription className="mt-2 text-base font-body">{item.description}</CardDescription>
                     </CardContent>
                     <CardFooter>
-                      <Button asChild className="w-full font-sans" variant="secondary">
+                      <Button asChild className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-sans">
                         <Link href={item.slug ? `/cottages/${item.slug}` : `/the-retreat#${item.id}`}>Learn More</Link>
                       </Button>
                     </CardFooter>
