@@ -1,3 +1,4 @@
+
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
 import Image from 'next/image';
@@ -30,7 +31,7 @@ export default function OurStoryPage() {
             <div className="md:col-span-2">
               <div className="relative h-96 w-full rounded-lg overflow-hidden shadow-xl">
                 <Image
-                  src="https://placehold.co/600x800.png"
+                  src="https://res.cloudinary.com/dx6zxdlts/image/upload/v1751718992/ggr-OUR-STORY-2_vji3hx.jpg"
                   alt="A vintage photograph of Coomete Farm"
                   fill
                   className="object-cover"
