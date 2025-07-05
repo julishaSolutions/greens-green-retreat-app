@@ -38,6 +38,10 @@ export default function TheRetreatPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!db) {
+        setLoading(false);
+        return;
+    }
     const unsubscribe = onSnapshot(collection(db, 'cottages'), (snapshot) => {
       const cottagesData: Cottage[] = snapshot.docs.map(doc => ({
         id: doc.id,

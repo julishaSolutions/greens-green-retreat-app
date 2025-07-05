@@ -38,7 +38,10 @@ export default function CottageDetailPage({ params }: { params: { slug: string }
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!params.slug) return;
+    if (!params.slug || !db) {
+      setLoading(false);
+      return;
+    }
 
     const fetchCottage = async () => {
       setLoading(true);

@@ -42,6 +42,10 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!db) {
+      setLoading(false);
+      return;
+    }
     const q = query(collection(db, 'cottages'), limit(3));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const suitesData: Suite[] = snapshot.docs.map(doc => ({

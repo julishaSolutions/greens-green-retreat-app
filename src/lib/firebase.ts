@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp, getApps, getApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { initializeApp, getApps, getApp, type FirebaseApp } from "firebase/app";
+import { getFirestore, type Firestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -13,7 +13,26 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-const db = getFirestore(app);
+let app: FirebaseApp | null = null;
+let db: Firestore | null = null;
+
+const isFirebaseConfigValid =
+  firebaseConfig.apiKey &&
+  firebaseConfig.authDomain &&
+  firebaseConfig.projectId &&
+  firebaseConfig.storageBucket &&
+  firebaseConfig.messagingSenderId &&
+  firebaseConfig.appId;
+  
+if (isFirebaseConfigValid) {
+    try {
+        app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+        db = getFirestore(app);
+    } catch (e) {
+        console.error("Failed to initialize Firebase", e)
+    }
+} else {
+    console.warn("Firebase configuration is incomplete. Firebase features will be disabled. Please check your .env file.");
+}
 
 export { app, db };

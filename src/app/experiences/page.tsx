@@ -22,6 +22,10 @@ export default function ExperiencesPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!db) {
+        setLoading(false);
+        return;
+    }
     const unsubscribe = onSnapshot(collection(db, 'activities'), (snapshot) => {
       const activitiesData: Activity[] = snapshot.docs.map(doc => ({
         id: doc.id,
