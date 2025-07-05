@@ -14,7 +14,7 @@ type Activity = {
   id: string;
   name: string;
   description: string;
-  imageUrl: string;
+  imageUrl: string | string[];
   imageHint?: string;
 };
 
@@ -64,10 +64,20 @@ export default function ExperiencesPage() {
              ))
         ) : (
             activities.map((activity) => {
+                // This console log will now reliably show the data for each item.
                 console.log(`DEBUG: Activity data for "${activity.name}":`, JSON.stringify(activity, null, 2));
 
-                const imageUrl = (activity as any).imageUrl || (activity as any)['imageUrl '];
-                const displayUrl = (typeof imageUrl === 'string' && imageUrl.trim()) ? imageUrl : 'https://placehold.co/800x600.png';
+                const imageUrlSource = (activity as any).imageUrl || (activity as any)['imageUrl '];
+                let displayUrl = 'https://placehold.co/800x600.png';
+
+                if (typeof imageUrlSource === 'string' && imageUrlSource.trim()) {
+                    displayUrl = imageUrlSource;
+                } else if (Array.isArray(imageUrlSource)) {
+                    const firstValidUrl = imageUrlSource.find(url => typeof url === 'string' && url.trim() !== '');
+                    if (firstValidUrl) {
+                        displayUrl = firstValidUrl;
+                    }
+                }
                 
                 return (
                     <Card key={activity.id} className="overflow-hidden flex flex-col shadow-lg hover:shadow-xl transition-shadow duration-300">
