@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -62,25 +63,33 @@ export default function ExperiencesPage() {
                 </Card>
              ))
         ) : (
-            activities.map((activity) => (
-                <Card key={activity.id} className="overflow-hidden flex flex-col shadow-lg hover:shadow-xl transition-shadow duration-300">
-                    <CardHeader className="p-0">
-                        <div className="relative h-64 w-full">
-                        <Image
-                            src={(typeof activity.imageUrl === 'string' && activity.imageUrl.trim()) ? activity.imageUrl : 'https://placehold.co/800x600.png'}
-                            alt={activity.name}
-                            fill
-                            className="object-cover"
-                            data-ai-hint={activity.imageHint || 'nature activity'}
-                        />
-                        </div>
-                    </CardHeader>
-                    <CardContent className="p-6 flex-grow flex flex-col">
-                        <CardTitle className={cn("font-headline text-2xl")}>{activity.name}</CardTitle>
-                        <p className="text-foreground/70 mt-2 flex-grow font-body">{activity.description}</p>
-                    </CardContent>
-                </Card>
-            ))
+            activities.map((activity) => {
+                console.log(`DEBUG: Activity data for "${activity.name}":`, JSON.stringify(activity, null, 2));
+
+                const imageUrl = (activity as any).imageUrl || (activity as any)['imageUrl '];
+                const displayUrl = (typeof imageUrl === 'string' && imageUrl.trim()) ? imageUrl : 'https://placehold.co/800x600.png';
+                
+                return (
+                    <Card key={activity.id} className="overflow-hidden flex flex-col shadow-lg hover:shadow-xl transition-shadow duration-300">
+                        <CardHeader className="p-0">
+                            <div className="relative h-64 w-full">
+                            <Image
+                                src={displayUrl}
+                                alt={activity.name}
+                                fill
+                                className="object-cover"
+                                sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
+                                data-ai-hint={activity.imageHint || 'nature activity'}
+                            />
+                            </div>
+                        </CardHeader>
+                        <CardContent className="p-6 flex-grow flex flex-col">
+                            <CardTitle className={cn("font-headline text-2xl")}>{activity.name}</CardTitle>
+                            <p className="text-foreground/70 mt-2 flex-grow font-body">{activity.description}</p>
+                        </CardContent>
+                    </Card>
+                );
+            })
         )}
       </div>
     </div>
