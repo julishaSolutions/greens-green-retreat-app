@@ -1,118 +1,132 @@
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
-import { Wifi, Users, Trees, Utensils, ShieldCheck } from 'lucide-react';
+import { Wifi, Users, Trees, ShieldCheck } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-
-const accommodations = [
-  {
-    name: 'Alma 1 Cottage',
-    price: 14000,
-    guests: 2,
-    images: [
-      { src: 'https://placehold.co/800x600.png', hint: 'cozy cottage valley' },
-      { src: 'https://placehold.co/800x600.png', hint: 'romantic cottage interior' },
-      { src: 'https://placehold.co/800x600.png', hint: 'valley view deck' },
-    ],
-    description: 'A cozy hideaway for 2, this cottage is perched in the valley with stunning views, making it perfect for couples or solo travelers seeking a peaceful escape.',
-    amenities: ['1 Bedroom', 'Wi-Fi', 'Fully Equipped Kitchen', 'Spacious Deck', '24-hour Security'],
-  },
-  {
-    name: 'Double Alma Cottage',
-    price: 40000,
-    guests: 8,
-    images: [
-      { src: 'https://placehold.co/800x600.png', hint: 'modern group cabin' },
-      { src: 'https://placehold.co/800x600.png', hint: 'cottage dining area' },
-      { src: 'https://placehold.co/800x600.png', hint: 'view from cottage window' },
-    ],
-    description: 'Catering to large families or groups, Double Alma Cottage sleeps 8 guests and provides a comfortable and communal atmosphere for your retreat.',
-    amenities: ['4 Bedrooms', 'Wi-Fi', 'Fully Equipped Kitchen', 'Spacious Deck', '24-hour Security'],
-  },
-  {
-    name: 'Alma 2 (The Treehouse)',
-    price: 40000,
-    guests: 8,
-    images: [
-      { src: 'https://placehold.co/800x600.png', hint: 'treetop treehouse forest' },
-      { src: 'https://placehold.co/800x600.png', hint: 'treehouse interior wood' },
-      { src: 'https://placehold.co/800x600.png', hint: 'bridge to treehouse' },
-    ],
-    description: 'This unique treetop stay accommodates up to 8 guests and is tailored for those seeking an adventurous and memorable lodging experience among the branches.',
-    amenities: ['4 Bedrooms', 'Wi-Fi', 'Fully Equipped Kitchen', 'Spacious Deck', '24-hour Security'],
-  },
-];
+import { Skeleton } from '@/components/ui/skeleton';
+import { getCottages } from '@/services/contentService';
 
 const amenityIcons: { [key: string]: React.ReactNode } = {
     'Wi-Fi': <Wifi className="h-4 w-4" />,
     'Guests': <Users className="h-4 w-4" />,
-    'Fully Equipped Kitchen': <Utensils className="h-4 w-4" />,
     'Spacious Deck': <Trees className="h-4 w-4" />,
     '24-hour Security': <ShieldCheck className="h-4 w-4" />,
-}
+};
 
-export default function AccommodationsPage() {
+const staticAmenities = ['Wi-Fi', 'Spacious Deck', '24-hour Security'];
+
+export default async function AccommodationsPage() {
+  const cottages = await getCottages();
+
   return (
-    <div className="container mx-auto px-4 py-12 md:py-20">
+    <div className="container mx-auto px-4 py-12 md:py-20 scroll-mt-20">
       <div className="text-center">
         <h1 className={cn('text-4xl md:text-5xl font-bold font-headline text-primary')}>Our Accommodations</h1>
-        <p className="mt-4 text-lg max-w-2xl mx-auto text-foreground/80">
+        <p className="mt-4 text-lg max-w-3xl mx-auto text-foreground/80 font-body">
           Find your private haven in nature. Each of our four distinct cottages is designed to offer a unique and comfortable experience, blending seamlessly with the natural surroundings.
         </p>
       </div>
       <Separator className="my-12" />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {accommodations.map((item) => (
-          <Card key={item.name} className="overflow-hidden flex flex-col shadow-lg hover:shadow-2xl transition-shadow duration-300 group">
-            <CardHeader className="p-0">
-               <Carousel className="w-full">
-                <CarouselContent>
-                  {item.images.map((image, index) => (
-                    <CarouselItem key={index}>
-                      <div className="relative h-64 w-full">
-                        <Image
-                          src={image.src}
-                          alt={`${item.name} - Image ${index + 1}`}
-                          fill
-                          className="object-cover"
-                          sizes="(min-width: 768px) 50vw, 100vw"
-                          data-ai-hint={image.hint}
-                        />
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex bg-background/50 hover:bg-background/80" />
-                <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex bg-background/50 hover:bg-background/80" />
-              </Carousel>
-            </CardHeader>
-            <CardContent className="p-6 flex-grow">
-              <CardTitle className={cn("font-headline text-2xl")}>{item.name}</CardTitle>
-              <p className="text-lg font-semibold text-primary mt-1">Ksh {item.price.toLocaleString()} / night</p>
-              <CardDescription className="mt-4 text-base">{item.description}</CardDescription>
-               <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Users className="h-4 w-4" />
-                    <span>Up to {item.guests} guests</span>
-                </div>
-                {item.amenities.map(amenity => (
-                    <div key={amenity} className="flex items-center gap-2 text-sm text-muted-foreground">
-                        {amenityIcons[amenity] || null}
-                        <span>{amenity}</span>
+        {cottages.length === 0 ? (
+            Array.from({ length: 3 }).map((_, index) => (
+                <Card key={index} className="overflow-hidden flex flex-col shadow-lg">
+                    <CardHeader className="p-0">
+                        <Skeleton className="h-64 w-full" />
+                    </CardHeader>
+                    <CardContent className="p-6 flex-grow">
+                        <Skeleton className="h-8 w-3/4 mb-2" />
+                        <Skeleton className="h-6 w-1/4 mb-4" />
+                        <Skeleton className="h-4 w-full mb-1" />
+                        <Skeleton className="h-4 w-full mb-1" />
+                        <Skeleton className="h-4 w-5/6 mb-4" />
+                        <Skeleton className="h-10 w-full" />
+                    </CardContent>
+                    <CardFooter className="p-6 bg-muted/50">
+                        <Skeleton className="h-10 w-full" />
+                    </CardFooter>
+                </Card>
+            ))
+        ) : (
+          cottages.map((item) => {
+            const validImageUrls = Array.isArray(item.imageUrls)
+              ? item.imageUrls.filter(url => typeof url === 'string' && url.trim() !== '')
+              : [];
+
+            return (
+              <Card key={item.id} id={item.id} className="overflow-hidden flex flex-col shadow-lg hover:shadow-2xl transition-shadow duration-300 group scroll-mt-24">
+                <CardHeader className="p-0">
+                  <Carousel className="w-full">
+                    <CarouselContent>
+                      {validImageUrls.length > 0 ? (
+                        validImageUrls.map((imageUrl, index) => (
+                          <CarouselItem key={index}>
+                            <div className="relative h-64 w-full">
+                              <Image
+                                src={imageUrl}
+                                alt={`${item.name} - Image ${index + 1}`}
+                                fill
+                                className="object-cover"
+                                sizes="(min-width: 768px) 50vw, 100vw"
+                              />
+                            </div>
+                          </CarouselItem>
+                        ))
+                      ) : (
+                         <CarouselItem>
+                            <div className="relative h-64 w-full">
+                              <Image
+                                src="https://placehold.co/800x600.png"
+                                alt={`${item.name} - Placeholder Image`}
+                                fill
+                                className="object-cover"
+                                sizes="(min-width: 768px) 50vw, 100vw"
+                                data-ai-hint="luxury cottage interior"
+                              />
+                            </div>
+                          </CarouselItem>
+                      )}
+                    </CarouselContent>
+                    <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex bg-background/50 hover:bg-background/80" />
+                    <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex bg-background/50 hover:bg-background/80" />
+                  </Carousel>
+                </CardHeader>
+                <CardContent className="p-6 flex-grow">
+                  <CardTitle className={cn("font-headline text-2xl")}>
+                    {item.slug ? (
+                      <Link href={`/cottages/${item.slug}`} className="hover:text-primary transition-colors">{item.name}</Link>
+                    ) : (
+                      item.name
+                    )}
+                  </Title>
+                  <p className="text-lg font-semibold text-primary mt-1">Kes {item.price?.toLocaleString() || 'N/A'} / night</p>
+                  <CardDescription className="mt-4 text-base font-body">{item.description}</CardDescription>
+                  <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 font-sans">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Users className="h-4 w-4" />
+                        <span>Up to {item.guests} guests</span>
                     </div>
-                ))}
-              </div>
-            </CardContent>
-            <CardFooter className="p-6 bg-muted/50">
-              <Button asChild className="w-full bg-accent hover:bg-accent/90 text-accent-foreground">
-                <Link href="/booking">Book Now</Link>
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
+                    {staticAmenities.map(amenity => (
+                        <div key={amenity} className="flex items-center gap-2 text-sm text-muted-foreground">
+                            {amenityIcons[amenity] || null}
+                            <span>{amenity}</span>
+                        </div>
+                    ))}
+                  </div>
+                </CardContent>
+                <CardFooter className="p-6 bg-muted/50">
+                  <Button asChild className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-sans">
+                    <Link href="/booking">Book Now</Link>
+                  </Button>
+                </CardFooter>
+              </Card>
+            );
+          })
+        )}
       </div>
     </div>
   );
