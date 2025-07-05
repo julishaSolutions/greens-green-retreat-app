@@ -99,7 +99,7 @@ export default function BookingPage() {
                         id="dates"
                         variant={'outline'}
                         className={cn(
-                            'w-full justify-start text-left font-normal',
+                            'w-full justify-start text-left font-normal text-base md:text-sm',
                             !dates?.from && 'text-muted-foreground'
                         )}
                     >
@@ -122,7 +122,7 @@ export default function BookingPage() {
                         mode="range"
                         selected={dates}
                         onSelect={setDates}
-                        numberOfMonths={2}
+                        numberOfMonths={1}
                         disabled={(date) => date < new Date(new Date().setHours(0,0,0,0))}
                     />
                 </PopoverContent>

@@ -54,7 +54,7 @@ export function CottageDetailView({ cottage, allCottages }: CottageDetailViewPro
           {validImageUrls.length > 0 ? (
             validImageUrls.map((imageUrl, index) => (
               <CarouselItem key={index}>
-                <div className="relative h-[70vh] w-full rounded-lg overflow-hidden shadow-xl">
+                <div className="relative h-[50vh] md:h-[70vh] w-full rounded-lg overflow-hidden shadow-xl">
                   <Image
                     src={imageUrl}
                     alt={`${cottage.name} - Image ${index + 1}`}
@@ -68,7 +68,7 @@ export function CottageDetailView({ cottage, allCottages }: CottageDetailViewPro
             ))
           ) : (
             <CarouselItem>
-              <div className="relative h-[70vh] w-full bg-muted rounded-lg flex items-center justify-center">
+              <div className="relative h-[50vh] md:h-[70vh] w-full bg-muted rounded-lg flex items-center justify-center">
                  <Image
                     src="https://placehold.co/1200x800.png"
                     alt={`${cottage.name} - Placeholder Image`}
@@ -87,26 +87,50 @@ export function CottageDetailView({ cottage, allCottages }: CottageDetailViewPro
       </Carousel>
 
       <div className="max-w-5xl mx-auto">
-        <div className="flex justify-between items-center mb-10 text-center">
+        <div className="mb-8 text-center">
+          {/* Desktop Header */}
+          <div className="hidden md:flex justify-between items-center">
             {prevCottage && prevCottage.slug !== cottage.slug ? (
-                <Button asChild variant="outline" className="hidden md:flex w-48 justify-start">
-                    <Link href={`/cottages/${prevCottage.slug}`}>
-                        <ChevronLeft className="mr-2 h-4 w-4" />
-                        {prevCottage.name}
-                    </Link>
-                </Button>
-            ) : <div className="hidden md:block w-48" />}
-            
+              <Button asChild variant="outline" className="w-48 justify-start">
+                <Link href={`/cottages/${prevCottage.slug}`}>
+                  <ChevronLeft className="mr-2 h-4 w-4" />
+                  {prevCottage.name}
+                </Link>
+              </Button>
+            ) : <div className="w-48" />}
             <h1 className={cn('flex-1 text-4xl md:text-5xl font-bold font-headline text-primary')}>{cottage.name}</h1>
-            
             {nextCottage && nextCottage.slug !== cottage.slug ? (
-                <Button asChild variant="outline" className="hidden md:flex w-48 justify-end">
-                    <Link href={`/cottages/${nextCottage.slug}`}>
-                        {nextCottage.name}
-                        <ChevronRight className="ml-2 h-4 w-4" />
-                    </Link>
+              <Button asChild variant="outline" className="w-48 justify-end">
+                <Link href={`/cottages/${nextCottage.slug}`}>
+                  {nextCottage.name}
+                  <ChevronRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            ) : <div className="w-48" />}
+          </div>
+          
+          {/* Mobile Header */}
+          <div className="md:hidden">
+            <h1 className={cn('text-4xl font-bold font-headline text-primary mb-4')}>{cottage.name}</h1>
+            <div className="flex justify-between items-center">
+              {prevCottage && prevCottage.slug !== cottage.slug ? (
+                <Button asChild variant="outline" size="icon">
+                  <Link href={`/cottages/${prevCottage.slug}`}>
+                    <ChevronLeft className="h-4 w-4" />
+                    <span className="sr-only">Previous Cottage</span>
+                  </Link>
                 </Button>
-            ) : <div className="hidden md:block w-48" />}
+              ) : <div />}
+              {nextCottage && nextCottage.slug !== cottage.slug ? (
+                <Button asChild variant="outline" size="icon">
+                  <Link href={`/cottages/${nextCottage.slug}`}>
+                    <ChevronRight className="h-4 w-4" />
+                    <span className="sr-only">Next Cottage</span>
+                  </Link>
+                </Button>
+              ) : <div />}
+            </div>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 md:gap-12">
@@ -117,7 +141,7 @@ export function CottageDetailView({ cottage, allCottages }: CottageDetailViewPro
                 </div>
             </div>
             <div className="md:col-span-1">
-                <Card className="sticky top-24 shadow-lg">
+                <Card className="md:sticky md:top-24 shadow-lg">
                     <CardContent className="p-6">
                         <div className="space-y-4">
                              <div>
