@@ -2,8 +2,6 @@
 import { adminDb } from '@/lib/firebase-admin';
 import { Timestamp, type DocumentData } from 'firebase-admin/firestore';
 
-const ADMIN_DB_ERROR_MESSAGE = 'Firestore Admin is not initialized. This is likely due to missing or incorrect Firebase Admin credentials in your .env.local file. Please check your configuration and restart the server.';
-
 export type Booking = {
   id?: string;
   cottageId: string;
@@ -25,10 +23,6 @@ export type Booking = {
  * @returns A promise that resolves to true if available, false otherwise.
  */
 export async function checkAvailability(cottageId: string, checkInDate: Date, checkOutDate: Date): Promise<boolean> {
-  if (!adminDb) {
-    throw new Error(ADMIN_DB_ERROR_MESSAGE);
-  }
-
   const bookingsRef = adminDb.collection('bookings');
   
   // Firestore can't perform two range filters on different fields.
@@ -64,10 +58,6 @@ export async function checkAvailability(cottageId: string, checkInDate: Date, ch
  * @returns The ID of the newly created booking.
  */
 export async function createBooking(bookingData: Omit<Booking, 'id' | 'status' | 'createdAt'>): Promise<string> {
-  if (!adminDb) {
-    throw new Error(ADMIN_DB_ERROR_MESSAGE);
-  }
-  
   const bookingsRef = adminDb.collection('bookings');
   const newBooking = {
     ...bookingData,

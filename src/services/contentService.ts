@@ -3,8 +3,6 @@
 import { adminDb } from '@/lib/firebase-admin';
 import type { DocumentData, Query } from 'firebase-admin/firestore';
 
-const ADMIN_DB_ERROR_MESSAGE = 'Firestore Admin is not initialized. This is likely due to missing or incorrect Firebase Admin credentials in your .env.local file. Please check your configuration and restart the server.';
-
 export type Cottage = {
   id: string;
   name: string;
@@ -13,7 +11,7 @@ export type Cottage = {
   imageUrls: string[];
   description: string;
   slug?: string;
-  [key: string]: any; // To handle fields with spaces like 'imageUrls '
+  [key: string]: any; 
 };
 
 export type Activity = {
@@ -27,12 +25,16 @@ export type Activity = {
 
 function docToCottage(doc: DocumentData): Cottage {
     const data = doc.data();
+    // Handle potential field name inconsistencies from Firestore
+    const imageUrls = data.imageUrls || data['imageUrls '] || [];
+    const guests = data.guests || data.capacity || 0;
+
     return {
         id: doc.id,
         name: data.name || '',
         price: data.price || 0,
-        guests: data.capacity || data.guests || 0,
-        imageUrls: data.imageUrls || data['imageUrls '] || [],
+        guests: guests,
+        imageUrls: Array.isArray(imageUrls) ? imageUrls : [imageUrls],
         description: data.description || '',
         slug: data.slug || '',
         ...data,
@@ -40,11 +42,6 @@ function docToCottage(doc: DocumentData): Cottage {
 }
 
 export async function getCottages(count?: number): Promise<Cottage[]> {
-    if (!adminDb) {
-        console.warn(ADMIN_DB_ERROR_MESSAGE);
-        return [];
-    }
-    
     let q: Query = adminDb.collection('cottages');
     
     if (count) {
@@ -56,11 +53,6 @@ export async function getCottages(count?: number): Promise<Cottage[]> {
 }
 
 export async function getCottageBySlug(slug: string): Promise<Cottage | null> {
-    if (!adminDb) {
-        console.warn(ADMIN_DB_ERROR_MESSAGE);
-        return null;
-    }
-
     const q = adminDb.collection('cottages').where('slug', '==', slug).limit(1);
     const snapshot = await q.get();
 
@@ -71,14 +63,17 @@ export async function getCottageBySlug(slug: string): Promise<Cottage | null> {
 }
 
 export async function getActivities(): Promise<Activity[]> {
-    if (!adminDb) {
-        console.warn(ADMIN_DB_ERROR_MESSAGE);
-        return [];
-    }
-    
     const snapshot = await adminDb.collection('activities').get();
-    return snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-    } as Activity));
+    return snapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+            id: doc.id,
+            name: data.name || '',
+            description: data.description || '',
+            // Handle both string and array for imageUrl
+            imageUrl: data.imageUrl || data['imageUrl '] || '', 
+            imageHint: data.imageHint || '',
+            ...data,
+        }
+    });
 }
