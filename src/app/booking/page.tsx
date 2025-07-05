@@ -1,19 +1,9 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
+import { useActionState, useEffect, useRef, useState } from 'react';
+import { submitBooking, type BookingFormState } from './actions';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -22,51 +12,65 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { toast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
-import { CalendarIcon, Info } from 'lucide-react';
+import { CalendarIcon, Info, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-
-const bookingFormSchema = z.object({
-  fullName: z.string().min(2, { message: 'Full name must be at least 2 characters.' }),
-  email: z.string().email({ message: 'Please enter a valid email address.' }),
-  dates: z.object({
-    from: z.date({ required_error: 'A start date is required.' }),
-    to: z.date({ required_error: 'An end date is required.' }),
-  }),
-  accommodation: z.string({ required_error: 'Please select an accommodation.' }),
-  guests: z.coerce.number().min(1, { message: 'Must have at least 1 guest.' }).max(10, { message: 'Cannot exceed 10 guests.' }),
-});
-
-type BookingFormValues = z.infer<typeof bookingFormSchema>;
+import type { DateRange } from 'react-day-picker';
+import { useFormStatus } from 'react-dom';
 
 const accommodations = [
-  'Alma 1 Cottage',
-  'Double Alma Cottage',
-  'Alma 2 (The Treehouse)',
+  { id: 'alma-1-cottage', name: 'Alma 1 Cottage' },
+  { id: 'double-alma-cottage', name: 'Double Alma Cottage' },
+  { id: 'alma-2-treehouse', name: 'Alma 2 (The Treehouse)' },
 ];
 
-export default function BookingPage() {
-  const form = useForm<BookingFormValues>({
-    resolver: zodResolver(bookingFormSchema),
-    defaultValues: {
-      fullName: '',
-      email: '',
-      guests: 1,
-    },
-  });
+const initialState: BookingFormState = {
+    message: '',
+    errors: {},
+    success: false,
+};
 
-  function onSubmit(data: BookingFormValues) {
-    toast({
-      title: 'Booking Request Submitted!',
-      description: 'We have received your booking request and will be in touch shortly to confirm.',
-    });
-    console.log(data);
-    form.reset();
-  }
+function SubmitButton() {
+    const { pending } = useFormStatus();
+    return (
+        <Button type="submit" disabled={pending} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" size="lg">
+            {pending ? (
+                <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Submitting...
+                </>
+            ) : (
+                'Submit Booking Request'
+            )}
+        </Button>
+    );
+}
+
+export default function BookingPage() {
+  const [state, formAction] = useActionState(submitBooking, initialState);
+  const { toast } = useToast();
+  const formRef = useRef<HTMLFormElement>(null);
+  const [dates, setDates] = useState<DateRange | undefined>(undefined);
+
+  useEffect(() => {
+    if (!state.message) return;
+    if (state.message !== 'Validation failed. Please check your input.') {
+      toast({
+        title: state.success ? 'Success!' : 'Error',
+        description: state.message,
+        variant: state.success ? 'default' : 'destructive',
+      });
+    }
+
+    if (state.success) {
+      formRef.current?.reset();
+      setDates(undefined);
+    }
+  }, [state, toast]);
 
   return (
     <div className="container mx-auto px-4 py-12 md:py-20">
@@ -80,132 +84,100 @@ export default function BookingPage() {
         <CardContent>
           <Alert className="mb-8">
             <Info className="h-4 w-4" />
-            <AlertTitle className='font-bold'>Direct Booking Information</AlertTitle>
+            <AlertTitle className='font-bold'>Booking Process</AlertTitle>
             <AlertDescription>
-              For the most personal service, we encourage direct bookings. Please note we do not have listings on major booking platforms.
-              <ul className="list-disc pl-5 mt-2">
-                <li><strong>Phone:</strong> +254 714 281 7911</li>
-                <li><strong>Instagram:</strong> <a href="https://instagram.com/greens_green_retreat" target="_blank" rel="noopener noreferrer" className="underline">@greens_green_retreat</a></li>
-              </ul>
-              Rates start at Ksh 14,000 for two people per night.
+                Submitting this form places a tentative booking. We will check availability and contact you for confirmation and payment.
             </AlertDescription>
           </Alert>
 
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                <FormField
-                  control={form.control}
-                  name="dates"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Check-in & Check-out dates</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={'outline'}
-                              className={cn(
-                                'w-full justify-start text-left font-normal',
-                                !field.value?.from && 'text-muted-foreground'
-                              )}
-                            >
-                              <CalendarIcon className="mr-2 h-4 w-4" />
-                              {field.value?.from ? (
-                                field.value.to ? (
-                                  <>
-                                    {format(field.value.from, 'LLL dd, y')} - {format(field.value.to, 'LLL dd, y')}
-                                  </>
-                                ) : (
-                                  format(field.value.from, 'LLL dd, y')
-                                )
-                              ) : (
-                                <span>Pick a date range</span>
-                              )}
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="range"
-                            selected={{ from: field.value?.from, to: field.value?.to }}
-                            onSelect={field.onChange}
-                            numberOfMonths={2}
-                            disabled={(date) => date < new Date(new Date().setHours(0,0,0,0))}
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+          <form ref={formRef} action={formAction} className="space-y-8">
+            <div className="flex flex-col space-y-2">
+                <label htmlFor="dates" className="text-sm font-medium">Check-in & Check-out dates</label>
+                <Popover>
+                <PopoverTrigger asChild>
+                    <Button
+                        id="dates"
+                        variant={'outline'}
+                        className={cn(
+                            'w-full justify-start text-left font-normal',
+                            !dates?.from && 'text-muted-foreground'
+                        )}
+                    >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {dates?.from ? (
+                        dates.to ? (
+                            <>
+                            {format(dates.from, 'LLL dd, y')} - {format(dates.to, 'LLL dd, y')}
+                            </>
+                        ) : (
+                            format(dates.from, 'LLL dd, y')
+                        )
+                        ) : (
+                        <span>Pick a date range</span>
+                        )}
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                        mode="range"
+                        selected={dates}
+                        onSelect={setDates}
+                        numberOfMonths={2}
+                        disabled={(date) => date < new Date(new Date().setHours(0,0,0,0))}
+                    />
+                </PopoverContent>
+                </Popover>
+                {dates?.from && <input type="hidden" name="checkInDate" value={dates.from.toISOString()} />}
+                {dates?.to && <input type="hidden" name="checkOutDate" value={dates.to.toISOString()} />}
+                {state.errors?.dates && <p className="text-sm font-medium text-destructive">{state.errors.dates[0]}</p>}
+                {state.errors?.checkInDate && <p className="text-sm font-medium text-destructive">{state.errors.checkInDate[0]}</p>}
+                {state.errors?.checkOutDate && <p className="text-sm font-medium text-destructive">{state.errors.checkOutDate[0]}</p>}
+            </div>
 
-              <FormField
-                control={form.control}
-                name="accommodation"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Accommodation</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a cottage" />
-                        </Trigger>
-                      </FormControl>
-                      <SelectContent>
-                        {accommodations.map((item) => (
-                          <SelectItem key={item} value={item}>{item}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <div className="space-y-2">
+                <label htmlFor="accommodation" className="text-sm font-medium">Accommodation</label>
+                 <Select name="accommodation">
+                    <SelectTrigger>
+                        <SelectValue placeholder="Select a cottage" />
+                    </SelectTrigger>
+                    <SelectContent>
+                    {accommodations.map((item) => (
+                        <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>
+                    ))}
+                    </SelectContent>
+                </Select>
+                 {state.errors?.accommodation && <p className="text-sm font-medium text-destructive">{state.errors.accommodation[0]}</p>}
+            </div>
+            
+            <div className="space-y-2">
+                <label htmlFor="guests" className="text-sm font-medium">Number of Guests</label>
+                <Input id="guests" name="guests" type="number" min="1" max="10" placeholder="e.g., 2" />
+                {state.errors?.guests && <p className="text-sm font-medium text-destructive">{state.errors.guests[0]}</p>}
+            </div>
 
-              <FormField
-                control={form.control}
-                name="guests"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Number of Guests</FormLabel>
-                    <FormControl>
-                      <Input type="number" min="1" max="10" placeholder="e.g., 2" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <div className="space-y-2">
+                <label htmlFor="fullName" className="text-sm font-medium">Full Name</label>
+                <Input id="fullName" name="fullName" placeholder="John Doe" />
+                {state.errors?.fullName && <p className="text-sm font-medium text-destructive">{state.errors.fullName[0]}</p>}
+            </div>
+            
+            <div className="space-y-2">
+                <label htmlFor="email" className="text-sm font-medium">Email Address</label>
+                <Input id="email" name="email" type="email" placeholder="you@example.com" />
+                {state.errors?.email && <p className="text-sm font-medium text-destructive">{state.errors.email[0]}</p>}
+            </div>
 
-              <FormField
-                control={form.control}
-                name="fullName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Full Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="John Doe" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email Address</FormLabel>
-                    <FormControl>
-                      <Input placeholder="you@example.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" size="lg">Submit Booking Request</Button>
-            </form>
-          </Form>
+            {state.errors?._form && (
+                <Alert variant="destructive">
+                    <AlertTitle>Booking Failed</AlertTitle>
+                    <AlertDescription>
+                        {state.errors._form[0]}
+                    </AlertDescription>
+                </Alert>
+            )}
+            
+            <SubmitButton />
+          </form>
         </CardContent>
       </Card>
     </div>
