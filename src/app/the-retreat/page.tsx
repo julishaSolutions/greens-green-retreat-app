@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -89,8 +90,10 @@ export default function TheRetreatPage() {
               ? { href: item.whatsappLink, target: '_blank', rel: 'noopener noreferrer' }
               : { href: '/inquire' };
             const linkText = item.whatsappLink ? 'Inquire on WhatsApp' : 'Inquire Now';
-            const validImageUrls = Array.isArray(item.imageUrls)
-              ? item.imageUrls.filter(url => typeof url === 'string' && url.trim() !== '')
+            
+            const imageUrls = item.imageUrls || (item as any)?.['imageUrls '];
+            const validImageUrls = Array.isArray(imageUrls)
+              ? imageUrls.filter(url => typeof url === 'string' && url.trim() !== '')
               : [];
 
             return (

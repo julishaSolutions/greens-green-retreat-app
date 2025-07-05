@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -138,8 +139,9 @@ export default function Home() {
               ))
             ) : (
               suites.map((item) => {
-                const firstValidImage = Array.isArray(item.imageUrls)
-                  ? item.imageUrls.find(url => typeof url === 'string' && url.trim() !== '')
+                const imageUrls = item.imageUrls || (item as any)?.['imageUrls '];
+                const firstValidImage = Array.isArray(imageUrls)
+                  ? imageUrls.find(url => typeof url === 'string' && url.trim() !== '')
                   : undefined;
 
                 return (

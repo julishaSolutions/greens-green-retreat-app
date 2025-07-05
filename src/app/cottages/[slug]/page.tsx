@@ -56,7 +56,6 @@ export default function CottageDetailPage() {
         if (!querySnapshot.empty) {
           const doc = querySnapshot.docs[0];
           const cottageData = { id: doc.id, ...doc.data() } as Cottage;
-          console.error('DEBUG: Fetched cottage data for slug ' + slug + ':', JSON.stringify(cottageData, null, 2));
           setCottage(cottageData);
         } else {
             console.warn(`No cottage found with slug: '${slug}'`);
@@ -103,7 +102,10 @@ export default function CottageDetailPage() {
     );
   }
 
-  const validImageUrls = Array.isArray(cottage?.imageUrls) ? cottage.imageUrls.filter(url => typeof url === 'string' && url.trim() !== '') : [];
+  const imageUrls = cottage?.imageUrls || (cottage as any)?.['imageUrls '];
+  const validImageUrls = Array.isArray(imageUrls)
+    ? imageUrls.filter(url => typeof url === 'string' && url.trim() !== '')
+    : [];
     
   const linkProps = cottage.whatsappLink
     ? { href: cottage.whatsappLink, target: '_blank', rel: 'noopener noreferrer' }
