@@ -24,16 +24,16 @@ export default function Footer() {
   return (
     <footer className="bg-card border-t">
       <div className="container mx-auto px-4 py-8 sm:py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="flex flex-col items-start">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+          <div className="flex flex-col items-center text-center md:items-start md:text-left">
             <Link href="/" className="mb-4">
               <Logo size={80} />
             </Link>
-            <p className="text-foreground/70 font-sans">
+            <p className="text-foreground/70 font-sans max-w-xs">
               Your family-owned sanctuary in the highlands of Tigoni, Limuru.
             </p>
           </div>
-          <div className="grid grid-cols-2 md:col-span-2 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 md:col-span-2">
             <div>
               <h3 className={cn("font-semibold text-lg font-headline mb-4")}>Navigate</h3>
               <ul className="space-y-2">
@@ -48,15 +48,15 @@ export default function Footer() {
             </div>
             <div>
               <h3 className={cn("font-semibold text-lg font-headline mb-4")}>Connect</h3>
-               <div className="flex items-center gap-2 text-foreground/70 mb-2 font-sans">
+               <div className="flex items-center gap-2 text-foreground/70 mb-2 font-sans justify-center sm:justify-start">
                   <Phone className="h-5 w-5" />
                   <a href="tel:+254714281791" className="hover:text-primary transition-colors">+254 714 281 791</a>
                 </div>
-                <div className="flex items-center gap-2 text-foreground/70 mb-4 font-sans">
+                <div className="flex items-center gap-2 text-foreground/70 mb-4 font-sans justify-center sm:justify-start">
                   <Mail className="h-5 w-5" />
                   <a href="mailto:greensgreenretreat@gmail.com" className="hover:text-primary transition-colors">greensgreenretreat@gmail.com</a>
                 </div>
-              <div className="flex space-x-4">
+              <div className="flex space-x-4 justify-center sm:justify-start">
                 <Link href="https://instagram.com/greens_green_retreat" target="_blank" rel="noopener noreferrer" className="text-foreground/70 hover:text-primary transition-colors">
                   <Instagram className="h-6 w-6" />
                   <span className="sr-only">Instagram</span>
