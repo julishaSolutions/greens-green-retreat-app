@@ -21,6 +21,7 @@ type Cottage = {
   price: number;
   guests: number;
   imageUrls: string[];
+  'imageUrls '?: string[];
   description: string;
   whatsappLink?: string;
   slug?: string;
@@ -102,7 +103,7 @@ export default function CottageDetailPage() {
     );
   }
 
-  const imageUrls = cottage?.imageUrls || (cottage as any)?.['imageUrls '];
+  const imageUrls = cottage?.imageUrls || cottage?.['imageUrls '];
   const validImageUrls = Array.isArray(imageUrls)
     ? imageUrls.filter(url => typeof url === 'string' && url.trim() !== '')
     : [];
