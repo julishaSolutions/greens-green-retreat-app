@@ -1,39 +1,34 @@
+
 import * as admin from 'firebase-admin';
 import { getApps } from 'firebase-admin/app';
 
 function initializeAdminApp() {
+  // This function ensures we only initialize the app once.
   if (getApps().length > 0) {
     return admin.app();
   }
 
-  const projectId = process.env.FIREBASE_PROJECT_ID;
-  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-  const privateKey = process.env.FIREBASE_PRIVATE_KEY;
+  const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
 
-  if (!projectId || !clientEmail || !privateKey) {
-    throw new Error(
-      'Firebase Admin credentials (FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY) are not fully provided in .env.local. Please check your configuration and restart the server.'
+  if (!serviceAccountJson) {
+    console.warn(
+      'Firebase Admin SDK is not initialized. The FIREBASE_SERVICE_ACCOUNT_JSON environment variable is not set. Please check your .env.local file and RESTART the development server. Server-side Firebase features will be disabled.'
     );
+    return null;
   }
 
-  const serviceAccount: admin.ServiceAccount = {
-    projectId,
-    clientEmail,
-    // The private key from the .env file might have escaped newlines (\\n) or be a multi-line string.
-    // This replace() call handles both cases to ensure the key is correctly formatted.
-    privateKey: privateKey.trim().replace(/\\n/g, '\n'),
-  };
-
   try {
+    const serviceAccount = JSON.parse(serviceAccountJson);
     const app = admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
     });
+    console.log('Firebase Admin SDK initialized successfully.');
     return app;
   } catch (error: any) {
-    // This will catch any errors during initialization, such as a malformed private key.
-    throw new Error(
-      `Failed to initialize Firebase Admin SDK. Please check your credentials in .env.local. Original error: ${error.message}`
+    console.error(
+      `Failed to initialize Firebase Admin SDK due to a parsing error. Please check the FIREBASE_SERVICE_ACCOUNT_JSON in your .env.local file. It seems to be malformed. Original error: ${error.message}. Server-side Firebase features will be disabled.`
     );
+    return null;
   }
 }
 

@@ -3,6 +3,8 @@
 import { adminDb } from '@/lib/firebase-admin';
 import type { DocumentData, Query } from 'firebase-admin/firestore';
 
+const FIREBASE_NOT_INITIALIZED_WARNING = 'Firestore Admin is not initialized. Cannot fetch data. Please check your server environment configuration.';
+
 export type Cottage = {
   id: string;
   name: string;
@@ -25,7 +27,6 @@ export type Activity = {
 
 function docToCottage(doc: DocumentData): Cottage {
     const data = doc.data();
-    // Handle potential field name inconsistencies from Firestore
     const imageUrls = data.imageUrls || data['imageUrls '] || [];
     const guests = data.guests || data.capacity || 0;
 
@@ -42,6 +43,10 @@ function docToCottage(doc: DocumentData): Cottage {
 }
 
 export async function getCottages(count?: number): Promise<Cottage[]> {
+    if (!adminDb) {
+        console.warn(FIREBASE_NOT_INITIALIZED_WARNING);
+        return [];
+    }
     let q: Query = adminDb.collection('cottages');
     
     if (count) {
@@ -53,6 +58,10 @@ export async function getCottages(count?: number): Promise<Cottage[]> {
 }
 
 export async function getCottageBySlug(slug: string): Promise<Cottage | null> {
+    if (!adminDb) {
+        console.warn(FIREBASE_NOT_INITIALIZED_WARNING);
+        return null;
+    }
     const q = adminDb.collection('cottages').where('slug', '==', slug).limit(1);
     const snapshot = await q.get();
 
@@ -63,6 +72,10 @@ export async function getCottageBySlug(slug: string): Promise<Cottage | null> {
 }
 
 export async function getActivities(): Promise<Activity[]> {
+    if (!adminDb) {
+        console.warn(FIREBASE_NOT_INITIALIZED_WARNING);
+        return [];
+    }
     const snapshot = await adminDb.collection('activities').get();
     return snapshot.docs.map(doc => {
         const data = doc.data();
@@ -70,7 +83,6 @@ export async function getActivities(): Promise<Activity[]> {
             id: doc.id,
             name: data.name || '',
             description: data.description || '',
-            // Handle both string and array for imageUrl
             imageUrl: data.imageUrl || data['imageUrl '] || '', 
             imageHint: data.imageHint || '',
             ...data,
