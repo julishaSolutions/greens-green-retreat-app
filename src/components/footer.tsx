@@ -10,7 +10,7 @@ const footerLinks = [
     { href: '/experiences', label: 'Experiences' },
     { href: '/our-story', label: 'Our Story' },
     { href: '/journal', label: 'Journal' },
-    { href: '/booking', label: 'Book Now' },
+    { href: '/inquire', label: 'Inquire Now' },
     { href: '/admin/journal-ideas', label: 'Admin' },
   ];
 

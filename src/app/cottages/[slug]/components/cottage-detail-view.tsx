@@ -18,7 +18,6 @@ type CottageNavItem = {
 
 type CottageDetailViewProps = {
     cottage: Cottage;
-    bookedDates: any[]; // Temporarily adjusted for stability
     allCottages: CottageNavItem[];
 };
 
@@ -164,8 +163,8 @@ export function CottageDetailView({ cottage, allCottages }: CottageDetailViewPro
                             </div>
                              <Separator />
                              <Button asChild className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-sans mt-4" size="lg">
-                                <Link href="/booking">
-                                  Book Now
+                                <Link href="/inquire">
+                                  Inquire Now
                                 </Link>
                             </Button>
                         </div>

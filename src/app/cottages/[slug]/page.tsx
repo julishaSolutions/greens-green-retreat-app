@@ -29,8 +29,5 @@ export default async function CottageDetailPage({ params }: CottagePageProps) {
         name: c.name || ''
     }));
 
-    // The bookedDates feature is temporarily disabled to resolve a permissions issue.
-    const bookedDates: any[] = [];
-
-    return <CottageDetailView cottage={cottage} bookedDates={bookedDates} allCottages={allCottages} />;
+    return <CottageDetailView cottage={cottage} allCottages={allCottages} />;
 }

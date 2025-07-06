@@ -46,7 +46,7 @@ export default function Header() {
 
         <div className="hidden md:flex items-center gap-2">
             <Button asChild className="bg-accent hover:bg-accent/90 text-accent-foreground font-sans">
-              <Link href="/booking">Book Now</Link>
+              <Link href="/inquire">Inquire Now</Link>
             </Button>
         </div>
 
@@ -82,7 +82,7 @@ export default function Header() {
               </nav>
               <div className="mt-8 flex flex-col gap-2">
                 <Button asChild className="bg-accent hover:bg-accent/90 text-accent-foreground font-sans" onClick={() => setMenuOpen(false)}>
-                  <Link href="/booking">Book Now</Link>
+                  <Link href="/inquire">Inquire Now</Link>
                 </Button>
               </div>
             </div>
