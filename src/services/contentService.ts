@@ -91,3 +91,17 @@ export async function getActivities(): Promise<Activity[]> {
         }
     });
 }
+
+export async function getCollectionNames(): Promise<string[]> {
+    if (!adminDb) {
+        console.warn(FIREBASE_NOT_INITIALIZED_WARNING);
+        return [];
+    }
+    try {
+        const collections = await adminDb.listCollections();
+        return collections.map(collection => collection.id);
+    } catch (error) {
+        console.error("Failed to list collections:", error);
+        return [];
+    }
+}

@@ -8,7 +8,7 @@ import { Wifi, Users, Trees, ShieldCheck, Terminal } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
-import { getCottages } from '@/services/contentService';
+import { getCottages, getCollectionNames } from '@/services/contentService';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const amenityIcons: { [key: string]: React.ReactNode } = {
@@ -23,6 +23,11 @@ const staticAmenities = ['Wi-Fi', 'Spacious Deck', '24-hour Security'];
 export default async function TheRetreatPage() {
   const isConfigured = !!process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
   const cottages = await getCottages();
+
+  let collectionNames: string[] | null = null;
+  if (isConfigured && cottages.length === 0) {
+    collectionNames = await getCollectionNames();
+  }
 
   return (
     <div className="container mx-auto px-4 py-12 md:py-20 scroll-mt-20">
@@ -52,12 +57,21 @@ export default async function TheRetreatPage() {
                     <Terminal className="h-4 w-4" />
                     <AlertTitle>No Data Found</AlertTitle>
                     <AlertDescription>
-                        The application connected to your database successfully, but could not find any cottage data. Please verify the following:
-                        <ul className="list-disc pl-5 mt-2 space-y-1">
-                            <li>In your Firestore database, you have a collection named exactly <strong><code>cottages</code></strong> (all lowercase, plural).</li>
-                            <li>The <strong><code>cottages</code></strong> collection is not empty and contains one or more documents.</li>
-                            <li>The service account credentials in <code>.env.local</code> are for the correct Firebase project.</li>
-                        </ul>
+                        The application connected to your database successfully, but could not find any data in the <strong><code>cottages</code></strong> collection.
+                        <br/><br/>
+                        Please verify that the collection name in your Firestore database is spelled exactly <strong><code>cottages</code></strong> (all lowercase, plural).
+                        {collectionNames && collectionNames.length > 0 && (
+                            <>
+                                <br/><br/>
+                                We found the following collections in your database: <code className="font-mono bg-muted/50 p-1 rounded-md">{collectionNames.join(', ')}</code>
+                            </>
+                        )}
+                         {collectionNames && collectionNames.length === 0 && (
+                            <>
+                                <br/><br/>
+                                We connected to your database, but it appears to be completely empty. Please create the <strong><code>cottages</code></strong> collection and add documents to it.
+                            </>
+                        )}
                     </AlertDescription>
                 </Alert>
             </div>
