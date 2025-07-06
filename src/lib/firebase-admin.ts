@@ -19,18 +19,18 @@ function initializeAdminApp() {
   const serviceAccount: admin.ServiceAccount = {
     projectId,
     clientEmail,
-    // The private key from the .env file might come with literal "\\n" characters
-    // or as a multi-line string. We replace the literal "\\n" with actual newlines.
-    privateKey: privateKey.replace(/\\n/g, '\n'),
+    // The private key from the .env file might have escaped newlines (\\n) or be a multi-line string.
+    // This replace() call handles both cases to ensure the key is correctly formatted.
+    privateKey: privateKey.trim().replace(/\\n/g, '\n'),
   };
 
   try {
     const app = admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
     });
-    console.log('Firebase Admin SDK initialized successfully.');
     return app;
   } catch (error: any) {
+    // This will catch any errors during initialization, such as a malformed private key.
     throw new Error(
       `Failed to initialize Firebase Admin SDK. Please check your credentials in .env.local. Original error: ${error.message}`
     );
