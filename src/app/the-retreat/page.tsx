@@ -52,11 +52,11 @@ export default async function TheRetreatPage() {
                     <Terminal className="h-4 w-4" />
                     <AlertTitle>No Data Found</AlertTitle>
                     <AlertDescription>
-                        The application connected to the database but could not find any cottage data. This could be because:
-                        <ul className="list-disc pl-5 mt-2">
-                            <li>The 'cottages' collection in your Firestore database is empty.</li>
-                            <li>The service account credentials in <code>.env.local</code> are for the wrong Firebase project.</li>
-                            <li>The service account does not have the correct Firestore permissions (e.g., 'Cloud Datastore User' role).</li>
+                        The application connected to your database successfully, but could not find any cottage data. Please verify the following:
+                        <ul className="list-disc pl-5 mt-2 space-y-1">
+                            <li>In your Firestore database, you have a collection named exactly <strong><code>cottages</code></strong> (all lowercase, plural).</li>
+                            <li>The <strong><code>cottages</code></strong> collection is not empty and contains one or more documents.</li>
+                            <li>The service account credentials in <code>.env.local</code> are for the correct Firebase project.</li>
                         </ul>
                     </AlertDescription>
                 </Alert>

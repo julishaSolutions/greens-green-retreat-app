@@ -47,12 +47,7 @@ export async function getCottages(count?: number): Promise<Cottage[]> {
         console.warn(FIREBASE_NOT_INITIALIZED_WARNING);
         return [];
     }
-    let snapshot = await adminDb.collection('cottages').get();
-
-    // If 'cottages' is empty, try 'Cottages' as a fallback for common typos.
-    if (snapshot.empty) {
-        snapshot = await adminDb.collection('Cottages').get();
-    }
+    const snapshot = await adminDb.collection('cottages').get();
     
     let cottages = snapshot.docs.map(docToCottage);
 
@@ -68,13 +63,8 @@ export async function getCottageBySlug(slug: string): Promise<Cottage | null> {
         console.warn(FIREBASE_NOT_INITIALIZED_WARNING);
         return null;
     }
-    let q = adminDb.collection('cottages').where('slug', '==', slug).limit(1);
-    let snapshot = await q.get();
-
-    if (snapshot.empty) {
-        q = adminDb.collection('Cottages').where('slug', '==', slug).limit(1);
-        snapshot = await q.get();
-    }
+    const q = adminDb.collection('cottages').where('slug', '==', slug).limit(1);
+    const snapshot = await q.get();
 
     if (snapshot.empty) {
         return null;
@@ -87,12 +77,7 @@ export async function getActivities(): Promise<Activity[]> {
         console.warn(FIREBASE_NOT_INITIALIZED_WARNING);
         return [];
     }
-    let snapshot = await adminDb.collection('activities').get();
-
-    // If 'activities' is empty, try 'Activities' as a fallback for common typos.
-    if (snapshot.empty) {
-        snapshot = await adminDb.collection('Activities').get();
-    }
+    const snapshot = await adminDb.collection('activities').get();
 
     return snapshot.docs.map(doc => {
         const data = doc.data();
