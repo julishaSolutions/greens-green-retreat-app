@@ -4,11 +4,12 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
-import { Wifi, Users, Trees, ShieldCheck } from 'lucide-react';
+import { Wifi, Users, Trees, ShieldCheck, Terminal } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCottages } from '@/services/contentService';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const amenityIcons: { [key: string]: React.ReactNode } = {
     'Wi-Fi': <Wifi className="h-4 w-4" />,
@@ -20,6 +21,7 @@ const amenityIcons: { [key: string]: React.ReactNode } = {
 const staticAmenities = ['Wi-Fi', 'Spacious Deck', '24-hour Security'];
 
 export default async function TheRetreatPage() {
+  const isConfigured = !!process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
   const cottages = await getCottages();
 
   return (
@@ -30,6 +32,38 @@ export default async function TheRetreatPage() {
           Find your private haven in nature. The love of nature and the outdoors inspired the design of our distinct cottages, each uniquely placed to appreciate the surrounding environment.
         </p>
       </div>
+
+       {!isConfigured ? (
+        <div className="my-12">
+            <Alert variant="destructive">
+            <Terminal className="h-4 w-4" />
+            <AlertTitle>Configuration Error</AlertTitle>
+            <AlertDescription>
+                The connection to the database is not configured. You are seeing placeholder content because the <code>FIREBASE_SERVICE_ACCOUNT_JSON</code> environment variable is missing.
+                <br />
+                Please check your <code>.env.local</code> file, ensure the variable is set correctly, and then **restart the development server**.
+            </AlertDescription>
+            </Alert>
+        </div>
+        ) : (
+        cottages.length === 0 && (
+            <div className="my-12">
+                <Alert variant="destructive">
+                    <Terminal className="h-4 w-4" />
+                    <AlertTitle>No Data Found</AlertTitle>
+                    <AlertDescription>
+                        The application connected to the database but could not find any cottage data. This could be because:
+                        <ul className="list-disc pl-5 mt-2">
+                            <li>The 'cottages' collection in your Firestore database is empty.</li>
+                            <li>The service account credentials in <code>.env.local</code> are for the wrong Firebase project.</li>
+                            <li>The service account does not have the correct Firestore permissions (e.g., 'Cloud Datastore User' role).</li>
+                        </ul>
+                    </AlertDescription>
+                </Alert>
+            </div>
+        )
+      )}
+
       <Separator className="my-12" />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {cottages.length === 0 ? (

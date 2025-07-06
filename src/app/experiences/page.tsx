@@ -5,8 +5,11 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { getActivities } from '@/services/contentService';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Terminal } from 'lucide-react';
 
 export default async function ExperiencesPage() {
+  const isConfigured = !!process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
   const activities = await getActivities();
 
   return (
@@ -17,6 +20,38 @@ export default async function ExperiencesPage() {
          From thrilling water slides to relaxed bird watching, Green's Green Retreat offers a unique range of experiences for families, corporations, and individuals seeking adventure, relaxation, and bonding.
         </p>
       </div>
+
+       {!isConfigured ? (
+        <div className="my-12">
+            <Alert variant="destructive">
+            <Terminal className="h-4 w-4" />
+            <AlertTitle>Configuration Error</AlertTitle>
+            <AlertDescription>
+                The connection to the database is not configured. You are seeing placeholder content because the <code>FIREBASE_SERVICE_ACCOUNT_JSON</code> environment variable is missing.
+                <br />
+                Please check your <code>.env.local</code> file, ensure the variable is set correctly, and then **restart the development server**.
+            </AlertDescription>
+            </Alert>
+        </div>
+        ) : (
+        activities.length === 0 && (
+            <div className="my-12">
+                <Alert variant="destructive">
+                    <Terminal className="h-4 w-4" />
+                    <AlertTitle>No Data Found</AlertTitle>
+                    <AlertDescription>
+                        The application connected to the database but could not find any activity data. This could be because:
+                        <ul className="list-disc pl-5 mt-2">
+                            <li>The 'activities' collection in your Firestore database is empty.</li>
+                            <li>The service account credentials in <code>.env.local</code> are for the wrong Firebase project.</li>
+                            <li>The service account does not have the correct Firestore permissions (e.g., 'Cloud Datastore User' role).</li>
+                        </ul>
+                    </AlertDescription>
+                </Alert>
+            </div>
+        )
+      )}
+
       <Separator className="my-12" />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8">
         {activities.length === 0 ? (

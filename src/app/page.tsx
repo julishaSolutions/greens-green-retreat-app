@@ -2,11 +2,12 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { ArrowRight, Trees, Leaf, Sparkles } from 'lucide-react';
+import { ArrowRight, Trees, Leaf, Sparkles, Terminal } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCottages, type Cottage as Suite } from '@/services/contentService';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const experiences = [
   {
@@ -27,10 +28,42 @@ const experiences = [
 ];
 
 export default async function Home() {
+  const isConfigured = !!process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
   const suites = await getCottages(3);
 
   return (
     <div className="flex flex-col">
+       {!isConfigured ? (
+        <div className="container mx-auto px-4 pt-8">
+            <Alert variant="destructive">
+            <Terminal className="h-4 w-4" />
+            <AlertTitle>Configuration Error</AlertTitle>
+            <AlertDescription>
+                The connection to the database is not configured. You are seeing placeholder content because the <code>FIREBASE_SERVICE_ACCOUNT_JSON</code> environment variable is missing.
+                <br />
+                Please check your <code>.env.local</code> file, ensure the variable is set correctly, and then **restart the development server**.
+            </AlertDescription>
+            </Alert>
+        </div>
+        ) : (
+        suites.length === 0 && (
+            <div className="container mx-auto px-4 pt-8">
+                <Alert variant="destructive">
+                    <Terminal className="h-4 w-4" />
+                    <AlertTitle>No Data Found</AlertTitle>
+                    <AlertDescription>
+                        The application connected to the database but could not find any cottage data. This could be because:
+                        <ul className="list-disc pl-5 mt-2">
+                            <li>The 'cottages' collection in your Firestore database is empty.</li>
+                            <li>The service account credentials in <code>.env.local</code> are for the wrong Firebase project.</li>
+                            <li>The service account does not have the correct Firestore permissions (e.g., 'Cloud Datastore User' role).</li>
+                        </ul>
+                    </AlertDescription>
+                </Alert>
+            </div>
+        )
+      )}
+
       <section className="relative h-[90vh] min-h-[600px] w-full flex items-center justify-center text-center text-white overflow-hidden">
         <Image
           src="https://res.cloudinary.com/dx6zxdlts/image/upload/v1751711841/GGR_through_the_lens_of_a_client._happyclient_%EF%B8%8F_greens_green_retreat_8_gz71bu.jpg"
