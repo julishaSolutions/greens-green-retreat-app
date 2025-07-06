@@ -2,12 +2,12 @@
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { toast } from '@/hooks/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Info, Mail, MessageCircle, Clock, CreditCard, Grill, Utensils, Box, ChefHat, User, Sparkles, Star } from 'lucide-react';
+import { Info, Mail, MessageCircle, Clock, CreditCard } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import Link from 'next/link';
+import { Separator } from '@/components/ui/separator';
 
 const faqs = [
     {
