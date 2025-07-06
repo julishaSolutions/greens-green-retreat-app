@@ -5,28 +5,12 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { getActivities } from '@/services/contentService';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertTriangle } from 'lucide-react';
 
 export default async function ExperiencesPage() {
-  const isFirebaseConfigured = !!process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
   const activities = await getActivities();
 
   return (
     <div className="container mx-auto px-4 py-12 md:py-20">
-      {!isFirebaseConfigured && (
-        <div className="mb-8">
-          <Alert variant="destructive">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>Configuration Error</AlertTitle>
-            <AlertDescription>
-              The connection to the database is not configured. You are seeing placeholder content because the <strong>FIREBASE_SERVICE_ACCOUNT_JSON</strong> environment variable is missing.
-              <br/>
-              Please check your <strong>.env.local</strong> file, ensure the variable is set correctly, and then <strong>restart the development server</strong>.
-            </AlertDescription>
-          </Alert>
-        </div>
-      )}
       <div className="text-center">
         <h1 className={cn('text-4xl md:text-5xl font-bold font-headline text-primary')}>GGR: Your Adventure, Your Pace</h1>
         <p className="mt-4 text-lg max-w-3xl mx-auto text-foreground/80 font-body">
