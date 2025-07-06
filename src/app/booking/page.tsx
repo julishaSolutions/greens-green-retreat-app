@@ -1,6 +1,161 @@
+'use client';
 
-// The booking feature has been temporarily disabled to restore application stability.
-// Users will be directed to the inquiry page instead.
+import { useActionState, useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { DateRange } from 'react-day-picker';
+import { addDays, format } from 'date-fns';
+import { Calendar as CalendarIcon, User, Mail, BedDouble, AlertCircle } from 'lucide-react';
+
+import { submitBooking, type BookingFormState } from './actions';
+import { cn } from '@/lib/utils';
+
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { useToast } from '@/hooks/use-toast';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+
+const initialState: BookingFormState = {
+  message: '',
+  errors: {},
+  success: false,
+};
+
 export default function BookingPage() {
-  return null;
+  const searchParams = useSearchParams();
+  const cottageId = searchParams.get('cottageId') || '';
+  const cottageName = searchParams.get('cottageName') || 'one of our cottages';
+
+  const { toast } = useToast();
+  const [state, formAction] = useActionState(submitBooking, initialState);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: new Date(),
+    to: addDays(new Date(), 3),
+  });
+
+  useEffect(() => {
+    if (state.message && state.message !== 'Validation failed. Please check your input.') {
+      toast({
+        title: state.success ? 'Success' : 'Error',
+        description: state.message,
+        variant: state.success ? 'default' : 'destructive',
+      });
+      if (state.success) {
+        formRef.current?.reset();
+        setDate(undefined);
+      }
+    }
+  }, [state, toast]);
+
+  return (
+    <div className="container mx-auto px-4 py-12 md:py-20">
+      <Card className="max-w-2xl mx-auto shadow-lg">
+        <CardHeader>
+          <CardTitle className={cn("text-3xl md:text-4xl font-bold font-headline text-primary")}>Book Your Stay</CardTitle>
+          <CardDescription className="text-lg font-body">
+            You are booking {cottageName}. We can't wait to host you.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form ref={formRef} action={formAction} className="space-y-6 font-sans">
+            <input type="hidden" name="cottageId" value={cottageId} />
+
+            <div>
+              <Label htmlFor="dates" className="font-medium">Select Dates</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    id="dates"
+                    variant={"outline"}
+                    className={cn(
+                      "w-full justify-start text-left font-normal mt-2",
+                      !date && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {date?.from ? (
+                      date.to ? (
+                        <>
+                          {format(date.from, "LLL dd, y")} -{" "}
+                          {format(date.to, "LLL dd, y")}
+                        </>
+                      ) : (
+                        format(date.from, "LLL dd, y")
+                      )
+                    ) : (
+                      <span>Pick a date range</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    initialFocus
+                    mode="range"
+                    defaultMonth={date?.from}
+                    selected={date}
+                    onSelect={setDate}
+                    numberOfMonths={2}
+                    disabled={(day) => day < new Date(new Date().setDate(new Date().getDate() -1))}
+                  />
+                </PopoverContent>
+              </Popover>
+              <input type="hidden" name="checkIn" value={date?.from?.toISOString()} />
+              <input type="hidden" name="checkOut" value={date?.to?.toISOString()} />
+              {state.errors?.checkIn && <p className="text-sm font-medium text-destructive mt-1">{state.errors.checkIn[0]}</p>}
+              {state.errors?.checkOut && <p className="text-sm font-medium text-destructive mt-1">{state.errors.checkOut[0]}</p>}
+            </div>
+
+            <div className="space-y-4">
+                 <div>
+                    <Label htmlFor="guestName">Full Name</Label>
+                    <div className="relative mt-2">
+                        <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                        <Input id="guestName" name="guestName" placeholder="John Doe" className="pl-10" required/>
+                    </div>
+                     {state.errors?.guestName && <p className="text-sm font-medium text-destructive mt-1">{state.errors.guestName[0]}</p>}
+                </div>
+                 <div>
+                    <Label htmlFor="guestEmail">Email Address</Label>
+                    <div className="relative mt-2">
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                        <Input id="guestEmail" name="guestEmail" type="email" placeholder="you@example.com" className="pl-10" required/>
+                    </div>
+                    {state.errors?.guestEmail && <p className="text-sm font-medium text-destructive mt-1">{state.errors.guestEmail[0]}</p>}
+                </div>
+            </div>
+
+            {state.errors?.form && (
+                <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Booking Error</AlertTitle>
+                    <AlertDescription>
+                        {state.errors.form[0]}
+                    </AlertDescription>
+                </Alert>
+            )}
+            
+            {!cottageId && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Missing Cottage Information</AlertTitle>
+                <AlertDescription>
+                    Please select a cottage from the "The Retreat" page before booking.
+                </AlertDescription>
+              </Alert>
+            )}
+
+            <Button type="submit" className="w-full bg-accent hover:bg-accent/90 text-accent-foreground" size="lg" disabled={!cottageId}>
+              <BedDouble className="mr-2 h-5 w-5" />
+              Complete Booking
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  );
 }

@@ -163,8 +163,8 @@ export function CottageDetailView({ cottage, allCottages }: CottageDetailViewPro
                             </div>
                              <Separator />
                              <Button asChild className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-sans mt-4" size="lg">
-                                <Link href="/inquire">
-                                  Inquire Now
+                                <Link href={`/booking?cottageId=${cottage.id}&cottageName=${encodeURIComponent(cottage.name)}`}>
+                                  Book Now
                                 </Link>
                             </Button>
                         </div>

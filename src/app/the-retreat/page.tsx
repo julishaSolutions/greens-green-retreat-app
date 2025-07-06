@@ -154,7 +154,7 @@ export default async function TheRetreatPage() {
                 </CardContent>
                 <CardFooter className="p-6 bg-muted/50">
                   <Button asChild className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-sans">
-                    <Link href="/inquire">Inquire Now</Link>
+                    <Link href={`/booking?cottageId=${item.id}&cottageName=${encodeURIComponent(item.name)}`}>Book Now</Link>
                   </Button>
                 </CardFooter>
               </Card>
