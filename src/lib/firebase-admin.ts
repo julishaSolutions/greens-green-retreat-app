@@ -1,44 +1,65 @@
+
 import * as admin from 'firebase-admin';
 import { getApps } from 'firebase-admin/app';
-// The serviceAccountKey.json file is not committed to version control for security.
-// It should be created in the `src/lib` directory.
-import serviceAccount from './serviceAccountKey.json';
+import fs from 'fs';
+import path from 'path';
 
 let adminDb: admin.firestore.Firestore | null = null;
 let adminAuth: admin.auth.Auth | null = null;
 
-if (getApps().length === 0) {
+function initializeFirebaseAdmin() {
+  // Only run initialization once.
+  if (getApps().length > 0) {
+    if (!adminDb) adminDb = admin.firestore();
+    if (!adminAuth) adminAuth = admin.auth();
+    return;
+  }
+
+  const serviceAccountPath = path.resolve(process.cwd(), 'src/lib/serviceAccountKey.json');
+
   try {
-    // A simple check to see if the default placeholder is still there.
-    if ((serviceAccount as any).project_id === 'please_paste_your_key_here') {
-      throw new Error(
-        "The service account key in 'src/lib/serviceAccountKey.json' is still the default placeholder. Please paste your actual credentials from the Firebase console."
-      );
+    // Check if the file exists
+    if (!fs.existsSync(serviceAccountPath)) {
+      throw new Error(`The service account file was not found at the expected path: ${serviceAccountPath}. Please ensure the file exists.`);
     }
+
+    const serviceAccountString = fs.readFileSync(serviceAccountPath, 'utf-8');
+    
+    // Check if the file is empty or just has the placeholder
+    if (!serviceAccountString || serviceAccountString.includes('please_paste_your_key_here')) {
+        throw new Error("The 'src/lib/serviceAccountKey.json' file is either empty or still contains the placeholder text. Please paste your full service account key from the Firebase console.");
+    }
+
+    const serviceAccount = JSON.parse(serviceAccountString);
+
+    // Validate the parsed object for key properties
+    if (!serviceAccount.project_id) {
+        throw new Error("The service account JSON is invalid or incomplete: missing 'project_id'. Please re-download from Firebase.");
+    }
+     if (!serviceAccount.private_key) {
+        throw new Error("The service account JSON is invalid or incomplete: missing 'private_key'. Please re-download from Firebase.");
+    }
+
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
     });
+    
     console.log('Firebase Admin SDK initialized successfully.');
     adminDb = admin.firestore();
     adminAuth = admin.auth();
+
   } catch (error: any) {
-    // Provide a clear, actionable error message in the console.
     console.error(
       '\n********************************************************************************\n' +
       '** Firebase Admin SDK initialization failed!                                  **\n' +
-      '** This is likely due to an issue with `src/lib/serviceAccountKey.json`.      **\n' +
       '** ---------------------------------------------------------------------------- **\n' +
-      `** Please check that the file exists and contains the complete, valid JSON    **\n` +
-      '** you downloaded from the Firebase console.                                  **\n' +
-      '** ---------------------------------------------------------------------------- **\n' +
-      `** Original Error: ${error.message}\n` +
+      `** Reason: ${error.message}\n` +
       '********************************************************************************\n'
     );
   }
-} else {
-  // If the app is already initialized, just get the instances.
-  if (!adminDb) adminDb = admin.firestore();
-  if (!adminAuth) adminAuth = admin.auth();
 }
+
+// Run the initialization logic when this module is first imported.
+initializeFirebaseAdmin();
 
 export { adminDb, adminAuth };
