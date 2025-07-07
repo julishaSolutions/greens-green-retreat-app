@@ -11,9 +11,17 @@ let adminAuth: admin.auth.Auth | null = null;
 function initializeAdmin() {
   // Check if already initialized to prevent re-initialization on hot reloads
   if (getApps().length > 0) {
-    if (!adminDb) adminDb = admin.firestore();
-    if (!adminAuth) adminAuth = admin.auth();
-    return;
+    const app = getApps()[0];
+    if (app) {
+        try {
+            if (!adminDb) adminDb = admin.firestore(app);
+            if (!adminAuth) adminAuth = admin.auth(app);
+            return;
+        } catch (e) {
+            // This might happen if the app was initialized but is no longer valid.
+            // Allow the process to continue to re-initialize.
+        }
+    }
   }
 
   const serviceAccountPath = path.resolve(process.cwd(), 'src/lib/serviceAccountKey.json');
@@ -52,6 +60,11 @@ function initializeAdmin() {
   
   // STAGE 4: Final attempt to initialize
   try {
+    // THIS IS THE KEY FIX: Explicitly format the private key
+    if (serviceAccount.private_key) {
+        serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
+    }
+
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
     });
