@@ -3,31 +3,45 @@ import * as admin from 'firebase-admin';
 import { getApps } from 'firebase-admin/app';
 import serviceAccount from './serviceAccountKey.json';
 
+// A function to check if the service account object has the required fields.
+function isServiceAccount(obj: any): obj is admin.ServiceAccount {
+    return obj && typeof obj.project_id === 'string' && typeof obj.private_key === 'string' && typeof obj.client_email === 'string';
+}
+
 function initializeAdminApp() {
   if (getApps().length > 0) {
     return admin.app();
   }
 
-  // Check if the placeholder service account key is still present.
-  if (serviceAccount.type === 'please_paste_your_key_here') {
+  // Perform detailed checks on the serviceAccount object.
+  if (!isServiceAccount(serviceAccount)) {
+    let errorMessage = 'Firebase Admin SDK initialization failed. The "src/lib/serviceAccountKey.json" file is not a valid service account key. Please ensure you have pasted the entire contents of your downloaded key file.\n';
+    
+    if (!serviceAccount || typeof serviceAccount !== 'object') {
+        errorMessage += 'Reason: The file appears to be empty or malformed.\n';
+    } else {
+        if (serviceAccount.type === 'please_paste_your_key_here') {
+            errorMessage += 'Reason: The default placeholder content is still present.\n';
+        } else {
+            if (!serviceAccount.project_id) errorMessage += 'Reason: Missing "project_id".\n';
+            if (!serviceAccount.private_key) errorMessage += 'Reason: Missing "private_key".\n';
+            if (!serviceAccount.client_email) errorMessage += 'Reason: Missing "client_email".\n';
+        }
+    }
+
     console.error(
       '************************************************************************************************\n' +
-        '** Firebase Admin SDK is not initialized.                                                     **\n' +
-        "** ACTION REQUIRED: Open the file 'src/lib/serviceAccountKey.json'                            **\n" +
-        "** and replace its contents with your downloaded Firebase service account credentials.      **\n" +
-        '** DO NOT PASTE YOUR KEY INTO THIS FILE (firebase-admin.ts).                                  **\n' +
-        '** You must RESTART the server after updating the JSON file.                                  **\n' +
-        '************************************************************************************************'
+      errorMessage +
+      '************************************************************************************************'
     );
     return null;
   }
 
   try {
     const app = admin.initializeApp({
-      // The type assertion is necessary because we are importing a JSON file.
-      credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+      credential: admin.credential.cert(serviceAccount),
     });
-    console.log('Firebase Admin SDK initialized successfully from serviceAccountKey.json.');
+    console.log('Firebase Admin SDK initialized successfully.');
     return app;
   } catch (error: any) {
     console.error(
