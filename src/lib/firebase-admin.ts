@@ -9,7 +9,7 @@ let adminAuth: admin.auth.Auth | null = null;
 
 // This function will only run ONCE on server startup.
 function initializeAdmin() {
-  // Check if already initialized
+  // Check if already initialized to prevent re-initialization on hot reloads
   if (getApps().length > 0) {
     if (!adminDb) adminDb = admin.firestore();
     if (!adminAuth) adminAuth = admin.auth();
