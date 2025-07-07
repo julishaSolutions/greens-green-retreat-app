@@ -1,39 +1,35 @@
 
 import * as admin from 'firebase-admin';
 import { getApps } from 'firebase-admin/app';
-import fs from 'fs';
-import path from 'path';
 
 let adminDb: admin.firestore.Firestore | null = null;
 let adminAuth: admin.auth.Auth | null = null;
 
+// The credentials will now be sourced from environment variables
+const projectId = process.env.FIREBASE_PROJECT_ID;
+const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+// The private key needs to be formatted correctly.
+// Environment variables might escape the newlines, so we replace \\n with \n.
+const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+
 try {
+  // Check if all required environment variables are present
+  if (!projectId || !clientEmail || !privateKey) {
+    throw new Error('Missing required Firebase Admin credentials in environment variables. Please set FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, and FIREBASE_PRIVATE_KEY in your .env.local file.');
+  }
+  
+  // Initialize the app only if it hasn't been initialized yet
   if (getApps().length === 0) {
-    const serviceAccountPath = path.resolve(process.cwd(), 'src/lib/serviceAccountKey.json');
-    
-    if (!fs.existsSync(serviceAccountPath)) {
-        throw new Error('The file `src/lib/serviceAccountKey.json` was not found. Please create this file and paste your service account key into it.');
-    }
-
-    const serviceAccountString = fs.readFileSync(serviceAccountPath, 'utf-8');
-
-    if (!serviceAccountString.trim() || serviceAccountString.includes('please_paste_your_key_here')) {
-        throw new Error('`serviceAccountKey.json` is empty or has placeholder text. Please paste your full service account key into this file.');
-    }
-
-    const serviceAccount = JSON.parse(serviceAccountString);
-
-    // THIS IS A CRITICAL FIX for environments that mishandle newline characters.
-    if (serviceAccount.private_key) {
-      serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
-    }
-
     admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
+      credential: admin.credential.cert({
+        projectId,
+        clientEmail,
+        privateKey,
+      }),
     });
-    console.log('***************************************************');
-    console.log('**   Firebase Admin SDK initialized successfully!  **');
-    console.log('***************************************************');
+    console.log('*******************************************************************');
+    console.log('**   Firebase Admin SDK initialized successfully from env vars!  **');
+    console.log('*******************************************************************');
   }
   
   adminDb = admin.firestore();
@@ -42,21 +38,12 @@ try {
 } catch (error: any) {
     console.error('\n********************************************************************************');
     console.error('** [CRITICAL ERROR] Firebase Admin SDK initialization failed.                   **');
-    if (error.code === 'ERR_FS_FILE_NOT_FOUND' || error.message.includes('was not found')) {
+    if (error.message.includes('Missing required Firebase Admin credentials')) {
         console.error(`** Details: ${error.message}`);
-    } else if (error instanceof SyntaxError) {
-        console.error('** The `serviceAccountKey.json` file contains invalid JSON.                     **');
-        console.error('** Please re-download the key from the Firebase console and paste it again.     **');
-    } else if (error.message.includes('INTERNAL')) {
-         console.error('** The `serviceAccountKey.json` file appears valid, but the SDK rejected it.    **');
-         console.error('** This could be due to:                                                      **');
-         console.error('**  1. A copy-paste error in the "private_key" value.                         **');
-         console.error('**  2. The service account being disabled in the Google Cloud console.        **');
-         console.error('**  3. The project ID in the key not matching your actual Firebase project.   **');
-         console.error('** -------------------------------------------------------------------------- **');
-         console.error(`** Original Error: ${error.message}`);
     } else {
-        console.error(`** Details: ${error.message}`);
+        console.error('** There is an issue with the Firebase Admin credentials provided in your   **');
+        console.error('** environment variables. Please double-check them.                       **');
+        console.error(`** Original Error: ${error.message}`);
     }
     console.error('********************************************************************************\n');
 }
