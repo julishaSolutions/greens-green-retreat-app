@@ -13,8 +13,10 @@ function initializeAdminApp() {
     console.error(
       '************************************************************************************************\n' +
         '** Firebase Admin SDK is not initialized.                                                     **\n' +
-        "** Please open 'src/lib/serviceAccountKey.json' and paste your service account credentials. **\n" +
-        '** You must RESTART the server after pasting the key.                                       **\n' +
+        "** ACTION REQUIRED: Open the file 'src/lib/serviceAccountKey.json'                            **\n" +
+        "** and replace its contents with your downloaded Firebase service account credentials.      **\n" +
+        '** DO NOT PASTE YOUR KEY INTO THIS FILE (firebase-admin.ts).                                  **\n' +
+        '** You must RESTART the server after updating the JSON file.                                  **\n' +
         '************************************************************************************************'
     );
     return null;
