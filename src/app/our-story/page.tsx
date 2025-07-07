@@ -35,6 +35,7 @@ export default function OurStoryPage() {
                   alt="A vintage photograph of Coomete Farm"
                   fill
                   className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 40vw"
                   data-ai-hint="vintage farm photo"
                 />
               </div>

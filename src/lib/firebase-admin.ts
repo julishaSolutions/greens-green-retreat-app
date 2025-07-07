@@ -1,32 +1,35 @@
 
 import * as admin from 'firebase-admin';
 import { getApps } from 'firebase-admin/app';
+import serviceAccount from './serviceAccountKey.json';
 
 function initializeAdminApp() {
-  // This function ensures we only initialize the app once.
   if (getApps().length > 0) {
     return admin.app();
   }
 
-  const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
-
-  if (!serviceAccountJson) {
-    console.warn(
-      'Firebase Admin SDK is not initialized. The FIREBASE_SERVICE_ACCOUNT_JSON environment variable is not set. Please check your .env.local file and RESTART the development server. Server-side Firebase features will be disabled.'
+  // Check if the placeholder service account key is still present.
+  if (serviceAccount.type === 'please_paste_your_key_here') {
+    console.error(
+      '************************************************************************************************\n' +
+        '** Firebase Admin SDK is not initialized.                                                     **\n' +
+        "** Please open 'src/lib/serviceAccountKey.json' and paste your service account credentials. **\n" +
+        '** You must RESTART the server after pasting the key.                                       **\n' +
+        '************************************************************************************************'
     );
     return null;
   }
 
   try {
-    const serviceAccount = JSON.parse(serviceAccountJson);
     const app = admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
+      // The type assertion is necessary because we are importing a JSON file.
+      credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
     });
-    console.log('Firebase Admin SDK initialized successfully.');
+    console.log('Firebase Admin SDK initialized successfully from serviceAccountKey.json.');
     return app;
   } catch (error: any) {
     console.error(
-      `Failed to initialize Firebase Admin SDK due to a parsing error. Please check the FIREBASE_SERVICE_ACCOUNT_JSON in your .env.local file. It seems to be malformed. Original error: ${error.message}. Server-side Firebase features will be disabled.`
+      `Failed to initialize Firebase Admin SDK. Please check the contents of 'src/lib/serviceAccountKey.json'. Original error: ${error.message}`
     );
     return null;
   }

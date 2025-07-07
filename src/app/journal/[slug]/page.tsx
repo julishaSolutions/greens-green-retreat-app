@@ -1,3 +1,4 @@
+
 import { journalPosts } from '../page';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
@@ -33,6 +34,7 @@ export default function JournalPostPage({ params }: { params: { slug: string } }
             alt={post.title}
             fill
             className="object-cover"
+            sizes="(max-width: 896px) 100vw, 896px"
             data-ai-hint={post.hint}
             priority
           />
