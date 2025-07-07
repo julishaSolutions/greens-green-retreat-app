@@ -8,7 +8,7 @@ import { Wifi, Users, Trees, ShieldCheck, Terminal } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
-import { getCottages, getCollectionNames } from '@/services/contentService';
+import { getCottages } from '@/services/contentService';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const amenityIcons: { [key: string]: React.ReactNode } = {
@@ -21,13 +21,7 @@ const amenityIcons: { [key: string]: React.ReactNode } = {
 const staticAmenities = ['Wi-Fi', 'Spacious Deck', '24-hour Security'];
 
 export default async function TheRetreatPage() {
-  const isConfigured = !!process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
   const cottages = await getCottages();
-
-  let collectionNames: string[] | null = null;
-  if (isConfigured && cottages.length === 0) {
-    collectionNames = await getCollectionNames();
-  }
 
   return (
     <div className="container mx-auto px-4 py-12 md:py-20 scroll-mt-20">
@@ -38,50 +32,10 @@ export default async function TheRetreatPage() {
         </p>
       </div>
 
-       {!isConfigured ? (
-        <div className="my-12">
-            <Alert variant="destructive">
-            <Terminal className="h-4 w-4" />
-            <AlertTitle>Configuration Error</AlertTitle>
-            <AlertDescription>
-                The connection to the database is not configured. You are seeing placeholder content because the <code>FIREBASE_SERVICE_ACCOUNT_JSON</code> environment variable is missing.
-                <br />
-                Please check your <code>.env.local</code> file, ensure the variable is set correctly, and then **restart the development server**.
-            </AlertDescription>
-            </Alert>
-        </div>
-        ) : (
-        cottages.length === 0 && (
-            <div className="my-12">
-                <Alert variant="destructive">
-                    <Terminal className="h-4 w-4" />
-                    <AlertTitle>No Data Found</AlertTitle>
-                    <AlertDescription>
-                        The application connected to your database successfully, but could not find any data in the <strong><code>cottages</code></strong> collection.
-                        <br/><br/>
-                        Please verify that the collection name in your Firestore database is spelled exactly <strong><code>cottages</code></strong> (all lowercase, plural).
-                        {collectionNames && collectionNames.length > 0 && (
-                            <>
-                                <br/><br/>
-                                We found the following collections in your database: <code className="font-mono bg-muted/50 p-1 rounded-md">{collectionNames.join(', ')}</code>
-                            </>
-                        )}
-                         {collectionNames && collectionNames.length === 0 && (
-                            <>
-                                <br/><br/>
-                                We connected to your database, but it appears to be completely empty. Please create the <strong><code>cottages</code></strong> collection and add documents to it.
-                            </>
-                        )}
-                    </AlertDescription>
-                </Alert>
-            </div>
-        )
-      )}
-
       <Separator className="my-12" />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {cottages.length === 0 ? (
-            Array.from({ length: 3 }).map((_, index) => (
+            Array.from({ length: 4 }).map((_, index) => (
                 <Card key={index} className="overflow-hidden flex flex-col shadow-lg">
                     <CardHeader className="p-0">
                         <Skeleton className="h-64 w-full" />

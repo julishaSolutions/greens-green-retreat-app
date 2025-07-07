@@ -47,15 +47,20 @@ export async function getCottages(count?: number): Promise<Cottage[]> {
         console.warn(FIREBASE_NOT_INITIALIZED_WARNING);
         return [];
     }
-    const snapshot = await adminDb.collection('cottages').get();
-    
-    let cottages = snapshot.docs.map(docToCottage);
+    try {
+        const snapshot = await adminDb.collection('cottages').get();
+        
+        let cottages = snapshot.docs.map(docToCottage);
 
-    if (count) {
-        return cottages.slice(0, count);
+        if (count) {
+            return cottages.slice(0, count);
+        }
+
+        return cottages;
+    } catch (error) {
+        console.error("Error fetching cottages:", error);
+        return [];
     }
-
-    return cottages;
 }
 
 export async function getCottageBySlug(slug: string): Promise<Cottage | null> {
@@ -63,13 +68,18 @@ export async function getCottageBySlug(slug: string): Promise<Cottage | null> {
         console.warn(FIREBASE_NOT_INITIALIZED_WARNING);
         return null;
     }
-    const q = adminDb.collection('cottages').where('slug', '==', slug).limit(1);
-    const snapshot = await q.get();
+    try {
+        const q = adminDb.collection('cottages').where('slug', '==', slug).limit(1);
+        const snapshot = await q.get();
 
-    if (snapshot.empty) {
+        if (snapshot.empty) {
+            return null;
+        }
+        return docToCottage(snapshot.docs[0]);
+    } catch (error) {
+        console.error(`Error fetching cottage by slug ${slug}:`, error);
         return null;
     }
-    return docToCottage(snapshot.docs[0]);
 }
 
 export async function getActivities(): Promise<Activity[]> {
@@ -77,31 +87,22 @@ export async function getActivities(): Promise<Activity[]> {
         console.warn(FIREBASE_NOT_INITIALIZED_WARNING);
         return [];
     }
-    const snapshot = await adminDb.collection('activities').get();
-
-    return snapshot.docs.map(doc => {
-        const data = doc.data();
-        return {
-            id: doc.id,
-            name: data.name || '',
-            description: data.description || '',
-            imageUrl: data.imageUrl || data['imageUrl '] || '', 
-            imageHint: data.imageHint || '',
-            ...data,
-        }
-    });
-}
-
-export async function getCollectionNames(): Promise<string[]> {
-    if (!adminDb) {
-        console.warn(FIREBASE_NOT_INITIALIZED_WARNING);
-        return [];
-    }
     try {
-        const collections = await adminDb.listCollections();
-        return collections.map(collection => collection.id);
+        const snapshot = await adminDb.collection('activities').get();
+
+        return snapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                name: data.name || '',
+                description: data.description || '',
+                imageUrl: data.imageUrl || data['imageUrl '] || '', 
+                imageHint: data.imageHint || '',
+                ...data,
+            }
+        });
     } catch (error) {
-        console.error("Failed to list collections:", error);
+        console.error("Error fetching activities:", error);
         return [];
     }
 }
