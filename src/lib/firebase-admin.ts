@@ -1,44 +1,44 @@
-
 import * as admin from 'firebase-admin';
 import { getApps } from 'firebase-admin/app';
-// The 'serviceAccountKey.json' file is gitignored. You must create it manually.
-// It is imported here and used to initialize the Firebase Admin SDK.
+// The serviceAccountKey.json file is not committed to version control for security.
+// It should be created in the `src/lib` directory.
 import serviceAccount from './serviceAccountKey.json';
 
 let adminDb: admin.firestore.Firestore | null = null;
 let adminAuth: admin.auth.Auth | null = null;
 
-// --- Robust Initialization Logic ---
-try {
-  // 1. Check for the default placeholder key.
-  if ((serviceAccount as any).type === 'please_paste_your_key_here') {
-    throw new Error('The service account key in `src/lib/serviceAccountKey.json` is still the default placeholder. Please paste your actual credentials.');
-  }
-
-  // 2. Perform a basic structural check on the key.
-  if (!serviceAccount.project_id || !serviceAccount.private_key || !serviceAccount.client_email) {
-    throw new Error('The service account key in `src/lib/serviceAccountKey.json` appears to be malformed or incomplete. It is missing required fields like `project_id`, `private_key`, or `client_email`.');
-  }
-
-  // 3. Initialize the app if it hasn't been already.
-  if (!getApps().length) {
+if (getApps().length === 0) {
+  try {
+    // A simple check to see if the default placeholder is still there.
+    if ((serviceAccount as any).project_id === 'please_paste_your_key_here') {
+      throw new Error(
+        "The service account key in 'src/lib/serviceAccountKey.json' is still the default placeholder. Please paste your actual credentials from the Firebase console."
+      );
+    }
     admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount as any),
+      credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
     });
     console.log('Firebase Admin SDK initialized successfully.');
+    adminDb = admin.firestore();
+    adminAuth = admin.auth();
+  } catch (error: any) {
+    // Provide a clear, actionable error message in the console.
+    console.error(
+      '\n********************************************************************************\n' +
+      '** Firebase Admin SDK initialization failed!                                  **\n' +
+      '** This is likely due to an issue with `src/lib/serviceAccountKey.json`.      **\n' +
+      '** ---------------------------------------------------------------------------- **\n' +
+      `** Please check that the file exists and contains the complete, valid JSON    **\n` +
+      '** you downloaded from the Firebase console.                                  **\n' +
+      '** ---------------------------------------------------------------------------- **\n' +
+      `** Original Error: ${error.message}\n` +
+      '********************************************************************************\n'
+    );
   }
-
-  // 4. Assign the db and auth instances.
-  adminDb = admin.firestore();
-  adminAuth = admin.auth();
-
-} catch (error: any) {
-  // Catch any errors during the process and log a clear message.
-  console.error('********************************************************************************');
-  console.error('** Firebase Admin SDK initialization failed!                                  **');
-  console.error('** -----------------------------------------                                  **');
-  console.error(`** Reason: ${error.message}`);
-  console.error('********************************************************************************');
+} else {
+  // If the app is already initialized, just get the instances.
+  if (!adminDb) adminDb = admin.firestore();
+  if (!adminAuth) adminAuth = admin.auth();
 }
 
 export { adminDb, adminAuth };
