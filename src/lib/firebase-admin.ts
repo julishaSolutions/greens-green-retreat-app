@@ -8,7 +8,6 @@ let adminDb: admin.firestore.Firestore | null = null;
 let adminAuth: admin.auth.Auth | null = null;
 
 try {
-  // Check if already initialized to prevent re-initialization on hot reloads
   if (getApps().length === 0) {
     const serviceAccountPath = path.resolve(process.cwd(), 'src/lib/serviceAccountKey.json');
     
@@ -37,14 +36,23 @@ try {
     console.log('***************************************************');
   }
   
-  // Assign the services after successful initialization
   adminDb = admin.firestore();
   adminAuth = admin.auth();
 
 } catch (error: any) {
     console.error('\n********************************************************************************');
     console.error('** [CRITICAL ERROR] Firebase Admin SDK initialization failed.                   **');
-    console.error(`** Details: ${error.message}`);
+    if (error.message.includes('INTERNAL')) {
+         console.error('** The `serviceAccountKey.json` file appears valid, but the SDK rejected it.    **');
+         console.error('** This could be due to:                                                      **');
+         console.error('**  1. A copy-paste error in the "private_key" value.                         **');
+         console.error('**  2. The service account being disabled in the Google Cloud console.        **');
+         console.error('**  3. The project ID in the key not matching your actual Firebase project.   **');
+         console.error('** -------------------------------------------------------------------------- **');
+         console.error(`** Original Error: ${error.message}`);
+    } else {
+        console.error(`** Details: ${error.message}`);
+    }
     console.error('********************************************************************************\n');
 }
 
