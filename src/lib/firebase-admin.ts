@@ -29,13 +29,13 @@ function initializeFirebaseAdmin() {
 
   try {
     if (!fs.existsSync(serviceAccountPath)) {
-      logError(`The service account file was not found at the expected path: ${serviceAccountPath}. Please create this file.`);
+      logError(`The service account file was not found at the expected path.`, `Expected path: ${serviceAccountPath}. Please create this file and paste your service account key into it.`);
       return;
     }
 
     const serviceAccountString = fs.readFileSync(serviceAccountPath, 'utf-8');
     if (!serviceAccountString.trim() || serviceAccountString.includes('please_paste_your_key_here')) {
-        logError("The 'src/lib/serviceAccountKey.json' file is either empty or still contains the placeholder text. Please paste your full service account key from the Firebase console.");
+        logError("The 'src/lib/serviceAccountKey.json' file is either empty or still contains the placeholder text.", "Please paste your full service account key, which you can download from your Firebase project settings, into this file.");
         return;
     }
 
@@ -43,16 +43,16 @@ function initializeFirebaseAdmin() {
     try {
         serviceAccount = JSON.parse(serviceAccountString);
     } catch (e: any) {
-        logError("The 'src/lib/serviceAccountKey.json' file contains invalid JSON. Please ensure it is a valid JSON object.", `Parsing error: ${e.message}`);
+        logError("The 'src/lib/serviceAccountKey.json' file contains invalid JSON.", `Please ensure it is a valid JSON object. Parsing error: ${e.message}`);
         return;
     }
     
     if (!serviceAccount.project_id) {
-        logError("The service account JSON is invalid or incomplete: missing 'project_id'. Please re-download the key from the Firebase console and paste the entire contents.");
+        logError("The service account JSON is invalid or incomplete: missing 'project_id'.", "Please re-download the key from the Firebase console and paste the entire contents into the file.");
         return;
     }
      if (!serviceAccount.private_key) {
-        logError("The service account JSON is invalid or incomplete: missing 'private_key'. Please re-download the key from the Firebase console and paste the entire contents.");
+        logError("The service account JSON is invalid or incomplete: missing 'private_key'.", "Please re-download the key from the Firebase console and paste the entire contents into the file.");
         return;
     }
 
