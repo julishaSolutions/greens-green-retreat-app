@@ -15,6 +15,7 @@ function initializeFirebaseAdmin() {
   }
 
   const serviceAccountPath = path.resolve(process.cwd(), 'src/lib/serviceAccountKey.json');
+  
   const logError = (reason: string, details?: string) => {
     console.error(
       '\n********************************************************************************\n' +
