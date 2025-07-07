@@ -6,7 +6,6 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { getActivities } from '@/services/contentService';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Terminal } from 'lucide-react';
 
 export default async function ExperiencesPage() {
   const activities = await getActivities();
