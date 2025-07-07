@@ -2,10 +2,9 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { ArrowRight, Trees, Leaf, Sparkles } from 'lucide-react';
+import { ArrowRight, Trees, Leaf, Sparkles, AlertCircle } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Skeleton } from '@/components/ui/skeleton';
 import { getCottages, type Cottage as Suite } from '@/services/contentService';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
@@ -92,21 +91,13 @@ export default async function Home() {
           </div>
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {suites.length === 0 ? (
-              Array.from({ length: 3 }).map((_, index) => (
-                <Card key={index} className="overflow-hidden flex flex-col group">
-                  <CardHeader className="p-0">
-                    <Skeleton className="h-60 w-full" />
-                  </CardHeader>
-                  <CardContent className="pt-6 flex-grow">
-                    <Skeleton className="h-7 w-3/4 mb-2" />
-                    <Skeleton className="h-4 w-full mb-1" />
-                    <Skeleton className="h-4 w-5/6" />
-                  </CardContent>
-                  <CardFooter>
-                    <Skeleton className="h-10 w-full" />
-                  </CardFooter>
-                </Card>
-              ))
+              <Alert variant="destructive" className="md:col-span-2 lg:col-span-3">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Error Loading Suites</AlertTitle>
+                <AlertDescription>
+                    We couldn't load the suite information at this time. The connection to the database may have failed. Please check the server logs for more details.
+                </AlertDescription>
+              </Alert>
             ) : (
               suites.map((item) => {
                 const firstValidImage = Array.isArray(item.imageUrls)

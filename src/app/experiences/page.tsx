@@ -1,11 +1,11 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { getActivities } from '@/services/contentService';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
 
 export default async function ExperiencesPage() {
   const activities = await getActivities();
@@ -21,18 +21,13 @@ export default async function ExperiencesPage() {
       <Separator className="my-12" />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8">
         {activities.length === 0 ? (
-             Array.from({ length: 6 }).map((_, index) => (
-                <Card key={index} className="overflow-hidden flex flex-col shadow-lg">
-                    <CardHeader className="p-0">
-                        <Skeleton className="h-64 w-full" />
-                    </CardHeader>
-                    <CardContent className="p-6 flex-grow">
-                        <Skeleton className="h-7 w-3/4 mb-2" />
-                        <Skeleton className="h-4 w-full mb-1" />
-                        <Skeleton className="h-4 w-5/6" />
-                    </CardContent>
-                </Card>
-             ))
+             <Alert variant="destructive" className="sm:col-span-2 lg:col-span-3">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Error Loading Activities</AlertTitle>
+                <AlertDescription>
+                    We couldn't load the activities information at this time. The connection to the database may have failed. Please check the server logs for more details.
+                </AlertDescription>
+            </Alert>
         ) : (
             activities.map((activity) => {
                 const imageUrlSource = (activity as any).imageUrl || (activity as any)['imageUrl '];

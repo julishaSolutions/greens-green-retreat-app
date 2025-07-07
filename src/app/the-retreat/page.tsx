@@ -4,10 +4,9 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
-import { Wifi, Users, Trees, ShieldCheck } from 'lucide-react';
+import { Wifi, Users, Trees, ShieldCheck, AlertCircle } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Skeleton } from '@/components/ui/skeleton';
 import { getCottages } from '@/services/contentService';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
@@ -35,24 +34,13 @@ export default async function TheRetreatPage() {
       <Separator className="my-12" />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {cottages.length === 0 ? (
-            Array.from({ length: 4 }).map((_, index) => (
-                <Card key={index} className="overflow-hidden flex flex-col shadow-lg">
-                    <CardHeader className="p-0">
-                        <Skeleton className="h-64 w-full" />
-                    </CardHeader>
-                    <CardContent className="p-6 flex-grow">
-                        <Skeleton className="h-8 w-3/4 mb-2" />
-                        <Skeleton className="h-6 w-1/4 mb-4" />
-                        <Skeleton className="h-4 w-full mb-1" />
-                        <Skeleton className="h-4 w-full mb-1" />
-                        <Skeleton className="h-4 w-5/6 mb-4" />
-                        <Skeleton className="h-10 w-full" />
-                    </CardContent>
-                    <CardFooter className="p-6 bg-muted/50">
-                        <Skeleton className="h-10 w-full" />
-                    </CardFooter>
-                </Card>
-            ))
+            <Alert variant="destructive" className="md:col-span-2">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Error Loading Cottages</AlertTitle>
+                <AlertDescription>
+                    We couldn't load the cottage information at this time. The connection to the database may have failed. Please check the server logs for more details.
+                </AlertDescription>
+            </Alert>
         ) : (
           cottages.map((item) => {
             const validImageUrls = Array.isArray(item.imageUrls)
