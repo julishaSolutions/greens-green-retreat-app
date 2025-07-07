@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { getCottages, type Cottage as Suite } from '@/services/contentService';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const experiences = [
   {
@@ -90,7 +91,23 @@ export default async function Home() {
             </p>
           </div>
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {suites.length === 0 ? (
+            {!suites ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <Card key={i} className="overflow-hidden flex flex-col group">
+                  <CardHeader className="p-0">
+                    <Skeleton className="h-60 w-full" />
+                  </CardHeader>
+                  <CardContent className="pt-6 flex-grow">
+                    <Skeleton className="h-6 w-2/3 mb-2" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-5/6 mt-2" />
+                  </CardContent>
+                  <CardFooter>
+                    <Skeleton className="h-10 w-full" />
+                  </CardFooter>
+                </Card>
+              ))
+            ) : suites.length === 0 ? (
               <Alert variant="destructive" className="md:col-span-2 lg:col-span-3">
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle>Error Loading Suites</AlertTitle>

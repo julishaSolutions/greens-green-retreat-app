@@ -9,6 +9,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { getCottages } from '@/services/contentService';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const amenityIcons: { [key: string]: React.ReactNode } = {
     'Wi-Fi': <Wifi className="h-4 w-4" />,
@@ -33,7 +34,25 @@ export default async function TheRetreatPage() {
 
       <Separator className="my-12" />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {cottages.length === 0 ? (
+        {!cottages ? (
+           Array.from({ length: 4 }).map((_, i) => (
+             <Card key={i} className="overflow-hidden flex flex-col shadow-lg group">
+                <CardHeader className="p-0">
+                  <Skeleton className="h-64 w-full" />
+                </CardHeader>
+                <CardContent className="p-6 flex-grow">
+                  <Skeleton className="h-6 w-1/2 mb-2" />
+                  <Skeleton className="h-5 w-1/3 mb-4" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-5/6 mt-2" />
+                  <Skeleton className="h-4 w-3/4 mt-2" />
+                </CardContent>
+                <CardFooter className="p-6 bg-muted/50">
+                  <Skeleton className="h-10 w-full" />
+                </CardFooter>
+             </Card>
+           ))
+        ) : cottages.length === 0 ? (
             <Alert variant="destructive" className="md:col-span-2">
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle>Error Loading Cottages</AlertTitle>

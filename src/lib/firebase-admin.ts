@@ -42,7 +42,12 @@ try {
 } catch (error: any) {
     console.error('\n********************************************************************************');
     console.error('** [CRITICAL ERROR] Firebase Admin SDK initialization failed.                   **');
-    if (error.message.includes('INTERNAL')) {
+    if (error.code === 'ERR_FS_FILE_NOT_FOUND' || error.message.includes('was not found')) {
+        console.error(`** Details: ${error.message}`);
+    } else if (error instanceof SyntaxError) {
+        console.error('** The `serviceAccountKey.json` file contains invalid JSON.                     **');
+        console.error('** Please re-download the key from the Firebase console and paste it again.     **');
+    } else if (error.message.includes('INTERNAL')) {
          console.error('** The `serviceAccountKey.json` file appears valid, but the SDK rejected it.    **');
          console.error('** This could be due to:                                                      **');
          console.error('**  1. A copy-paste error in the "private_key" value.                         **');
