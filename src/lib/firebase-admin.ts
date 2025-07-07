@@ -7,68 +7,84 @@ import path from 'path';
 let adminDb: admin.firestore.Firestore | null = null;
 let adminAuth: admin.auth.Auth | null = null;
 
-function initializeFirebaseAdmin() {
-  if (getApps().length > 0) {
-    if (!adminDb) adminDb = admin.firestore();
-    if (!adminAuth) adminAuth = admin.auth();
+function performDiagnostics() {
+  console.log('\n--- Firebase Admin Initialization Diagnostics ---');
+  const serviceAccountPath = path.resolve(process.cwd(), 'src/lib/serviceAccountKey.json');
+  console.log(`[DIAGNOSTIC] Checking for service account file at: ${serviceAccountPath}`);
+
+  if (!fs.existsSync(serviceAccountPath)) {
+    console.error('\n********************************************************************************');
+    console.error('** [DIAGNOSTIC] FAILURE: The file `src/lib/serviceAccountKey.json` was not found. **');
+    console.error('** Please create this file and paste your service account key into it.        **');
+    console.error('********************************************************************************\n');
+    console.log('--- End Diagnostics ---\n');
+    return;
+  }
+  console.log('[DIAGNOSTIC] SUCCESS: File exists.');
+
+  const serviceAccountString = fs.readFileSync(serviceAccountPath, 'utf-8');
+  if (!serviceAccountString.trim() || serviceAccountString.includes('please_paste_your_key_here')) {
+    console.error('\n********************************************************************************');
+    console.error('** [DIAGNOSTIC] FAILURE: `serviceAccountKey.json` is empty or has a placeholder. **');
+    console.error('** Please paste your full service account key into this file.                 **');
+    console.error('********************************************************************************\n');
+    console.log('--- End Diagnostics ---\n');
+    return;
+  }
+  console.log('[DIAGNOSTIC] SUCCESS: File is not empty and does not contain placeholder text.');
+
+  let serviceAccount;
+  try {
+    serviceAccount = JSON.parse(serviceAccountString);
+    console.log('[DIAGNOSTIC] SUCCESS: File content was successfully parsed as JSON.');
+  } catch (e: any) {
+    console.error('\n********************************************************************************');
+    console.error('** [DIAGNOSTIC] FAILURE: The `serviceAccountKey.json` file is not valid JSON.    **');
+    console.error('** Please re-copy the entire file from the Firebase console.                  **');
+    console.error(`** Details: ${e.message}`);
+    console.error('********************************************************************************\n');
+    console.log('--- End Diagnostics ---\n');
     return;
   }
 
-  const serviceAccountPath = path.resolve(process.cwd(), 'src/lib/serviceAccountKey.json');
-  
-  const logError = (reason: string, details?: string) => {
-    console.error(
-      '\n********************************************************************************\n' +
-      '** Firebase Admin SDK initialization failed!                                  **\n' +
-      '** ---------------------------------------------------------------------------- **\n' +
-      `** Reason: ${reason}\n` +
-      (details ? `** Details: ${details}\n` : '') +
-      '********************************************************************************\n'
-    );
-  };
+  const requiredKeys = ['type', 'project_id', 'private_key_id', 'private_key', 'client_email'];
+  const missingKeys = requiredKeys.filter(key => !(key in serviceAccount));
 
-  try {
-    if (!fs.existsSync(serviceAccountPath)) {
-      logError(`The service account file was not found at the expected path.`, `Expected path: ${serviceAccountPath}. Please create this file and paste your service account key into it.`);
+  if (missingKeys.length > 0) {
+      console.error('\n********************************************************************************');
+      console.error('** [DIAGNOSTIC] FAILURE: The service account JSON is missing required keys.     **');
+      console.error(`** Missing Keys: [${missingKeys.join(', ')}]`);
+      console.error('** Please ensure you have copied the ENTIRE service account file.             **');
+      console.error('********************************************************************************\n');
+      console.log('--- End Diagnostics ---\n');
       return;
-    }
-
-    const serviceAccountString = fs.readFileSync(serviceAccountPath, 'utf-8');
-    if (!serviceAccountString.trim() || serviceAccountString.includes('please_paste_your_key_here')) {
-        logError("The 'src/lib/serviceAccountKey.json' file is either empty or still contains the placeholder text.", "Please paste your full service account key, which you can download from your Firebase project settings, into this file.");
-        return;
-    }
-
-    let serviceAccount: admin.ServiceAccount;
-    try {
-        serviceAccount = JSON.parse(serviceAccountString);
-    } catch (e: any) {
-        logError("The 'src/lib/serviceAccountKey.json' file contains invalid JSON.", `Please ensure it is a valid JSON object. Parsing error: ${e.message}`);
-        return;
-    }
-    
-    if (!serviceAccount.project_id) {
-        logError("The service account JSON is invalid or incomplete: missing 'project_id'.", "Please re-download the key from the Firebase console and paste the entire contents into the file.");
-        return;
-    }
-     if (!serviceAccount.private_key) {
-        logError("The service account JSON is invalid or incomplete: missing 'private_key'.", "Please re-download the key from the Firebase console and paste the entire contents into the file.");
-        return;
-    }
-
+  }
+  console.log('[DIAGNOSTIC] SUCCESS: All required keys are present in the JSON object.');
+  console.log('--- End Diagnostics ---\n');
+  
+  try {
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
     });
-    
-    console.log('Firebase Admin SDK initialized successfully.');
     adminDb = admin.firestore();
     adminAuth = admin.auth();
-
-  } catch (error: any) {
-    logError(error.message);
+    console.log('\n***************************************************');
+    console.log('**   Firebase Admin SDK initialized successfully!  **');
+    console.log('***************************************************\n');
+  } catch(error: any) {
+      console.error('\n********************************************************************************');
+      console.error('** [DIAGNOSTIC] FINAL FAILURE: SDK initialization failed unexpectedly.         **');
+      console.error(`** Reason: ${error.message}`);
+      console.error('** The credentials appear valid, but the SDK rejected them.                 **');
+      console.error('********************************************************************************\n');
   }
 }
 
-initializeFirebaseAdmin();
+if (getApps().length === 0) {
+    performDiagnostics();
+} else {
+    adminDb = admin.firestore();
+    adminAuth = admin.auth();
+}
 
 export { adminDb, adminAuth };
