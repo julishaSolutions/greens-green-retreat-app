@@ -1,5 +1,4 @@
 
-'use server';
 import { adminDb } from '@/lib/firebase-admin';
 import type { DocumentData, Query } from 'firebase-admin/firestore';
 
