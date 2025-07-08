@@ -21,7 +21,7 @@ export default async function ExperiencesPage() {
       </div>
       <Separator className="my-12" />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8">
-        {!activities ? (
+        {!activities || activities.length === 0 ? (
           Array.from({length: 6}).map((_, i) => (
             <Card key={i} className="overflow-hidden flex flex-col shadow-lg">
               <CardHeader className="p-0">
@@ -33,14 +33,6 @@ export default async function ExperiencesPage() {
               </CardContent>
             </Card>
           ))
-        ) : activities.length === 0 ? (
-             <Alert variant="destructive" className="sm:col-span-2 lg:col-span-3">
-                <AlertCircle className="h-4 w-4" />
-                <AlertTitle>Error Loading Activities</AlertTitle>
-                <AlertDescription>
-                    We couldn't load the activities information at this time. The connection to the database may have failed. Please check the server logs for more details.
-                </AlertDescription>
-            </Alert>
         ) : (
             activities.map((activity) => {
                 const imageUrlSource = (activity as any).imageUrl || (activity as any)['imageUrl '];

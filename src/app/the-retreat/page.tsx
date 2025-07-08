@@ -34,7 +34,7 @@ export default async function TheRetreatPage() {
 
       <Separator className="my-12" />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {!cottages ? (
+        {!cottages || cottages.length === 0 ? (
            Array.from({ length: 4 }).map((_, i) => (
              <Card key={i} className="overflow-hidden flex flex-col shadow-lg group">
                 <CardHeader className="p-0">
@@ -52,14 +52,6 @@ export default async function TheRetreatPage() {
                 </CardFooter>
              </Card>
            ))
-        ) : cottages.length === 0 ? (
-            <Alert variant="destructive" className="md:col-span-2">
-                <AlertCircle className="h-4 w-4" />
-                <AlertTitle>Error Loading Cottages</AlertTitle>
-                <AlertDescription>
-                    We couldn't load the cottage information at this time. The connection to the database may have failed. Please check the server logs for more details.
-                </AlertDescription>
-            </Alert>
         ) : (
           cottages.map((item) => {
             const validImageUrls = Array.isArray(item.imageUrls)

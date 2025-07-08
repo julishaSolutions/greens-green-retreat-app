@@ -91,7 +91,7 @@ export default async function Home() {
             </p>
           </div>
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {!suites ? (
+            {!suites || suites.length === 0 ? (
               Array.from({ length: 3 }).map((_, i) => (
                 <Card key={i} className="overflow-hidden flex flex-col group">
                   <CardHeader className="p-0">
@@ -107,14 +107,6 @@ export default async function Home() {
                   </CardFooter>
                 </Card>
               ))
-            ) : suites.length === 0 ? (
-              <Alert variant="destructive" className="md:col-span-2 lg:col-span-3">
-                <AlertCircle className="h-4 w-4" />
-                <AlertTitle>Error Loading Suites</AlertTitle>
-                <AlertDescription>
-                    We couldn't load the suite information at this time. The connection to the database may have failed. Please check the server logs for more details.
-                </AlertDescription>
-              </Alert>
             ) : (
               suites.map((item) => {
                 const firstValidImage = Array.isArray(item.imageUrls)
