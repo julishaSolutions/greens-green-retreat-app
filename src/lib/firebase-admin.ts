@@ -5,47 +5,39 @@ import { getApps } from 'firebase-admin/app';
 let adminDb: admin.firestore.Firestore | null = null;
 let adminAuth: admin.auth.Auth | null = null;
 
-// The credentials will now be sourced from environment variables
+// This is the new, more robust way to get credentials
 const projectId = process.env.FIREBASE_PROJECT_ID;
 const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
 // The private key needs to be formatted correctly.
-// Environment variables might escape the newlines, so we replace \\n with \n.
+// Environment variables often escape newline characters, so we must replace them back.
 const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
 
-try {
-  // Check if all required environment variables are present
-  if (!projectId || !clientEmail || !privateKey) {
-    throw new Error('Missing required Firebase Admin credentials in environment variables. Please set FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, and FIREBASE_PRIVATE_KEY in your .env.local file.');
-  }
-  
-  // Initialize the app only if it hasn't been initialized yet
+// We will only attempt to initialize if the environment variables are all present.
+if (projectId && clientEmail && privateKey) {
   if (getApps().length === 0) {
-    admin.initializeApp({
-      credential: admin.credential.cert({
-        projectId,
-        clientEmail,
-        privateKey,
-      }),
-    });
-    console.log('*******************************************************************');
-    console.log('**   Firebase Admin SDK initialized successfully from env vars!  **');
-    console.log('*******************************************************************');
-  }
-  
-  adminDb = admin.firestore();
-  adminAuth = admin.auth();
-
-} catch (error: any) {
-    console.error('\n********************************************************************************');
-    console.error('** [CRITICAL ERROR] Firebase Admin SDK initialization failed.                   **');
-    if (error.message.includes('Missing required Firebase Admin credentials')) {
-        console.error(`** Details: ${error.message}`);
-    } else {
-        console.error('** There is an issue with the Firebase Admin credentials provided in your   **');
-        console.error('** environment variables. Please double-check them.                       **');
-        console.error(`** Original Error: ${error.message}`);
+    try {
+      admin.initializeApp({
+        credential: admin.credential.cert({
+          projectId,
+          clientEmail,
+          privateKey,
+        }),
+      });
+      console.log('✅ Firebase Admin SDK initialized successfully from environment variables!');
+      adminDb = admin.firestore();
+      adminAuth = admin.auth();
+    } catch (error: any) {
+      console.error('❌ [CRITICAL ERROR] Firebase Admin SDK initialization failed even with environment variables.');
+      console.error('   This likely means the values in your .env.local file are incorrect or the service account has a permissions issue.');
+      console.error(`   Original Error: ${error.message}`);
     }
-    console.error('********************************************************************************\n');
+  } else {
+    // If the app is already initialized, just get the instances.
+    adminDb = admin.firestore();
+    adminAuth = admin.auth();
+  }
+} else {
+    console.warn('⚠️ Firebase Admin environment variables are missing. Server-side Firebase features will be disabled.');
 }
 
 export { adminDb, adminAuth };
