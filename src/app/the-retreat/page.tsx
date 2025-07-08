@@ -57,9 +57,15 @@ export default async function TheRetreatPage() {
             const validImageUrls = Array.isArray(item.imageUrls)
               ? item.imageUrls.filter(url => typeof url === 'string' && url.trim() !== '')
               : [];
+            const isOliviaCottage = item.name === 'Olivia Cottage';
 
             return (
-              <Card key={item.id} id={item.id} className="overflow-hidden flex flex-col shadow-lg hover:shadow-2xl transition-shadow duration-300 group scroll-mt-24">
+              <Card key={item.id} id={item.id} className="relative overflow-hidden flex flex-col shadow-lg hover:shadow-2xl transition-shadow duration-300 group scroll-mt-24">
+                {isOliviaCottage && (
+                  <div className="absolute top-4 -right-11 bg-primary text-primary-foreground text-center font-bold py-1 px-10 transform rotate-45 z-10 shadow-lg text-sm">
+                    Fully Booked
+                  </div>
+                )}
                 <CardHeader className="p-0">
                   <Carousel className="w-full">
                     <CarouselContent>
@@ -120,9 +126,15 @@ export default async function TheRetreatPage() {
                   </div>
                 </CardContent>
                 <CardFooter className="p-6 bg-muted/50">
-                  <Button asChild className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-sans">
-                    <Link href={`/booking?cottageId=${item.id}&cottageName=${encodeURIComponent(item.name)}`}>Book Now</Link>
-                  </Button>
+                   {isOliviaCottage ? (
+                    <Button className="w-full font-sans" disabled>
+                      Fully Booked for the Year
+                    </Button>
+                  ) : (
+                    <Button asChild className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-sans">
+                      <Link href={`/booking?cottageId=${item.id}&cottageName=${encodeURIComponent(item.name)}`}>Book Now</Link>
+                    </Button>
+                  )}
                 </CardFooter>
               </Card>
             );

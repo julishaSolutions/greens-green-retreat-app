@@ -1,14 +1,16 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
-import { Wifi, Users, Trees, ShieldCheck, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Wifi, Users, Trees, ShieldCheck, ChevronLeft, ChevronRight, CalendarX } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import type { Cottage } from '@/services/contentService';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 type CottageNavItem = {
     id: string;
@@ -31,6 +33,7 @@ const amenityIcons: { [key: string]: React.ReactNode } = {
 const staticAmenities = ['Wi-Fi', 'Spacious Deck', '24-hour Security'];
 
 export function CottageDetailView({ cottage, allCottages }: CottageDetailViewProps) {
+  const isOliviaCottage = cottage.name === 'Olivia Cottage';
   const cottageIndex = allCottages.findIndex(c => c.slug === cottage.slug);
   let prevCottage: CottageNavItem | null = null;
   let nextCottage: CottageNavItem | null = null;
@@ -48,6 +51,16 @@ export function CottageDetailView({ cottage, allCottages }: CottageDetailViewPro
 
   return (
     <div className="container mx-auto px-4 py-12 md:py-20">
+      {isOliviaCottage && (
+        <Alert variant="destructive" className="mb-8 max-w-5xl mx-auto border-2">
+          <CalendarX className="h-4 w-4" />
+          <AlertTitle className="font-bold">Fully Booked for the Year</AlertTitle>
+          <AlertDescription>
+            We are sorry, Olivia Cottage is fully booked. Please feel free to explore our other lovely cottages.
+          </AlertDescription>
+        </Alert>
+      )}
+
       <Carousel className="w-full max-w-5xl mx-auto group mb-12">
         <CarouselContent>
           {validImageUrls.length > 0 ? (
@@ -162,11 +175,17 @@ export function CottageDetailView({ cottage, allCottages }: CottageDetailViewPro
                               ))}
                             </div>
                              <Separator />
-                             <Button asChild className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-sans mt-4" size="lg">
-                                <Link href={`/booking?cottageId=${cottage.id}&cottageName=${encodeURIComponent(cottage.name)}`}>
-                                  Book Now
-                                </Link>
-                            </Button>
+                              {isOliviaCottage ? (
+                                <Button className="w-full font-sans mt-4" size="lg" disabled>
+                                  Fully Booked
+                                </Button>
+                              ) : (
+                                <Button asChild className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-sans mt-4" size="lg">
+                                  <Link href={`/booking?cottageId=${cottage.id}&cottageName=${encodeURIComponent(cottage.name)}`}>
+                                    Book Now
+                                  </Link>
+                                </Button>
+                              )}
                         </div>
                     </CardContent>
                 </Card>
