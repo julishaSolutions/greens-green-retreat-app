@@ -6,7 +6,12 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function getDisplayImageUrl(url?: string): string | undefined {
-  if (url && (url.includes('instagram.com/p/') || url.includes('instagram.com/reel/'))) {
+  if (!url) {
+    return undefined;
+  }
+
+  // Handle Instagram URLs
+  if (url.includes('instagram.com/p/') || url.includes('instagram.com/reel/')) {
     try {
       const urlObject = new URL(url);
       let { pathname } = urlObject;
@@ -21,5 +26,23 @@ export function getDisplayImageUrl(url?: string): string | undefined {
       return url;
     }
   }
+
+  // Handle Google Drive URLs
+  if (url.includes('drive.google.com/file/d/')) {
+    try {
+        const urlObject = new URL(url);
+        const pathParts = urlObject.pathname.split('/');
+        // The file ID is usually after '/d/'
+        const fileIdIndex = pathParts.findIndex(part => part === 'd') + 1;
+        if (fileIdIndex > 0 && fileIdIndex < pathParts.length) {
+            const fileId = pathParts[fileIdIndex];
+            return `https://drive.google.com/uc?export=view&id=${fileId}`;
+        }
+    } catch (e) {
+        // If parsing fails, just return the original URL
+        return url;
+    }
+  }
+  
   return url;
 }
