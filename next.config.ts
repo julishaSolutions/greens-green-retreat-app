@@ -36,13 +36,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  experimental: {
-    // This is the correct way to configure allowed origins for development.
-    // It addresses the 'Cross origin request detected' warning in the terminal.
-    allowedDevOrigins: [
-        '*.cluster-l6vkdperq5ebaqo3qy4ksvoqom.cloudworkstations.dev'
-    ]
-  }
+  allowedDevOrigins: [
+    '*.cluster-l6vkdperq5ebaqo3qy4ksvoqom.cloudworkstations.dev',
+  ],
 };
 
 export default nextConfig;
