@@ -79,16 +79,16 @@ export function SocialToolbar({ postId, slug, initialLikes, postTitle }: SocialT
   };
 
   return (
-    <div className="flex items-center gap-2 py-4">
-      <Button variant="ghost" size="sm" onClick={handleLike} disabled={isLiking || isLiked} className="flex items-center gap-2 rounded-full">
-        <Heart className={cn('h-5 w-5', isLiked ? 'text-red-500 fill-current' : '')} />
+    <div className="flex items-center gap-4 py-4">
+      <Button variant="outline" size="sm" onClick={handleLike} disabled={isLiking || isLiked} className="flex items-center gap-2 rounded-full">
+        <Heart className={cn('h-5 w-5', isLiked ? 'text-destructive fill-current' : '')} />
         <span>{likes} Like{likes !== 1 ? 's' : ''}</span>
       </Button>
-      <Button variant="ghost" size="sm" className="flex items-center gap-2 rounded-full" onClick={handleCommentClick}>
+      <Button variant="outline" size="sm" className="flex items-center gap-2 rounded-full" onClick={handleCommentClick}>
         <MessageCircle className="h-5 w-5" />
         <span>Comment</span>
       </Button>
-      <Button variant="ghost" size="sm" className="flex items-center gap-2 rounded-full" onClick={handleShare}>
+      <Button variant="outline" size="sm" className="flex items-center gap-2 rounded-full" onClick={handleShare}>
         <Share2 className="h-5 w-5" />
         <span>Share</span>
       </Button>
