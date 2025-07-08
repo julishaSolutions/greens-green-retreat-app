@@ -55,33 +55,24 @@ export async function saveChanges(prevState: EditFormState, formData: FormData):
   }
 }
 
-const StatusSchema = z.object({
-    id: z.string(),
-    status: z.enum(['draft', 'published']),
-});
-
-export async function changeStatus(formData: FormData): Promise<void> {
-    const validatedFields = StatusSchema.safeParse({
-        id: formData.get('id'),
-        status: formData.get('status'),
-    });
-    
-    if (!validatedFields.success) {
-        // This should not happen with button clicks, but good to handle.
-        console.error('Invalid status change attempt');
-        return;
-    }
-    
-    const { id, status } = validatedFields.data;
-    
+async function handleStatusChange(id: string, status: 'published' | 'draft') {
     try {
         await updatePostStatus(id, status);
     } catch (error) {
-        console.error(error);
+        console.error(`Failed to change status for post ${id}:`, error);
         // We could return an error state, but for this simple action, we'll log and redirect.
     }
     
     revalidatePath(`/admin/journal/${id}/edit`);
     revalidatePath(`/admin/journal`);
     redirect(`/admin/journal`);
+}
+
+
+export async function publishPost(id: string): Promise<void> {
+    await handleStatusChange(id, 'published');
+}
+
+export async function unpublishPost(id: string): Promise<void> {
+    await handleStatusChange(id, 'draft');
 }

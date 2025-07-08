@@ -4,7 +4,7 @@
 import { useActionState, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
 import { type Post } from '@/services/postService';
-import { saveChanges, changeStatus, type EditFormState } from '../actions';
+import { saveChanges, publishPost, unpublishPost, type EditFormState } from '../actions';
 import { useToast } from '@/hooks/use-toast';
 
 import { Button } from '@/components/ui/button';
@@ -111,12 +111,12 @@ export function EditForm({ post }: { post: Post }) {
           <SubmitButton text="Save Changes" icon={<Save className="mr-2 h-4 w-4" />} />
           <div className="flex gap-2">
             {post.status === 'draft' ? (
-                <Button type="submit" variant="secondary" formAction={changeStatus} name="status" value="published" disabled={pending}>
+                <Button type="submit" variant="secondary" formAction={publishPost.bind(null, post.id)} disabled={pending}>
                     {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
                     Publish
                 </Button>
             ) : (
-                <Button type="submit" variant="secondary" formAction={changeStatus} name="status" value="draft" disabled={pending}>
+                <Button type="submit" variant="secondary" formAction={unpublishPost.bind(null, post.id)} disabled={pending}>
                     {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <EyeOff className="mr-2 h-4 w-4" />}
                     Unpublish
                 </Button>
