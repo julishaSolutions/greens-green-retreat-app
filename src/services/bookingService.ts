@@ -16,7 +16,30 @@ export type Booking = {
   checkOut: Date;
   status: 'pending_confirmation' | 'confirmed' | 'cancelled';
   createdAt: Date;
+  paymentStatus?: string;
+  transactionId?: string;
 };
+
+export type PaymentDetails = {
+  transactionId: string;
+  paymentStatus: string;
+};
+
+function docToBooking(doc: FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData>): Booking {
+    const data = doc.data()!;
+    return {
+        id: doc.id,
+        guestName: data.guestName,
+        guestEmail: data.guestEmail,
+        cottageId: data.cottageId,
+        checkIn: (data.checkIn as Timestamp).toDate(),
+        checkOut: (data.checkOut as Timestamp).toDate(),
+        status: data.status,
+        createdAt: (data.createdAt as Timestamp).toDate(),
+        paymentStatus: data.paymentStatus,
+        transactionId: data.transactionId,
+    };
+}
 
 export async function getAllBookings(): Promise<Booking[]> {
   if (!adminDb) {
@@ -29,19 +52,7 @@ export async function getAllBookings(): Promise<Booking[]> {
     if (snapshot.empty) {
       return [];
     }
-    return snapshot.docs.map(doc => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        guestName: data.guestName,
-        guestEmail: data.guestEmail,
-        cottageId: data.cottageId,
-        checkIn: (data.checkIn as Timestamp).toDate(),
-        checkOut: (data.checkOut as Timestamp).toDate(),
-        status: data.status,
-        createdAt: (data.createdAt as Timestamp).toDate(),
-      } as Booking;
-    });
+    return snapshot.docs.map(docToBooking);
   } catch (error) {
     console.error(`Error fetching all bookings:`, error);
     return [];
@@ -75,7 +86,6 @@ export async function getBookingsForCottage(cottageId: string): Promise<BookingD
   }
 }
 
-
 export async function checkAvailability(cottageId: string, checkInDate: Date, checkOutDate: Date): Promise<boolean> {
   if (!adminDb) {
     console.warn('Firestore Admin is not initialized. Cannot check availability.');
@@ -102,7 +112,6 @@ export async function createBooking(bookingData: {
   checkOut: Date;
   guestName: string;
   guestEmail: string;
-  // TODO: Add guestId for authenticated users to align with Firestore rules
 }): Promise<string> {
     if (!adminDb) {
         throw new Error("Booking service is not available. Database not configured.");
@@ -126,8 +135,36 @@ export async function createBooking(bookingData: {
         checkIn: Timestamp.fromDate(checkIn),
         checkOut: Timestamp.fromDate(checkOut),
         createdAt: FieldValue.serverTimestamp(),
-        status: 'pending_confirmation', // It's good practice to have a status
+        status: 'pending_confirmation',
+        paymentStatus: 'pending_payment',
     });
 
     return bookingRef.id;
+}
+
+export async function confirmBookingPayment(bookingId: string, paymentDetails: PaymentDetails): Promise<Booking | null> {
+  if (!adminDb) {
+    throw new Error("Booking service is not available. Database not configured.");
+  }
+  const bookingRef = adminDb.collection('bookings').doc(bookingId);
+
+  const doc = await bookingRef.get();
+  if (!doc.exists) {
+      throw new Error(`Booking with ID ${bookingId} not found.`);
+  }
+
+  const updatePayload: { [key: string]: any } = {
+    paymentStatus: paymentDetails.paymentStatus.toUpperCase(),
+    transactionId: paymentDetails.transactionId,
+    updatedAt: FieldValue.serverTimestamp(),
+  };
+
+  if (paymentDetails.paymentStatus.toUpperCase() === 'COMPLETE') {
+    updatePayload.status = 'confirmed';
+  }
+
+  await bookingRef.update(updatePayload);
+
+  const updatedDoc = await bookingRef.get();
+  return docToBooking(updatedDoc);
 }

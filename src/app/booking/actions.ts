@@ -39,6 +39,7 @@ export type BookingFormState = {
     form?: string[];
   };
   success: boolean;
+  paymentLink?: string;
 };
 
 export async function submitBooking(prevState: BookingFormState, formData: FormData): Promise<BookingFormState> {
@@ -59,11 +60,19 @@ export async function submitBooking(prevState: BookingFormState, formData: FormD
     }
     
     try {
-        await createBooking(validatedFields.data);
+        const bookingId = await createBooking(validatedFields.data);
+        // NOTE: We append a `tracking_id` to the Intasend URL.
+        // This is a common pattern for payment gateways to associate a transaction
+        // with a specific order or booking on our end.
+        const paymentLink = `https://payment.intasend.com/pay/46132722-b089-4fdc-a73d-762ebfcb34ab/?tracking_id=${bookingId}`;
+        
+        // In a real application, you would email this link to the guest.
+        // For this demo, we will display it directly on the page.
         return {
-            message: 'Booking successful! We will be in touch shortly to confirm.',
+            message: 'Booking request received! Please complete your payment using the link below to confirm your stay.',
             errors: {},
             success: true,
+            paymentLink: paymentLink,
         };
     } catch (error) {
         console.error("Booking Error:", error);

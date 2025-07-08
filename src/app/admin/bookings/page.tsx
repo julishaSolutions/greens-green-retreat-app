@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
-import { CalendarCheck } from 'lucide-react';
+import { CalendarCheck, CreditCard } from 'lucide-react';
 
 export default async function AdminBookingsPage() {
     const bookings = await getAllBookings();
@@ -33,7 +33,7 @@ export default async function AdminBookingsPage() {
                                 All Bookings
                             </CardTitle>
                             <CardDescription className="mt-1 text-lg text-foreground/80 font-sans">
-                                A log of all guest booking requests.
+                                A log of all guest booking requests and their payment status.
                             </CardDescription>
                         </div>
                     </div>
@@ -47,6 +47,7 @@ export default async function AdminBookingsPage() {
                                         <TableHead>Guest</TableHead>
                                         <TableHead>Cottage</TableHead>
                                         <TableHead>Dates</TableHead>
+                                        <TableHead>Payment</TableHead>
                                         <TableHead className="text-center">Status</TableHead>
                                         <TableHead className="text-right">Requested On</TableHead>
                                     </TableRow>
@@ -61,6 +62,10 @@ export default async function AdminBookingsPage() {
                                             <TableCell>{cottageMap.get(booking.cottageId) || 'Unknown Cottage'}</TableCell>
                                             <TableCell>
                                                 {format(booking.checkIn, 'MMM d, yyyy')} - {format(booking.checkOut, 'MMM d, yyyy')}
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="font-medium capitalize">{booking.paymentStatus?.replace(/_/g, ' ') || 'N/A'}</div>
+                                                <div className="text-sm text-muted-foreground truncate" title={booking.transactionId}>{booking.transactionId || ''}</div>
                                             </TableCell>
                                             <TableCell className="text-center">
                                                 <Badge variant={statusVariantMap[booking.status] || 'secondary'} className="capitalize">
