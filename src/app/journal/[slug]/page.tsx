@@ -1,15 +1,17 @@
 
-import { journalPosts } from '../page';
+import { getPublishedPostBySlug } from '@/services/postService';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { format } from 'date-fns';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
-export default function JournalPostPage({ params }: { params: { slug: string } }) {
-  const post = journalPosts.find((p) => p.slug === params.slug);
+export default async function JournalPostPage({ params }: { params: { slug: string } }) {
+  const post = await getPublishedPostBySlug(params.slug);
 
   if (!post) {
     notFound();
@@ -26,23 +28,21 @@ export default function JournalPostPage({ params }: { params: { slug: string } }
             </Link>
           </Button>
           <h1 className={cn('text-4xl md:text-5xl font-bold font-headline text-primary')}>{post.title}</h1>
-          <p className="mt-4 text-muted-foreground font-sans">{post.date}</p>
+          <p className="mt-4 text-muted-foreground font-sans">Published on {format(post.createdAt, 'MMMM d, yyyy')}</p>
         </div>
         <div className="relative h-[50vh] max-h-[500px] w-full rounded-lg overflow-hidden shadow-xl mb-12">
           <Image
-            src={post.image}
+            src={post.imageUrl || 'https://placehold.co/1200x800.png'}
             alt={post.title}
             fill
             className="object-cover"
             sizes="(max-width: 896px) 100vw, 896px"
-            data-ai-hint={post.hint}
+            data-ai-hint="nature retreat detail"
             priority
           />
         </div>
         <article className="prose prose-lg max-w-none text-foreground/80 font-body prose-headings:font-headline prose-headings:text-primary prose-p:mb-4">
-          {post.content.split('\n\n').map((paragraph, index) => (
-            <p key={index}>{paragraph}</p>
-          ))}
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.content}</ReactMarkdown>
         </article>
       </div>
     </div>
