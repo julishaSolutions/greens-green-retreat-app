@@ -10,6 +10,7 @@ const footerLinks = [
     { href: '/our-story', label: 'Our Story' },
     { href: '/journal', label: 'Journal' },
     { href: '/inquire', label: 'Inquire Now' },
+    { href: '/admin', label: 'Admin' },
   ];
 
 const TikTokIcon = (props: React.SVGProps<SVGSVGElement>) => (
