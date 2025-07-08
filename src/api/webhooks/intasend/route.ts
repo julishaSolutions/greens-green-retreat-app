@@ -13,31 +13,35 @@ const WEBHOOK_SECRET = process.env.INTASEND_WEBHOOK_SECRET;
  * 2. Processing incoming payment notifications (payloads) to update booking statuses.
  */
 export async function POST(request: NextRequest) {
+  console.log('[Intasend Webhook] Received a request.');
+
   // 1. Verify the signature to ensure the request is from Intasend
   const signature = request.headers.get('x-intasend-signature');
 
   if (!WEBHOOK_SECRET) {
-    console.error('CRITICAL: INTASEND_WEBHOOK_SECRET is not set in environment variables.');
+    console.error('[Intasend Webhook] CRITICAL: INTASEND_WEBHOOK_SECRET is not set in environment variables.');
     return new Response('Webhook secret not configured.', { status: 500 });
   }
 
   const bodyText = await request.text();
 
   if (!verifySignature(bodyText, signature, WEBHOOK_SECRET)) {
-    console.warn('Invalid webhook signature received.');
+    console.warn('[Intasend Webhook] Invalid webhook signature received. Aborting.');
     return new Response('Invalid signature.', { status: 400 });
   }
+  console.log('[Intasend Webhook] Signature verified successfully.');
 
   // If signature is valid, proceed to parse the body.
   const payload = JSON.parse(bodyText);
 
   // 2. Handle the one-time webhook challenge from Intasend dashboard
   if (payload.challenge) {
-    console.log('Responding to Intasend webhook challenge.');
+    console.log('[Intasend Webhook] Responding to Intasend webhook challenge.');
     return NextResponse.json({ challenge: payload.challenge });
   }
 
   // 3. Process the actual payment event notification
+  console.log(`[Intasend Webhook] Received event type: ${payload.event_type}`);
   // We are interested in the 'invoice.payment.successful' event type
   if (payload.event_type === 'invoice.payment.successful' && payload.data) {
     const data = payload.data;
@@ -45,21 +49,23 @@ export async function POST(request: NextRequest) {
     const transactionId = data.transaction?.id;
     const paymentStatus = data.state; // e.g., 'COMPLETE'
 
+    console.log('[Intasend Webhook] Processing payload:', { bookingId, transactionId, paymentStatus });
+
     if (!bookingId || !transactionId || !paymentStatus) {
-      console.error('Webhook payload is missing required fields:', { bookingId, transactionId, paymentStatus });
+      console.error('[Intasend Webhook] Webhook payload is missing required fields:', { bookingId, transactionId, paymentStatus });
       return new Response('Webhook Error: Missing required data.', { status: 400 });
     }
 
     try {
-      console.log(`Processing successful payment for bookingId: ${bookingId}`);
+      console.log(`[Intasend Webhook] Processing successful payment for bookingId: ${bookingId}`);
       await confirmBookingPayment(bookingId, { transactionId, paymentStatus });
-      console.log(`Successfully updated bookingId: ${bookingId}`);
+      console.log(`[Intasend Webhook] Successfully updated bookingId: ${bookingId}`);
 
       // Here you would typically send a confirmation email to the guest.
       // e.g., await sendBookingConfirmationEmail(bookingId);
 
     } catch (error) {
-      console.error(`Failed to update booking from webhook for bookingId: ${bookingId}`, error);
+      console.error(`[Intasend Webhook] Failed to update booking from webhook for bookingId: ${bookingId}`, error);
       // We return a 200 OK even on failure to prevent Intasend from retrying indefinitely
       // while we investigate the issue. In a production scenario, you might have more
       // sophisticated error handling or a retry queue.
@@ -67,6 +73,7 @@ export async function POST(request: NextRequest) {
   }
 
   // Acknowledge receipt of the event to Intasend
+  console.log('[Intasend Webhook] Acknowledging receipt of the event.');
   return new Response('Webhook received successfully.', { status: 200 });
 }
 
