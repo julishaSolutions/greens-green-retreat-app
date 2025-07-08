@@ -1,4 +1,3 @@
-
 import { cn } from '@/lib/utils';
 import { Twitter, Instagram, Facebook, Linkedin, Phone, Mail } from 'lucide-react';
 import Link from 'next/link';
@@ -11,7 +10,6 @@ const footerLinks = [
     { href: '/our-story', label: 'Our Story' },
     { href: '/journal', label: 'Journal' },
     { href: '/inquire', label: 'Inquire Now' },
-    { href: '/admin/journal-ideas', label: 'Admin' },
   ];
 
 const TikTokIcon = (props: React.SVGProps<SVGSVGElement>) => (

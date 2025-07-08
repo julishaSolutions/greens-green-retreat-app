@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
+import { headers } from 'next/headers';
 
 export const metadata: Metadata = {
   title: "Green's Green Retreat",
@@ -19,6 +20,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersList = headers();
+  const pathname = headersList.get('next-url') || '';
+  const isAdminPage = pathname.startsWith('/admin');
+
   return (
     <html lang="en" className="scroll-smooth">
       <head>
@@ -27,9 +32,9 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
       </head>
       <body className={cn('font-body antialiased flex flex-col min-h-screen')}>
-        <Header />
-        <main className="flex-grow">{children}</main>
-        <Footer />
+        {!isAdminPage && <Header />}
+        <main className={cn('flex-grow', { 'flex': isAdminPage, 'w-full': isAdminPage })}>{children}</main>
+        {!isAdminPage && <Footer />}
         <Toaster />
       </body>
     </html>
