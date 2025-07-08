@@ -32,7 +32,7 @@ export default async function JournalPostPage({ params }: { params: { slug: stri
         </div>
         <div className="relative h-[50vh] max-h-[500px] w-full rounded-lg overflow-hidden shadow-xl mb-12">
           <Image
-            src={post.imageUrl || 'https://placehold.co/1200x800.png'}
+            src={post.imageUrl ? post.imageUrl : 'https://placehold.co/1200x800.png'}
             alt={post.title}
             fill
             className="object-cover"

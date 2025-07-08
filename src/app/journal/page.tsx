@@ -28,7 +28,7 @@ export default async function JournalPage() {
               <CardHeader className="p-0">
                 <Link href={`/journal/${post.slug}`} className="block relative h-64 w-full">
                   <Image
-                    src={post.imageUrl || 'https://placehold.co/800x600.png'}
+                    src={post.imageUrl ? post.imageUrl : 'https://placehold.co/800x600.png'}
                     alt={post.title}
                     fill
                     className="object-cover"
