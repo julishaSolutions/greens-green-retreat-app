@@ -7,6 +7,47 @@ export type BookingDateRange = {
     to: Date;
 };
 
+export type Booking = {
+  id: string;
+  guestName: string;
+  guestEmail: string;
+  cottageId: string;
+  checkIn: Date;
+  checkOut: Date;
+  status: 'pending_confirmation' | 'confirmed' | 'cancelled';
+  createdAt: Date;
+};
+
+export async function getAllBookings(): Promise<Booking[]> {
+  if (!adminDb) {
+    console.warn('Firestore Admin is not initialized. Cannot fetch bookings.');
+    return [];
+  }
+  try {
+    const bookingsRef = adminDb.collection('bookings').orderBy('createdAt', 'desc');
+    const snapshot = await bookingsRef.get();
+    if (snapshot.empty) {
+      return [];
+    }
+    return snapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        guestName: data.guestName,
+        guestEmail: data.guestEmail,
+        cottageId: data.cottageId,
+        checkIn: (data.checkIn as Timestamp).toDate(),
+        checkOut: (data.checkOut as Timestamp).toDate(),
+        status: data.status,
+        createdAt: (data.createdAt as Timestamp).toDate(),
+      } as Booking;
+    });
+  } catch (error) {
+    console.error(`Error fetching all bookings:`, error);
+    return [];
+  }
+}
+
 export async function getBookingsForCottage(cottageId: string): Promise<BookingDateRange[]> {
   if (!adminDb) {
     console.warn('Firestore Admin is not initialized. Cannot fetch bookings.');
