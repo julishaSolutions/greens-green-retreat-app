@@ -1,7 +1,21 @@
+
 'use server';
 
 import { z } from 'zod';
-import { createBooking } from '@/services/bookingService';
+import { createBooking, getBookingsForCottage, type BookingDateRange } from '@/services/bookingService';
+
+export async function fetchBookings(cottageId: string): Promise<BookingDateRange[]> {
+    if (!cottageId) {
+        return [];
+    }
+    try {
+        const bookings = await getBookingsForCottage(cottageId);
+        return bookings;
+    } catch (error) {
+        console.error("Failed to fetch bookings:", error);
+        return []; // Return empty on error to avoid crashing the client
+    }
+}
 
 const FormSchema = z.object({
   cottageId: z.string().min(1, "Cottage ID is required."),

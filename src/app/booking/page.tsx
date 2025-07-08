@@ -1,12 +1,13 @@
+
 'use client';
 
 import { useActionState, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { DateRange } from 'react-day-picker';
+import { type DateRange } from 'react-day-picker';
 import { addDays, format } from 'date-fns';
-import { Calendar as CalendarIcon, User, Mail, BedDouble, AlertCircle } from 'lucide-react';
+import { Calendar as CalendarIcon, User, Mail, BedDouble, AlertCircle, Loader2 } from 'lucide-react';
 
-import { submitBooking, type BookingFormState } from './actions';
+import { submitBooking, fetchBookings, type BookingFormState } from './actions';
 import { cn } from '@/lib/utils';
 
 import { Button } from '@/components/ui/button';
@@ -38,6 +39,25 @@ export default function BookingPage() {
     to: addDays(new Date(), 3),
   });
 
+  const [bookedDates, setBookedDates] = useState<DateRange[]>([]);
+  const [isLoadingBookings, setIsLoadingBookings] = useState(true);
+
+  useEffect(() => {
+    if (cottageId) {
+      setIsLoadingBookings(true);
+      fetchBookings(cottageId)
+        .then(bookings => {
+          setBookedDates(bookings);
+        })
+        .catch(console.error)
+        .finally(() => {
+          setIsLoadingBookings(false);
+        });
+    } else {
+        setIsLoadingBookings(false);
+    }
+  }, [cottageId]);
+
   useEffect(() => {
     if (state.message && state.message !== 'Validation failed. Please check your input.') {
       toast({
@@ -48,9 +68,17 @@ export default function BookingPage() {
       if (state.success) {
         formRef.current?.reset();
         setDate(undefined);
+        if (cottageId) {
+            fetchBookings(cottageId).then(setBookedDates);
+        }
       }
     }
-  }, [state, toast]);
+  }, [state, toast, cottageId]);
+  
+  const disabledDays = [
+    { before: new Date() },
+    ...bookedDates,
+  ];
 
   return (
     <div className="container mx-auto px-4 py-12 md:py-20">
@@ -67,6 +95,12 @@ export default function BookingPage() {
 
             <div>
               <Label htmlFor="dates" className="font-medium">Select Dates</Label>
+              {isLoadingBookings && (
+                <div className="flex items-center text-sm text-muted-foreground mt-2">
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <span>Loading availability...</span>
+                </div>
+              )}
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -74,8 +108,10 @@ export default function BookingPage() {
                     variant={"outline"}
                     className={cn(
                       "w-full justify-start text-left font-normal mt-2",
-                      !date && "text-muted-foreground"
+                      !date && "text-muted-foreground",
+                      isLoadingBookings && "hidden"
                     )}
+                    disabled={isLoadingBookings}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {date?.from ? (
@@ -100,7 +136,7 @@ export default function BookingPage() {
                     selected={date}
                     onSelect={setDate}
                     numberOfMonths={2}
-                    disabled={(day) => day < new Date(new Date().setDate(new Date().getDate() -1))}
+                    disabled={disabledDays}
                   />
                 </PopoverContent>
               </Popover>

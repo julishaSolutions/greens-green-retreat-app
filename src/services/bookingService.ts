@@ -1,6 +1,39 @@
 
 import { adminDb } from '@/lib/firebase-admin';
-import { FieldValue } from 'firebase-admin/firestore';
+import { FieldValue, Timestamp } from 'firebase-admin/firestore';
+
+export type BookingDateRange = {
+    from: Date;
+    to: Date;
+};
+
+export async function getBookingsForCottage(cottageId: string): Promise<BookingDateRange[]> {
+  if (!adminDb) {
+    console.warn('Firestore Admin is not initialized. Cannot fetch bookings.');
+    return [];
+  }
+  
+  const bookingsRef = adminDb.collection('bookings');
+  const query = bookingsRef.where('cottageId', '==', cottageId).where('status', '!=', 'cancelled');
+
+  try {
+    const snapshot = await query.get();
+    if (snapshot.empty) {
+      return [];
+    }
+    return snapshot.docs.map(doc => {
+      const data = doc.data();
+      // Firestore timestamps need to be converted to Date objects
+      const checkIn = (data.checkIn as Timestamp).toDate();
+      const checkOut = (data.checkOut as Timestamp).toDate();
+      return { from: checkIn, to: checkOut };
+    });
+  } catch (error) {
+    console.error(`Error fetching bookings for cottage ${cottageId}:`, error);
+    return [];
+  }
+}
+
 
 export async function checkAvailability(cottageId: string, checkInDate: Date, checkOutDate: Date): Promise<boolean> {
   if (!adminDb) {
@@ -13,6 +46,7 @@ export async function checkAvailability(cottageId: string, checkInDate: Date, ch
   // Check for any booking that overlaps with the requested dates
   const query = bookingsRef
     .where('cottageId', '==', cottageId)
+    .where('status', '!=', 'cancelled')
     .where('checkIn', '<', checkOutDate) // An existing booking's check-in is before the new check-out
     .where('checkOut', '>', checkInDate); // and its check-out is after the new check-in
 
@@ -48,8 +82,8 @@ export async function createBooking(bookingData: {
     
     await bookingRef.set({
         ...bookingData,
-        checkIn: FieldValue.serverTimestamp.fromDate(checkIn),
-        checkOut: FieldValue.serverTimestamp.fromDate(checkOut),
+        checkIn: Timestamp.fromDate(checkIn),
+        checkOut: Timestamp.fromDate(checkOut),
         createdAt: FieldValue.serverTimestamp(),
         status: 'pending_confirmation', // It's good practice to have a status
     });
