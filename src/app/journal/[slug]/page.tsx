@@ -9,6 +9,10 @@ import { ArrowLeft } from 'lucide-react';
 import { format } from 'date-fns';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { AdPlaceholder } from '@/components/ad-placeholder';
+import { SocialToolbar } from './components/social-toolbar';
+import { Separator } from '@/components/ui/separator';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default async function JournalPostPage({ params }: { params: { slug: string } }) {
   const post = await getPublishedPostBySlug(params.slug);
@@ -46,6 +50,26 @@ export default async function JournalPostPage({ params }: { params: { slug: stri
         <article className="prose prose-lg max-w-none text-foreground/80 font-body prose-headings:font-headline prose-headings:text-primary prose-p:mb-4">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.content}</ReactMarkdown>
         </article>
+        
+        <Separator className="my-8" />
+        
+        <SocialToolbar postId={post.id} slug={post.slug} initialLikes={post.likes || 0} postTitle={post.title} />
+
+        <Separator className="my-8" />
+        
+        <div id="comments-section" className="scroll-mt-20">
+          <h2 className={cn('text-3xl font-bold font-headline text-primary mb-6')}>Comments</h2>
+          <Card>
+            <CardContent className="p-6">
+                <p className="text-muted-foreground text-center font-sans">Comments are coming soon! We'd love to hear your thoughts.</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Separator className="my-8" />
+
+        <AdPlaceholder />
+
       </div>
     </div>
   );

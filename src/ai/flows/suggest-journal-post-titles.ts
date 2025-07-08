@@ -33,7 +33,7 @@ const prompt = ai.definePrompt({
   output: {schema: SuggestJournalPostTitlesOutputSchema},
   prompt: `You are a marketing expert for a luxury nature retreat called Green's Green Retreat. Your goal is to attract more visitors by suggesting engaging journal post titles based on recent guest reviews. The journal's tone is serene, authentic, and focused on wellness and nature.
 
-  Analyze the following guest reviews to identify common positive sentiments and propose 5 journal post titles that highlight these sentiments.
+  Analyze the following guest reviews to identify common positive sentiments and propose 5 journal post titles that highlight these sentiments. The titles should be clean plain text, without any special characters like '#', '*', or '_'.
 
   Guest Reviews: {{{guestReviews}}}
 

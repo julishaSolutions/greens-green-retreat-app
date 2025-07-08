@@ -26,6 +26,7 @@ export type Post = {
   updatedAt: Date;
   imageUrl?: string;
   excerpt?: string;
+  likes: number;
 };
 
 export async function createPost(postData: { title: string; content: string }): Promise<string> {
@@ -46,6 +47,7 @@ export async function createPost(postData: { title: string; content: string }): 
     createdAt: FieldValue.serverTimestamp(),
     updatedAt: FieldValue.serverTimestamp(),
     imageUrl: '', // Initialize with an empty string
+    likes: 0,
   });
   return postRef.id;
 }
@@ -73,6 +75,7 @@ export async function getAllPosts(): Promise<Post[]> {
                 updatedAt: (data.updatedAt as Timestamp).toDate(),
                 imageUrl: data.imageUrl,
                 excerpt: data.excerpt,
+                likes: data.likes || 0,
             } as Post;
         });
     } catch (error) {
@@ -106,6 +109,7 @@ export async function getPublishedPosts(): Promise<Post[]> {
                 updatedAt: (data.updatedAt as Timestamp).toDate(),
                 imageUrl: data.imageUrl,
                 excerpt: data.excerpt,
+                likes: data.likes || 0,
             } as Post;
         });
     } catch (error) {
@@ -136,6 +140,7 @@ export async function getPostById(id: string): Promise<Post | null> {
             updatedAt: (data.updatedAt as Timestamp).toDate(),
             imageUrl: data.imageUrl,
             excerpt: data.excerpt,
+            likes: data.likes || 0,
         } as Post;
     } catch (error) {
         console.error(`Error fetching post by ID ${id}:`, error);
@@ -170,6 +175,7 @@ export async function getPublishedPostBySlug(slug: string): Promise<Post | null>
             updatedAt: (data.updatedAt as Timestamp).toDate(),
             imageUrl: data.imageUrl,
             excerpt: data.excerpt,
+            likes: data.likes || 0,
         } as Post;
     } catch (error) {
         console.error(`Error fetching post by slug ${slug}:`, error);
@@ -215,4 +221,14 @@ export async function updatePostStatus(id: string, status: 'published' | 'draft'
 
     const updatedDoc = await postRef.get();
     return getPostById(updatedDoc.id) as Promise<Post>; // We know it exists
+}
+
+export async function incrementPostLikes(id: string): Promise<void> {
+    if (!adminDb) {
+        throw new Error("Content service is not available. Database not configured.");
+    }
+    const postRef = adminDb.collection('posts').doc(id);
+    await postRef.update({
+        likes: FieldValue.increment(1),
+    });
 }
