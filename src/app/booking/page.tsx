@@ -140,8 +140,8 @@ export default function BookingPage() {
                   />
                 </PopoverContent>
               </Popover>
-              <input type="hidden" name="checkIn" value={date?.from?.toISOString()} />
-              <input type="hidden" name="checkOut" value={date?.to?.toISOString()} />
+              <input type="hidden" name="checkIn" value={date?.from?.toISOString() || ''} />
+              <input type="hidden" name="checkOut" value={date?.to?.toISOString() || ''} />
               {state.errors?.checkIn && <p className="text-sm font-medium text-destructive mt-1">{state.errors.checkIn[0]}</p>}
               {state.errors?.checkOut && <p className="text-sm font-medium text-destructive mt-1">{state.errors.checkOut[0]}</p>}
             </div>
