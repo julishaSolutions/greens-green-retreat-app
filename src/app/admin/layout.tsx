@@ -1,3 +1,4 @@
+
 import { SidebarProvider, Sidebar, SidebarHeader, SidebarTrigger, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter, SidebarInset } from '@/components/ui/sidebar';
 import { Home, Lightbulb, Newspaper, CalendarCheck } from 'lucide-react';
 import { Logo } from '@/components/logo';
@@ -30,8 +31,13 @@ export default function AdminLayout({
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Journal Ideas">
-                    <Link href="/admin/journal-ideas"><Lightbulb /> <span className="group-data-[collapsible=icon]:hidden">Journal Ideas</span></Link>
+                <SidebarMenuButton asChild tooltip="AI Content Studio">
+                    <Link href="/admin/journal-ideas"><Lightbulb /> <span className="group-data-[collapsible=icon]:hidden">AI Content Studio</span></Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+               <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Journal">
+                    <Link href="/admin/journal"><Newspaper /> <span className="group-data-[collapsible=icon]:hidden">Journal</span></Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

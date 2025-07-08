@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useFormStatus } from 'react-dom';
@@ -5,20 +6,27 @@ import { useActionState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
-import { generateArticle, type ArticleFormState } from '../actions';
+import { generateArticle, saveArticle, type ArticleFormState, type SaveArticleFormState } from '../actions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, Feather } from 'lucide-react';
+import { Loader2, Feather, Save } from 'lucide-react';
 
-const initialState: ArticleFormState = {
+const initialArticleState: ArticleFormState = {
   message: '',
   errors: {},
+  title: null,
   article: null,
 };
 
-function SubmitButton() {
+const initialSaveState: SaveArticleFormState = {
+  message: '',
+  errors: {},
+  success: false,
+};
+
+function GenerateButton() {
   const { pending } = useFormStatus();
 
   return (
@@ -38,8 +46,28 @@ function SubmitButton() {
   );
 }
 
+function SaveButton() {
+  const { pending } = useFormStatus();
+  return (
+      <Button type="submit" disabled={pending} variant="outline" className="font-sans">
+          {pending ? (
+              <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+              </>
+          ) : (
+              <>
+                  <Save className="mr-2 h-4 w-4" />
+                  Save as Draft
+              </>
+          )}
+      </Button>
+  );
+}
+
 export function ArticleGeneratorForm() {
-  const [state, formAction] = useActionState(generateArticle, initialState);
+  const [state, formAction] = useActionState(generateArticle, initialArticleState);
+  const [saveState, saveFormAction] = useActionState(saveArticle, initialSaveState);
 
   return (
     <div className="space-y-6">
@@ -67,11 +95,11 @@ export function ArticleGeneratorForm() {
             </p>
           )}
         </div>
-        <SubmitButton />
+        <GenerateButton />
       </form>
       
       {state.article && (
-        <div>
+        <div className="space-y-4">
             <h3 className="text-2xl font-bold font-headline text-primary flex items-center gap-2 mb-4">
                 Generated Article
             </h3>
@@ -84,6 +112,15 @@ export function ArticleGeneratorForm() {
                 </article>
               </CardContent>
             </Card>
+
+            <form action={saveFormAction}>
+                <input type="hidden" name="title" value={state.title || ''} />
+                <input type="hidden" name="content" value={state.article} />
+                <SaveButton />
+                {saveState.message && !saveState.success && (
+                    <p className="text-sm font-medium text-destructive mt-2">{saveState.message}</p>
+                )}
+            </form>
         </div>
       )}
     </div>

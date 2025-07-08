@@ -1,8 +1,12 @@
+
 'use server';
 
 import { suggestJournalPostTitles } from '@/ai/flows/suggest-journal-post-titles';
 import { generateJournalPost } from '@/ai/flows/generate-journal-post';
 import { z } from 'zod';
+import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
+import { createPost } from '@/services/postService';
 
 // For Title Suggestions
 const titleSchema = z.object({
@@ -65,6 +69,7 @@ export type ArticleFormState = {
     errors?: {
         title?: string[];
     };
+    title: string | null;
     article: string | null;
 }
 
@@ -77,6 +82,7 @@ export async function generateArticle(prevState: ArticleFormState, formData: For
         return {
             message: 'Validation failed. Please check your input.',
             errors: validatedFields.error.flatten().fieldErrors,
+            title: null,
             article: null,
         };
     }
@@ -87,12 +93,14 @@ export async function generateArticle(prevState: ArticleFormState, formData: For
             return {
                 message: 'Successfully generated article!',
                 errors: {},
+                title: validatedFields.data.title,
                 article: result.articleContent,
             };
         } else {
             return {
                 message: 'AI could not generate an article for that title.',
                 errors: {},
+                title: validatedFields.data.title,
                 article: null,
             };
         }
@@ -101,7 +109,55 @@ export async function generateArticle(prevState: ArticleFormState, formData: For
         return {
             message: 'An unexpected error occurred while generating the article.',
             errors: {},
+            title: validatedFields.data.title,
             article: null,
         };
     }
+}
+
+
+// For Saving Article
+const saveSchema = z.object({
+    title: z.string(),
+    content: z.string(),
+});
+
+export type SaveArticleFormState = {
+    message: string;
+    errors?: {
+        title?: string[];
+        content?: string[];
+        form?: string[];
+    };
+    success: boolean;
+}
+
+export async function saveArticle(prevState: SaveArticleFormState, formData: FormData): Promise<SaveArticleFormState> {
+    const validatedFields = saveSchema.safeParse({
+        title: formData.get('title'),
+        content: formData.get('content'),
+    });
+
+    if (!validatedFields.success) {
+        return {
+            message: 'Validation failed. Could not save article.',
+            errors: validatedFields.error.flatten().fieldErrors,
+            success: false,
+        };
+    }
+
+    try {
+        await createPost(validatedFields.data);
+    } catch (error) {
+        console.error(error);
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
+        return {
+            message: 'Failed to save article to the database.',
+            errors: { form: [errorMessage] },
+            success: false,
+        };
+    }
+
+    revalidatePath('/admin/journal');
+    redirect('/admin/journal');
 }
