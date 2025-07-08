@@ -46,7 +46,7 @@ export default async function JournalPage() {
                   <CardDescription className="mt-4 text-base">{post.excerpt}</CardDescription>
                 </CardContent>
                 <CardFooter className="p-6 bg-muted/50">
-                  <Button asChild variant="secondary" className="w-full">
+                  <Button asChild className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-sans">
                     <Link href={`/journal/${post.slug}`}>Read More</Link>
                   </Button>
                 </CardFooter>
