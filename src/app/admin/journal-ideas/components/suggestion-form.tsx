@@ -2,15 +2,15 @@
 
 import { useFormStatus } from 'react-dom';
 import { useActionState, useEffect, useRef } from 'react';
-import { getSuggestions, type FormState } from '../actions';
+import { getSuggestions, type SuggestionFormState } from '../actions';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Label } from '@/components/ui/label';
 import { Loader2, List, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-const initialState: FormState = {
+const initialState: SuggestionFormState = {
   message: '',
   errors: {},
   data: [],
@@ -49,7 +49,7 @@ export function SuggestionForm() {
         variant: state.message.startsWith('Successfully') ? 'default' : 'destructive',
       });
     }
-    if (state.message === 'Successfully generated titles!') {
+    if (state.message.startsWith('Successfully')) {
         formRef.current?.reset();
     }
   }, [state, toast]);
@@ -63,7 +63,7 @@ export function SuggestionForm() {
             id="reviews"
             name="reviews"
             placeholder="Paste guest reviews here... e.g., 'Waking up to birdsong at Alma 1 was magical! The kids loved the water slides. Such a peaceful and beautiful place. We will be back!'"
-            rows={8}
+            rows={6}
             className="mt-2 font-sans"
             aria-describedby="reviews-error"
             required
@@ -79,8 +79,8 @@ export function SuggestionForm() {
       
       {state.data.length > 0 && (
         <div>
-            <h3 className="text-2xl font-bold font-headline text-primary flex items-center gap-2 mb-4">
-                <List className="h-6 w-6"/>
+            <h3 className="text-xl font-bold font-headline text-primary flex items-center gap-2 mb-4">
+                <List className="h-5 w-5"/>
                 Suggested Titles
             </h3>
             <Alert>
