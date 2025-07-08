@@ -3,7 +3,7 @@ import { getPublishedPosts } from '@/services/postService';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { cn } from '@/lib/utils';
+import { cn, getDisplayImageUrl } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { format } from 'date-fns';
@@ -23,33 +23,36 @@ export default async function JournalPage() {
       
       {posts.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {posts.map((post) => (
-            <Card key={post.id} className="overflow-hidden flex flex-col shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <CardHeader className="p-0">
-                <Link href={`/journal/${post.slug}`} className="block relative h-64 w-full">
-                  <Image
-                    src={post.imageUrl ? post.imageUrl : 'https://placehold.co/800x600.png'}
-                    alt={post.title}
-                    fill
-                    className="object-cover"
-                    data-ai-hint="nature retreat journal"
-                  />
-                </Link>
-              </CardHeader>
-              <CardContent className="p-6 flex-grow">
-                <p className="text-sm text-muted-foreground font-sans">{format(post.createdAt, 'MMMM d, yyyy')}</p>
-                <CardTitle className={cn("font-headline text-2xl mt-2")}>
-                  <Link href={`/journal/${post.slug}`} className="hover:text-primary transition-colors">{post.title}</Link>
-                </CardTitle>
-                <CardDescription className="mt-4 text-base">{post.excerpt}</CardDescription>
-              </CardContent>
-              <CardFooter className="p-6 bg-muted/50">
-                <Button asChild variant="secondary" className="w-full">
-                  <Link href={`/journal/${post.slug}`}>Read More</Link>
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
+          {posts.map((post) => {
+            const displayImageUrl = getDisplayImageUrl(post.imageUrl);
+            return (
+              <Card key={post.id} className="overflow-hidden flex flex-col shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <CardHeader className="p-0">
+                  <Link href={`/journal/${post.slug}`} className="block relative h-64 w-full">
+                    <Image
+                      src={displayImageUrl || 'https://placehold.co/800x600.png'}
+                      alt={post.title}
+                      fill
+                      className="object-cover"
+                      data-ai-hint="nature retreat journal"
+                    />
+                  </Link>
+                </CardHeader>
+                <CardContent className="p-6 flex-grow">
+                  <p className="text-sm text-muted-foreground font-sans">{format(post.createdAt, 'MMMM d, yyyy')}</p>
+                  <CardTitle className={cn("font-headline text-2xl mt-2")}>
+                    <Link href={`/journal/${post.slug}`} className="hover:text-primary transition-colors">{post.title}</Link>
+                  </CardTitle>
+                  <CardDescription className="mt-4 text-base">{post.excerpt}</CardDescription>
+                </CardContent>
+                <CardFooter className="p-6 bg-muted/50">
+                  <Button asChild variant="secondary" className="w-full">
+                    <Link href={`/journal/${post.slug}`}>Read More</Link>
+                  </Button>
+                </CardFooter>
+              </Card>
+            );
+          })}
         </div>
       ) : (
         <div className="text-center py-16">

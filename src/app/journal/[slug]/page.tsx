@@ -2,7 +2,7 @@
 import { getPublishedPostBySlug } from '@/services/postService';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { cn } from '@/lib/utils';
+import { cn, getDisplayImageUrl } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
@@ -16,6 +16,8 @@ export default async function JournalPostPage({ params }: { params: { slug: stri
   if (!post) {
     notFound();
   }
+  
+  const displayImageUrl = getDisplayImageUrl(post.imageUrl);
 
   return (
     <div className="container mx-auto px-4 py-12 md:py-20">
@@ -32,7 +34,7 @@ export default async function JournalPostPage({ params }: { params: { slug: stri
         </div>
         <div className="relative h-[50vh] max-h-[500px] w-full rounded-lg overflow-hidden shadow-xl mb-12">
           <Image
-            src={post.imageUrl ? post.imageUrl : 'https://placehold.co/1200x800.png'}
+            src={displayImageUrl || 'https://placehold.co/1200x800.png'}
             alt={post.title}
             fill
             className="object-cover"

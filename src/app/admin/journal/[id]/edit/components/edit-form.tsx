@@ -6,6 +6,7 @@ import { useFormStatus } from 'react-dom';
 import { type Post } from '@/services/postService';
 import { saveChanges, publishPost, unpublishPost, type EditFormState } from '../actions';
 import { useToast } from '@/hooks/use-toast';
+import { getDisplayImageUrl } from '@/lib/utils';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -56,6 +57,8 @@ export function EditForm({ post }: { post: Post }) {
     }
   }, [state, toast]);
 
+  const displayImageUrl = getDisplayImageUrl(post.imageUrl);
+
   return (
     <Card className="shadow-lg">
       <form action={formAction}>
@@ -93,9 +96,9 @@ export function EditForm({ post }: { post: Post }) {
           
           <div className="space-y-2">
             <Label htmlFor="imageUrl" className="text-lg">Featured Image URL</Label>
-            {post.imageUrl && (
+            {displayImageUrl && (
                 <div className="mt-2 relative aspect-video w-full max-w-sm rounded-md overflow-hidden border">
-                    <Image src={post.imageUrl} alt="Current post image" fill className="object-cover" sizes="50vw" />
+                    <Image src={displayImageUrl} alt="Current post image" fill className="object-cover" sizes="50vw" />
                 </div>
             )}
             <Input
