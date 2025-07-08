@@ -41,6 +41,24 @@ function docToBooking(doc: FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.
     };
 }
 
+export async function getBookingById(bookingId: string): Promise<Booking | null> {
+  if (!adminDb) {
+    console.warn('Firestore Admin is not initialized. Cannot fetch booking.');
+    return null;
+  }
+  try {
+    const doc = await adminDb.collection('bookings').doc(bookingId).get();
+    if (!doc.exists) {
+      return null;
+    }
+    return docToBooking(doc);
+  } catch (error) {
+    console.error(`Error fetching booking by ID ${bookingId}:`, error);
+    return null;
+  }
+}
+
+
 export async function getAllBookings(): Promise<Booking[]> {
   if (!adminDb) {
     console.warn('Firestore Admin is not initialized. Cannot fetch bookings.');
