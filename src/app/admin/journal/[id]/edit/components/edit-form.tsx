@@ -43,6 +43,7 @@ function SubmitButton({ text, icon }: { text: string; icon: React.ReactNode }) {
 export function EditForm({ post }: { post: Post }) {
   const { toast } = useToast();
   const [state, formAction] = useActionState(saveChanges, initialState);
+  const { pending } = useFormStatus();
 
   useEffect(() => {
     if (state.message) {
@@ -110,21 +111,15 @@ export function EditForm({ post }: { post: Post }) {
           <SubmitButton text="Save Changes" icon={<Save className="mr-2 h-4 w-4" />} />
           <div className="flex gap-2">
             {post.status === 'draft' ? (
-              <form action={changeStatus}>
-                <input type="hidden" name="id" value={post.id} />
-                <input type="hidden" name="status" value="published" />
-                <Button type="submit" variant="secondary">
-                  <Send className="mr-2 h-4 w-4" /> Publish
+                <Button type="submit" variant="secondary" formAction={changeStatus} name="status" value="published" disabled={pending}>
+                    {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
+                    Publish
                 </Button>
-              </form>
             ) : (
-              <form action={changeStatus}>
-                <input type="hidden" name="id" value={post.id} />
-                <input type="hidden" name="status" value="draft" />
-                <Button type="submit" variant="secondary">
-                  <EyeOff className="mr-2 h-4 w-4" /> Unpublish
+                <Button type="submit" variant="secondary" formAction={changeStatus} name="status" value="draft" disabled={pending}>
+                    {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <EyeOff className="mr-2 h-4 w-4" />}
+                    Unpublish
                 </Button>
-              </form>
             )}
           </div>
         </CardFooter>
