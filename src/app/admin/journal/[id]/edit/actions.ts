@@ -10,6 +10,7 @@ const FormSchema = z.object({
   id: z.string(),
   title: z.string().min(10, { message: 'Title must be at least 10 characters long.' }),
   content: z.string().min(50, { message: 'Content must be at least 50 characters long.' }),
+  imageUrl: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
 });
 
 export type EditFormState = {
@@ -17,6 +18,7 @@ export type EditFormState = {
   errors?: {
     title?: string[];
     content?: string[];
+    imageUrl?: string[];
     form?: string[];
   };
   success: boolean;
@@ -27,6 +29,7 @@ export async function saveChanges(prevState: EditFormState, formData: FormData):
     id: formData.get('id'),
     title: formData.get('title'),
     content: formData.get('content'),
+    imageUrl: formData.get('imageUrl'),
   });
 
   if (!validatedFields.success) {
@@ -37,12 +40,13 @@ export async function saveChanges(prevState: EditFormState, formData: FormData):
     };
   }
 
-  const { id, title, content } = validatedFields.data;
+  const { id, title, content, imageUrl } = validatedFields.data;
 
   try {
-    await updatePost(id, { title, content });
+    await updatePost(id, { title, content, imageUrl });
     revalidatePath(`/admin/journal/${id}/edit`);
     revalidatePath(`/admin/journal`);
+    revalidatePath(`/journal/${slugify(title)}`); // Revalidate public post page
     return { message: 'Changes saved successfully!', success: true, errors: {} };
   } catch (error) {
     console.error(error);
@@ -56,15 +60,19 @@ export async function saveChanges(prevState: EditFormState, formData: FormData):
 }
 
 async function handleStatusChange(id: string, status: 'published' | 'draft') {
+    let slug = '';
     try {
-        await updatePostStatus(id, status);
+        const post = await updatePostStatus(id, status);
+        slug = post.slug;
     } catch (error) {
         console.error(`Failed to change status for post ${id}:`, error);
-        // We could return an error state, but for this simple action, we'll log and redirect.
     }
     
     revalidatePath(`/admin/journal/${id}/edit`);
     revalidatePath(`/admin/journal`);
+    if(slug) {
+      revalidatePath(`/journal/${slug}`);
+    }
     redirect(`/admin/journal`);
 }
 
@@ -75,4 +83,16 @@ export async function publishPost(id: string): Promise<void> {
 
 export async function unpublishPost(id: string): Promise<void> {
     await handleStatusChange(id, 'draft');
+}
+
+// Helper function to re-use slug logic if needed
+function slugify(text: string): string {
+  return text
+    .toString()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w\-]+/g, '')
+    .replace(/\-\-+/g, '-')
+    .replace(/^-+/, '')
+    .replace(/-+$/, '');
 }

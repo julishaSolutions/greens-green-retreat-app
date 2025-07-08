@@ -178,25 +178,32 @@ export async function getPublishedPostBySlug(slug: string): Promise<Post | null>
 }
 
 
-export async function updatePost(id: string, postData: { title: string; content: string }): Promise<void> {
+export async function updatePost(id: string, postData: { title: string; content: string; imageUrl?: string }): Promise<void> {
     if (!adminDb) {
         throw new Error("Content service is not available. Database not configured.");
     }
-    const { title, content } = postData;
+    const { title, content, imageUrl } = postData;
     const slug = slugify(title);
     const excerpt = content.substring(0, 150) + '...';
 
     const postRef = adminDb.collection('posts').doc(id);
-    await postRef.update({
+    
+    const updateData: { [key: string]: any } = {
         title,
         content,
         slug,
         excerpt,
         updatedAt: FieldValue.serverTimestamp(),
-    });
+    };
+
+    if (imageUrl !== undefined) {
+        updateData.imageUrl = imageUrl;
+    }
+
+    await postRef.update(updateData);
 }
 
-export async function updatePostStatus(id: string, status: 'published' | 'draft'): Promise<void> {
+export async function updatePostStatus(id: string, status: 'published' | 'draft'): Promise<Post> {
     if (!adminDb) {
         throw new Error("Content service is not available. Database not configured.");
     }
@@ -205,4 +212,7 @@ export async function updatePostStatus(id: string, status: 'published' | 'draft'
         status,
         updatedAt: FieldValue.serverTimestamp(),
     });
+
+    const updatedDoc = await postRef.get();
+    return getPostById(updatedDoc.id) as Promise<Post>; // We know it exists
 }

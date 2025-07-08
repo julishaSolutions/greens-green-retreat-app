@@ -14,6 +14,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Loader2, Save, Send, EyeOff } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const initialState: EditFormState = {
   message: '',
@@ -89,6 +90,29 @@ export function EditForm({ post }: { post: Post }) {
               </p>
             )}
           </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="imageUrl" className="text-lg">Featured Image URL</Label>
+            {post.imageUrl && (
+                <div className="mt-2 relative aspect-video w-full max-w-sm rounded-md overflow-hidden border">
+                    <Image src={post.imageUrl} alt="Current post image" fill className="object-cover" sizes="50vw" />
+                </div>
+            )}
+            <Input
+              id="imageUrl"
+              name="imageUrl"
+              defaultValue={post.imageUrl || ''}
+              placeholder="https://example.com/your-image.png"
+              className="font-sans text-base"
+              aria-describedby="imageUrl-error"
+            />
+            {state?.errors?.imageUrl && (
+              <p id="imageUrl-error" className="text-sm font-medium text-destructive">
+                {state.errors.imageUrl[0]}
+              </p>
+            )}
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="content" className="text-lg">Content (Markdown)</Label>
             <Textarea
