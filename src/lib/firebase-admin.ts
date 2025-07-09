@@ -5,46 +5,56 @@ import { getApps } from 'firebase-admin/app';
 let adminDb: admin.firestore.Firestore | null = null;
 let adminAuth: admin.auth.Auth | null = null;
 
-console.log('[Firebase Admin] Module loading.');
+// Check if running in a Google Cloud environment (like App Hosting) vs. local
+// App Hosting automatically sets APP_HOSTING_APP_ID
+const isGoogleCloud = !!process.env.APP_HOSTING_APP_ID;
 
-// This is the new, more robust way to get credentials
-const projectId = process.env.FIREBASE_PROJECT_ID;
-const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-// The private key needs to be formatted correctly.
-// Environment variables often escape newline characters, so we must replace them back.
-const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+if (getApps().length === 0) {
+    if (isGoogleCloud) {
+        console.log('[Firebase Admin] Google Cloud environment detected. Initializing with Application Default Credentials.');
+        try {
+            admin.initializeApp();
+            console.log('✅ [Firebase Admin] SDK initialized successfully using ADC.');
+        } catch (error: any) {
+            console.error('❌ [CRITICAL ERROR] Firebase Admin SDK initialization failed on Google Cloud.');
+            console.error('   This usually means the runtime service account lacks necessary IAM permissions for Firestore.');
+            console.error(`   Original Error: ${error.message}`);
+        }
+    } else {
+        console.log('[Firebase Admin] Local environment detected. Initializing with credentials from .env file.');
+        const projectId = process.env.FIREBASE_PROJECT_ID;
+        const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+        const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+        const hasCredentials = projectId && clientEmail && privateKey;
 
-const hasCredentials = projectId && clientEmail && privateKey;
-console.log(`[Firebase Admin] Checking for credentials... ${hasCredentials ? 'Found' : 'MISSING'}`);
-
-// We will only attempt to initialize if the environment variables are all present.
-if (hasCredentials) {
-  if (getApps().length === 0) {
-    console.log('[Firebase Admin] No existing apps found. Initializing a new Firebase Admin app...');
-    try {
-      admin.initializeApp({
-        credential: admin.credential.cert({
-          projectId,
-          clientEmail,
-          privateKey,
-        }),
-      });
-      console.log('✅ [Firebase Admin] SDK initialized successfully from environment variables!');
-      adminDb = admin.firestore();
-      adminAuth = admin.auth();
-    } catch (error: any) {
-      console.error('❌ [CRITICAL ERROR] Firebase Admin SDK initialization failed even with environment variables.');
-      console.error('   This likely means the values in your .env.local file are incorrect or the service account has a permissions issue.');
-      console.error(`   Original Error: ${error.message}`);
+        if (hasCredentials) {
+            try {
+                admin.initializeApp({
+                    credential: admin.credential.cert({
+                        projectId,
+                        clientEmail,
+                        privateKey,
+                    }),
+                });
+                console.log('✅ [Firebase Admin] SDK initialized successfully from .env file!');
+            } catch (error: any) {
+                console.error('❌ [CRITICAL ERROR] Firebase Admin SDK initialization failed with .env credentials.');
+                console.error('   Please ensure your .env file contains the correct Firebase service account details.');
+                console.error(`   Original Error: ${error.message}`);
+            }
+        } else {
+            console.warn('⚠️ [Firebase Admin] Local environment credentials missing. Server-side features will be disabled.');
+        }
     }
-  } else {
-    console.log('[Firebase Admin] Existing app found. Getting Firestore and Auth instances.');
-    // If the app is already initialized, just get the instances.
+}
+
+// Get instances if they haven't been set yet
+// This check ensures that we only try to get instances if an app was successfully initialized.
+if (getApps().length > 0 && !adminDb) {
     adminDb = admin.firestore();
     adminAuth = admin.auth();
-  }
-} else {
-    console.warn('⚠️ [Firebase Admin] Environment variables are missing. Server-side Firebase features will be disabled.');
+} else if (getApps().length === 0) {
+     console.error('❌ [Firebase Admin] Could not get Firestore/Auth instances because no app was initialized.');
 }
 
 export { adminDb, adminAuth };
