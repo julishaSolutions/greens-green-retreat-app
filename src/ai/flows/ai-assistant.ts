@@ -155,13 +155,9 @@ const aiAssistantFlow = ai.defineFlow(
         })),
         prompt: query,
         tools: [generalInquiryTool, bookingProcessTool, accommodationsTool, activitiesTool],
-        toolConfig: {
-            mode: 'tool', 
-            toolChoice: 'auto',
-        }
     });
 
-    return response.text;
+    return response?.text || "I'm sorry, but I encountered an issue and can't respond right now. Please try again in a moment.";
   }
 );
 
