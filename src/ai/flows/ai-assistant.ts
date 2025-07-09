@@ -18,14 +18,14 @@ const HistoryMessageSchema = z.object({
 });
 
 // Define the input schema for the AI assistant flow
-export const AIAssistantInputSchema = z.object({
+const AIAssistantInputSchema = z.object({
   query: z.string().describe('The user\'s question.'),
   history: z.array(HistoryMessageSchema).describe('The conversation history.'),
 });
 export type AIAssistantInput = z.infer<typeof AIAssistantInputSchema>;
 
 // Define the output schema (a simple string response)
-export const AIAssistantOutputSchema = z.string();
+const AIAssistantOutputSchema = z.string();
 export type AIAssistantOutput = z.infer<typeof AIAssistantOutputSchema>;
 
 // TOOL: Generalist Agent for broad questions
@@ -78,6 +78,57 @@ ${knowledgeBase}
     }
 );
 
+// TOOL: Accommodations Agent
+const accommodationsTool = ai.defineTool(
+    {
+        name: 'accommodationsTool',
+        description: 'Use when the user asks about specific cottages, their amenities, capacity, or pricing.',
+        inputSchema: z.object({
+            query: z.string().describe("The user's question about accommodations."),
+            knowledgeBase: z.string().describe("The retreat's knowledge base."),
+        }),
+        outputSchema: z.string(),
+    },
+    async ({ query, knowledgeBase }) => {
+        const { response } = await ai.generate({
+            model: 'googleai/gemini-2.0-flash',
+            system: `You are a specialized accommodations assistant. Answer questions about cottages, treehouses, amenities, and pricing using ONLY the provided knowledge base.
+Knowledge Base:
+---
+${knowledgeBase}
+---`,
+            prompt: query,
+        });
+        return response.text;
+    }
+);
+
+// TOOL: Activities Agent
+const activitiesTool = ai.defineTool(
+    {
+        name: 'activitiesTool',
+        description: 'Use when the user asks about available activities like water slides, boat riding, fishing, or bird watching.',
+        inputSchema: z.object({
+            query: z.string().describe("The user's question about activities."),
+            knowledgeBase: z.string().describe("The retreat's knowledge base."),
+        }),
+        outputSchema: z.string(),
+    },
+    async ({ query, knowledgeBase }) => {
+        const { response } = await ai.generate({
+            model: 'googleai/gemini-2.0-flash',
+            system: `You are a specialized activities assistant. Answer questions about on-site experiences using ONLY the provided knowledge base.
+Knowledge Base:
+---
+${knowledgeBase}
+---`,
+            prompt: query,
+        });
+        return response.text;
+    }
+);
+
+
 // This is the main "Supervisor" flow
 const aiAssistantFlow = ai.defineFlow(
   {
@@ -92,17 +143,20 @@ const aiAssistantFlow = ai.defineFlow(
 
     const { response } = await ai.generate({
         model: 'googleai/gemini-2.0-flash',
-        system: `You are a supervisor AI for Green's Green Retreat. Your job is to understand the user's query and use the provided tools to answer it. Be friendly, welcoming, and helpful. Prioritize using the 'generalInquiryTool' unless the query is highly specific to booking.`,
+        system: `You are a supervisor AI for Green's Green Retreat. Your job is to intelligently route the user's query to the correct specialized tool. Be friendly and helpful.
+- For questions about booking, payments, or confirmation, use 'bookingProcessTool'.
+- For questions about cottages, amenities, capacity, or pricing, use 'accommodationsTool'.
+- For questions about water slides, boat rides, or other on-site experiences, use 'activitiesTool'.
+- For all other general questions, use the 'generalInquiryTool'.`,
         history: history.map(msg => ({
             role: msg.role,
             content: [{ text: msg.content }]
         })),
         prompt: query,
-        tools: [generalInquiryTool, bookingProcessTool],
+        tools: [generalInquiryTool, bookingProcessTool, accommodationsTool, activitiesTool],
         toolConfig: {
-            // Force the model to use our specialized generalInquiryTool by default
             mode: 'tool', 
-            toolChoice: 'generalInquiryTool',
+            toolChoice: 'auto',
         }
     });
 
