@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/toaster';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { headers } from 'next/headers';
+import { ChatWidget } from '@/components/chat-widget';
 
 export const metadata: Metadata = {
   title: "Green's Green Retreat",
@@ -35,6 +36,7 @@ export default function RootLayout({
         {!isAdminPage && <Header />}
         <main className={cn('flex-grow', { 'flex': isAdminPage, 'w-full': isAdminPage })}>{children}</main>
         {!isAdminPage && <Footer />}
+        {!isAdminPage && <ChatWidget />}
         <Toaster />
       </body>
     </html>
