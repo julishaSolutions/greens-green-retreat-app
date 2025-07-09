@@ -35,11 +35,11 @@ const generalInquiryTool = ai.defineTool(
         description: 'Use for general questions about the retreat, dining, check-in/check-out times, and any query that doesn\'t fit other specific tools. This is your default tool.',
         inputSchema: z.object({
             query: z.string().describe("The user's original question."),
-            knowledgeBase: z.string().describe("The retreat's knowledge base."),
         }),
         outputSchema: z.string(),
     },
-    async ({ query, knowledgeBase }) => {
+    async ({ query }) => {
+        const knowledgeBase = await getKnowledgeBase();
         const { response } = await ai.generate({
             model: 'googleai/gemini-2.0-flash',
             system: `You are a friendly and helpful assistant for Green's Green Retreat. Your goal is to answer the user's question based ONLY on the provided knowledge base.
@@ -61,11 +61,11 @@ const bookingProcessTool = ai.defineTool(
         description: 'Use when the user asks about how to book, the booking process, making a payment, or booking confirmation.',
         inputSchema: z.object({
             query: z.string().describe("The user's question about booking."),
-            knowledgeBase: z.string().describe("The retreat's knowledge base."),
         }),
         outputSchema: z.string(),
     },
-    async ({ query, knowledgeBase }) => {
+    async ({ query }) => {
+        const knowledgeBase = await getKnowledgeBase();
         const { response } = await ai.generate({
              model: 'googleai/gemini-2.0-flash',
              system: `You are a specialized booking assistant. Answer questions about the booking and payment process using ONLY the provided knowledge base.
@@ -86,11 +86,11 @@ const accommodationsTool = ai.defineTool(
         description: 'Use when the user asks about specific cottages, their amenities, capacity, or pricing.',
         inputSchema: z.object({
             query: z.string().describe("The user's question about accommodations."),
-            knowledgeBase: z.string().describe("The retreat's knowledge base."),
         }),
         outputSchema: z.string(),
     },
-    async ({ query, knowledgeBase }) => {
+    async ({ query }) => {
+        const knowledgeBase = await getKnowledgeBase();
         const { response } = await ai.generate({
             model: 'googleai/gemini-2.0-flash',
             system: `You are a specialized accommodations assistant. Answer questions about cottages, treehouses, amenities, and pricing using ONLY the provided knowledge base.
@@ -111,11 +111,11 @@ const activitiesTool = ai.defineTool(
         description: 'Use when the user asks about available activities like water slides, boat riding, fishing, or bird watching.',
         inputSchema: z.object({
             query: z.string().describe("The user's question about activities."),
-            knowledgeBase: z.string().describe("The retreat's knowledge base."),
         }),
         outputSchema: z.string(),
     },
-    async ({ query, knowledgeBase }) => {
+    async ({ query }) => {
+        const knowledgeBase = await getKnowledgeBase();
         const { response } = await ai.generate({
             model: 'googleai/gemini-2.0-flash',
             system: `You are a specialized activities assistant. Answer questions about on-site experiences using ONLY the provided knowledge base.
@@ -139,9 +139,6 @@ const aiAssistantFlow = ai.defineFlow(
   },
   async ({ query, history }) => {
     
-    // Fetch the live knowledge base from Firestore
-    const knowledgeBase = await getKnowledgeBase();
-
     const { response } = await ai.generate({
         model: 'googleai/gemini-2.0-flash',
         system: `You are a supervisor AI for Green's Green Retreat. Your job is to intelligently route the user's query to the correct specialized tool. Be friendly and helpful.
