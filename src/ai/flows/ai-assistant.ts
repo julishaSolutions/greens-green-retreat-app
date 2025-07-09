@@ -58,21 +58,22 @@ ${knowledgeBase}
 const bookingProcessTool = ai.defineTool(
     {
         name: 'bookingProcessTool',
-        description: 'Use when the user asks specifically how to book, make a payment, or about booking confirmation.',
+        description: 'Use when the user asks about how to book, the booking process, making a payment, or booking confirmation.',
         inputSchema: z.object({
+            query: z.string().describe("The user's question about booking."),
             knowledgeBase: z.string().describe("The retreat's knowledge base."),
         }),
         outputSchema: z.string(),
     },
-    async ({ knowledgeBase }) => {
+    async ({ query, knowledgeBase }) => {
         const { response } = await ai.generate({
              model: 'googleai/gemini-2.0-flash',
-             system: `You are a specialized booking assistant. Extract ONLY the booking and payment information from the provided knowledge base and explain it clearly to the user.
+             system: `You are a specialized booking assistant. Answer questions about the booking and payment process using ONLY the provided knowledge base.
 Knowledge Base:
 ---
 ${knowledgeBase}
 ---`,
-             prompt: 'How do I book a stay and pay for it?',
+             prompt: query,
         });
         return response.text;
     }
