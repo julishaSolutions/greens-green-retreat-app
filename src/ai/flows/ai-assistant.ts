@@ -36,7 +36,7 @@ const aiAssistantFlow = ai.defineFlow(
     outputSchema: AIAssistantOutputSchema,
   },
   async ({ query, history }) => {
-    // 1. Fetch all agent configurations from the database
+    // 1. Fetch all agent configurations and the knowledge base from the database
     const agentConfigs = await getAllAgentConfigs();
     const knowledgeBase = await getKnowledgeBase();
 
@@ -50,7 +50,8 @@ const aiAssistantFlow = ai.defineFlow(
           outputSchema: z.string(),
         },
         async ({ query }) => {
-          // This is the logic the tool executes
+          // This is the logic the tool executes.
+          // It now has access to both its unique prompt AND the shared knowledge base.
           const { response } = await ai.generate({
             model: 'googleai/gemini-2.0-flash',
             system: `${config.systemPrompt}\n\nKnowledge Base:\n---\n${knowledgeBase}\n---`,
