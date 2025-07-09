@@ -5,6 +5,42 @@ import { adminDb } from '@/lib/firebase-admin';
 
 const KB_COLLECTION = 'system_settings';
 const KB_DOC_ID = 'knowledge_base';
+const AGENT_COLLECTION = 'ai_agents';
+
+export type AgentConfig = {
+  id: string; // The tool name, e.g., 'generalInquiryTool'
+  name: string; // A user-friendly name, e.g., 'General Inquiry Agent'
+  description: string; // For the supervisor AI
+  systemPrompt: string; // The instructions for the specialist agent
+};
+
+const DEFAULT_AGENTS: AgentConfig[] = [
+  {
+    id: 'generalInquiryTool',
+    name: 'General Inquiry Agent',
+    description: "Use for general questions about the retreat, dining, check-in/check-out times, and any query that doesn't fit other specific tools. This is your default tool.",
+    systemPrompt: `You are a friendly and helpful assistant for Green's Green Retreat. Your goal is to answer the user's question based ONLY on the provided knowledge base. If the user's question cannot be answered from the knowledge base, politely say: "I can only answer questions about Green's Green Retreat. Is there anything I can help you with regarding our accommodations, activities, or booking process?"`
+  },
+  {
+    id: 'bookingProcessTool',
+    name: 'Booking Process Agent',
+    description: 'Use when the user asks about how to book, the booking process, making a payment, or booking confirmation.',
+    systemPrompt: `You are a specialized booking assistant. Answer questions about the booking and payment process using ONLY the provided knowledge base.`
+  },
+  {
+    id: 'accommodationsTool',
+    name: 'Accommodations Agent',
+    description: 'Use when the user asks about specific cottages, their amenities, capacity, or pricing.',
+    systemPrompt: `You are a specialized accommodations assistant. Answer questions about cottages, treehouses, amenities, and pricing using ONLY the provided knowledge base.`
+  },
+  {
+    id: 'activitiesTool',
+    name: 'Activities Agent',
+    description: 'Use when the user asks about available activities like water slides, boat riding, fishing, or bird watching.',
+    systemPrompt: `You are a specialized activities assistant. Answer questions about on-site experiences using ONLY the provided knowledge base.`
+  }
+];
+
 
 /**
  * Fetches the knowledge base content from Firestore.
@@ -69,4 +105,50 @@ export async function updateKnowledgeBase(newContent: string): Promise<void> {
     console.error('Error updating knowledge base:', error);
     throw new Error('Failed to update knowledge base in the database.');
   }
+}
+
+/**
+ * Initializes the default agent configurations in Firestore if they don't exist.
+ */
+async function initializeDefaultAgents(): Promise<void> {
+  const db = adminDb();
+  const agentCollection = db.collection(AGENT_COLLECTION);
+  const snapshot = await agentCollection.limit(1).get();
+
+  if (snapshot.empty) {
+    console.log('[SystemService] No agent configurations found, initializing default agents.');
+    const batch = db.batch();
+    DEFAULT_AGENTS.forEach(agent => {
+      const docRef = agentCollection.doc(agent.id);
+      batch.set(docRef, agent);
+    });
+    await batch.commit();
+    console.log('[SystemService] Default agents created successfully.');
+  }
+}
+
+/**
+ * Fetches all agent configurations from Firestore.
+ * Initializes default agents if none are found.
+ * @returns {Promise<AgentConfig[]>} A list of agent configurations.
+ */
+export async function getAllAgentConfigs(): Promise<AgentConfig[]> {
+  await initializeDefaultAgents(); // Ensure defaults exist before fetching
+  const db = adminDb();
+  const snapshot = await db.collection(AGENT_COLLECTION).get();
+  return snapshot.docs.map(doc => doc.data() as AgentConfig);
+}
+
+/**
+ * Updates a specific agent's configuration in Firestore.
+ * @param {string} id - The ID of the agent to update.
+ * @param {Partial<AgentConfig>} data - The data to update.
+ */
+export async function updateAgentConfig(id: string, data: Partial<Omit<AgentConfig, 'id' | 'name'>>): Promise<void> {
+  if (!id) {
+    throw new Error('Agent ID is required to update configuration.');
+  }
+  const db = adminDb();
+  await db.collection(AGENT_COLLECTION).doc(id).update(data);
+  console.log(`[SystemService] Agent configuration for '${id}' updated successfully.`);
 }

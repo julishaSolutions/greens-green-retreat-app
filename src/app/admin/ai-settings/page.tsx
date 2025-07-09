@@ -1,12 +1,15 @@
 
-import { getKnowledgeBase } from '@/services/systemService';
+import { getKnowledgeBase, getAllAgentConfigs } from '@/services/systemService';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
-import { Bot } from 'lucide-react';
+import { Bot, SlidersHorizontal } from 'lucide-react';
 import { KnowledgeBaseForm } from './components/knowledge-base-form';
+import { AgentSettings } from './components/agent-settings';
 
 export default async function AISettingsPage() {
     const knowledgeBaseContent = await getKnowledgeBase();
+    const agentConfigs = await getAllAgentConfigs();
 
     return (
         <div className="max-w-4xl mx-auto">
@@ -21,13 +24,30 @@ export default async function AISettingsPage() {
                                 AI Assistant Settings
                             </CardTitle>
                             <CardDescription className="mt-1 text-lg text-foreground/80 font-sans">
-                                Manage the knowledge base for your website's AI chatbot.
+                                Manage the knowledge and behavior of your website's AI chatbot.
                             </CardDescription>
                         </div>
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <KnowledgeBaseForm initialContent={knowledgeBaseContent} />
+                   <Tabs defaultValue="knowledge-base" className="w-full">
+                      <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="knowledge-base">
+                            <Bot className="mr-2 h-4 w-4" />
+                            Knowledge Base
+                        </TabsTrigger>
+                        <TabsTrigger value="agent-settings">
+                            <SlidersHorizontal className="mr-2 h-4 w-4" />
+                            Agent Settings
+                        </TabsTrigger>
+                      </TabsList>
+                      <TabsContent value="knowledge-base" className="mt-6">
+                        <KnowledgeBaseForm initialContent={knowledgeBaseContent} />
+                      </TabsContent>
+                      <TabsContent value="agent-settings" className="mt-6">
+                        <AgentSettings agentConfigs={agentConfigs} />
+                      </TabsContent>
+                    </Tabs>
                 </CardContent>
             </Card>
         </div>
