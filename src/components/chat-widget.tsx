@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef, useEffect, type FormEvent } from 'react';
@@ -9,11 +10,9 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Bot, Send, Loader2, User } from 'lucide-react';
+import { Send, Loader2, User, Sparkles, MessageCircle } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Logo } from './logo';
-
 
 type Message = {
     role: 'user' | 'model';
@@ -75,25 +74,27 @@ export function ChatWidget() {
                 <Button
                     variant="default"
                     size="lg"
-                    className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-lg z-50 bg-primary hover:bg-primary/90"
+                    className="fixed bottom-6 right-6 rounded-full shadow-2xl z-50 bg-primary hover:bg-primary/95 h-auto py-3 px-6 flex items-center gap-3 transition-transform hover:scale-105 font-sans"
                 >
-                    <Bot className="h-8 w-8 text-primary-foreground" />
-                    <span className="sr-only">Open Chat</span>
+                    <MessageCircle className="h-6 w-6 text-primary-foreground" />
+                    <span>Talk to Greens' Assistant</span>
                 </Button>
             </PopoverTrigger>
             <PopoverContent
                 side="top"
                 align="end"
-                className="w-[90vw] max-w-md h-[70vh] p-0 rounded-xl overflow-hidden border-2 border-primary/20"
+                className="w-[90vw] max-w-md h-[70vh] p-0 rounded-2xl overflow-hidden border-2 border-primary/20 shadow-2xl"
                 sideOffset={16}
             >
                 <Card className="flex flex-col h-full border-none shadow-none">
                     <CardHeader className="bg-primary text-primary-foreground">
-                        <div className="flex items-center gap-3">
-                            <Logo size={40} className="bg-white rounded-full p-1" />
+                        <div className="flex items-center gap-4">
+                            <div className="p-2 bg-white/20 rounded-full">
+                                <Sparkles className="h-6 w-6 text-white"/>
+                            </div>
                             <div>
-                                <CardTitle className="font-headline text-xl">GGR Assistant</CardTitle>
-                                <CardDescription className="text-primary-foreground/80">Your guide to the retreat</CardDescription>
+                                <CardTitle className="font-headline text-xl">Greens' Assistant</CardTitle>
+                                <CardDescription className="text-primary-foreground/80 font-sans">Your guide to the retreat</CardDescription>
                             </div>
                         </div>
                     </CardHeader>
@@ -108,12 +109,13 @@ export function ChatWidget() {
                                         {message.role === 'model' && (
                                             <Avatar className="h-8 w-8 border-2 border-primary/50">
                                                 <AvatarFallback className="bg-primary/20 text-primary">
-                                                    <Bot className="h-5 w-5"/>
+                                                    <Sparkles className="h-5 w-5"/>
                                                 </AvatarFallback>
                                             </Avatar>
                                         )}
                                         <div className={cn(
-                                            "rounded-xl p-3 max-w-xs sm:max-w-sm prose prose-sm text-sm",
+                                            "rounded-xl p-3 max-w-xs sm:max-w-sm prose prose-sm",
+                                            "prose-p:font-sans prose-p:my-0",
                                             message.role === 'user'
                                                 ? 'bg-accent text-accent-foreground rounded-br-none'
                                                 : 'bg-muted rounded-bl-none'
@@ -135,11 +137,11 @@ export function ChatWidget() {
                                     <div className="flex gap-3 items-start justify-start">
                                         <Avatar className="h-8 w-8 border-2 border-primary/50">
                                             <AvatarFallback className="bg-primary/20 text-primary">
-                                                <Bot className="h-5 w-5"/>
+                                                <Sparkles className="h-5 w-5"/>
                                             </AvatarFallback>
                                         </Avatar>
                                         <div className="rounded-xl p-3 max-w-[80%] bg-muted rounded-bl-none">
-                                            <div className="flex items-center gap-2 text-muted-foreground">
+                                            <div className="flex items-center gap-2 text-muted-foreground font-sans">
                                                <Loader2 className="h-4 w-4 animate-spin"/>
                                                <span>Thinking...</span>
                                             </div>
@@ -155,10 +157,10 @@ export function ChatWidget() {
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 placeholder="Ask about our cottages..."
-                                className="flex-grow"
+                                className="flex-grow bg-transparent focus:ring-0 focus:ring-offset-0 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 font-sans"
                                 disabled={isLoading}
                             />
-                            <Button type="submit" size="icon" disabled={isLoading || !input.trim()}>
+                            <Button type="submit" size="icon" disabled={isLoading || !input.trim()} className="bg-accent hover:bg-accent/90 text-accent-foreground rounded-full">
                                 {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
                                 <span className="sr-only">Send</span>
                             </Button>
