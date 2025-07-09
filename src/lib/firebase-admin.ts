@@ -5,6 +5,8 @@ import { getApps } from 'firebase-admin/app';
 let adminDb: admin.firestore.Firestore | null = null;
 let adminAuth: admin.auth.Auth | null = null;
 
+console.log('[Firebase Admin] Module loading.');
+
 // This is the new, more robust way to get credentials
 const projectId = process.env.FIREBASE_PROJECT_ID;
 const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
@@ -12,9 +14,13 @@ const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
 // Environment variables often escape newline characters, so we must replace them back.
 const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
 
+const hasCredentials = projectId && clientEmail && privateKey;
+console.log(`[Firebase Admin] Checking for credentials... ${hasCredentials ? 'Found' : 'MISSING'}`);
+
 // We will only attempt to initialize if the environment variables are all present.
-if (projectId && clientEmail && privateKey) {
+if (hasCredentials) {
   if (getApps().length === 0) {
+    console.log('[Firebase Admin] No existing apps found. Initializing a new Firebase Admin app...');
     try {
       admin.initializeApp({
         credential: admin.credential.cert({
@@ -23,7 +29,7 @@ if (projectId && clientEmail && privateKey) {
           privateKey,
         }),
       });
-      console.log('✅ Firebase Admin SDK initialized successfully from environment variables!');
+      console.log('✅ [Firebase Admin] SDK initialized successfully from environment variables!');
       adminDb = admin.firestore();
       adminAuth = admin.auth();
     } catch (error: any) {
@@ -32,12 +38,13 @@ if (projectId && clientEmail && privateKey) {
       console.error(`   Original Error: ${error.message}`);
     }
   } else {
+    console.log('[Firebase Admin] Existing app found. Getting Firestore and Auth instances.');
     // If the app is already initialized, just get the instances.
     adminDb = admin.firestore();
     adminAuth = admin.auth();
   }
 } else {
-    console.warn('⚠️ Firebase Admin environment variables are missing. Server-side Firebase features will be disabled.');
+    console.warn('⚠️ [Firebase Admin] Environment variables are missing. Server-side Firebase features will be disabled.');
 }
 
 export { adminDb, adminAuth };
