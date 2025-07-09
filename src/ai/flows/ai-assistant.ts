@@ -1,8 +1,7 @@
-
 'use server';
 /**
  * @fileOverview A multi-agent AI assistant for Green's Green Retreat.
- * This file defines a supervisor agent that uses specialized tools to answer user queries.
+ * This file defines a supervisor agent that routes queries to specialized agents.
  *
  * - askAIAssistant - The main entry point for the chat widget.
  */
@@ -28,7 +27,7 @@ export type AIAssistantInput = z.infer<typeof AIAssistantInputSchema>;
 const AIAssistantOutputSchema = z.string();
 export type AIAssistantOutput = z.infer<typeof AIAssistantOutputSchema>;
 
-// This is the main "Supervisor" flow
+// This is the main "Supervisor" flow, which now uses a two-step router pattern.
 const aiAssistantFlow = ai.defineFlow(
   {
     name: 'aiAssistantFlow',
@@ -40,43 +39,63 @@ const aiAssistantFlow = ai.defineFlow(
     const agentConfigs = await getAllAgentConfigs();
     const knowledgeBase = await getKnowledgeBase();
 
-    // 2. Dynamically create a tool for each agent configuration
-    const specialistTools = agentConfigs.map(config => {
-      return ai.defineTool(
-        {
-          name: config.id, // e.g., 'generalInquiryTool'
-          description: config.description,
-          inputSchema: z.object({ query: z.string().describe("The user's original query.") }),
-          outputSchema: z.string(),
-        },
-        async ({ query }) => {
-          // This is the logic the tool executes.
-          // It now has access to both its unique prompt AND the shared knowledge base.
-          const { response } = await ai.generate({
-            model: 'googleai/gemini-2.0-flash',
-            system: `${config.systemPrompt}\n\nKnowledge Base:\n---\n${knowledgeBase}\n---`,
-            prompt: query,
-          });
-          return response?.text || `I'm sorry, I could not process that request.`;
-        }
-      );
-    });
-    
-    // 3. Define the supervisor's instructions
-    const supervisorSystemPrompt = `You are a supervisor AI for Green's Green Retreat. Your job is to intelligently route the user's query to the correct specialized tool based on its description. Be friendly and helpful. Review the available tools and their descriptions to make the best choice. If no specific tool seems appropriate, use the 'generalInquiryTool'.`;
+    // 2. Create a prompt for the supervisor listing available agents
+    const availableAgentsPrompt = agentConfigs
+      .map(agent => `- ${agent.id}: ${agent.description}`)
+      .join('\n');
 
-    const { response } = await ai.generate({
+    const supervisorSystemPrompt = `You are a supervisor AI for Green's Green Retreat. Your job is to intelligently route the user's query to the correct specialized agent based on its description. Review the available agents below and respond with ONLY the ID of the best agent to use (e.g., 'generalInquiryTool').
+
+Available Agents:
+${availableAgentsPrompt}
+
+If no specific agent seems appropriate, choose 'generalInquiryTool'.`;
+
+    // 3. First LLM call: Supervisor chooses the agent.
+    // We only need the current query for routing, not the whole history.
+    const supervisorChoiceResponse = await ai.generate({
+      model: 'googleai/gemini-2.0-flash',
+      prompt: `User Query: "${query}"\n\nBased on the user query, which agent ID should handle this?`,
+      system: supervisorSystemPrompt,
+      output: {
+        schema: z.object({
+          agentId: z.string().describe("The ID of the agent to use, e.g., 'generalInquiryTool'"),
+        })
+      }
+    });
+
+    const chosenAgentId = supervisorChoiceResponse.output?.agentId;
+    
+    if (!chosenAgentId) {
+      console.error("Supervisor failed to choose an agent. Raw response:", supervisorChoiceResponse.text);
+      return "I'm sorry, I'm having trouble routing your request. Please try again.";
+    }
+    
+    // 4. Find the configuration for the chosen agent
+    let chosenAgent = agentConfigs.find(agent => agent.id === chosenAgentId);
+    
+    // If the supervisor hallucinates an invalid agent ID, fall back to the general agent.
+    if (!chosenAgent) {
+        console.warn(`Supervisor chose an invalid agent ID: '${chosenAgentId}'. Falling back to general agent.`);
+        chosenAgent = agentConfigs.find(agent => agent.id === 'generalInquiryTool');
+        if (!chosenAgent) {
+            console.error("Critical error: Could not find fallback 'generalInquiryTool' agent.");
+            return "I'm sorry, a critical internal error occurred. Please contact support.";
+        }
+    }
+
+    // 5. Second LLM call: Specialist agent answers the query using the full history.
+    const specialistResponse = await ai.generate({
         model: 'googleai/gemini-2.0-flash',
-        system: supervisorSystemPrompt,
+        system: `${chosenAgent.systemPrompt}\n\nKnowledge Base:\n---\n${knowledgeBase}\n---`,
+        prompt: query,
         history: history.map(msg => ({
             role: msg.role,
             content: [{ text: msg.content }]
-        })),
-        prompt: query,
-        tools: specialistTools,
+        }))
     });
 
-    return response?.text || "I'm sorry, but I encountered an issue and can't respond right now. Please try again in a moment.";
+    return specialistResponse.text || "I'm sorry, but I encountered an issue and can't respond right now. Please try again in a moment.";
   }
 );
 
