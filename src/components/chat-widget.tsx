@@ -3,16 +3,18 @@
 
 import { useState, useRef, useEffect, type FormEvent } from 'react';
 import { askAIAssistant } from '@/ai/flows/ai-assistant';
+import { generateSpeech } from '@/ai/flows/text-to-speech';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Send, Loader2, User, Sparkles, MessageCircle } from 'lucide-react';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Send, Loader2, User, Sparkles, MessageCircle, Microphone, Volume2, VolumeX } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { useToast } from '@/hooks/use-toast';
 
 type Message = {
     role: 'user' | 'model';
@@ -26,12 +28,52 @@ const initialMessages: Message[] = [
     }
 ];
 
+// Reference for SpeechRecognition, will be populated on the client.
+let recognition: any = null;
+
 export function ChatWidget() {
+    const { toast } = useToast();
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>(initialMessages);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [isListening, setIsListening] = useState(false);
+    const [isTtsEnabled, setIsTtsEnabled] = useState(true);
     const scrollAreaRef = useRef<HTMLDivElement>(null);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+
+    // Initialize SpeechRecognition and Audio on component mount (client-side only)
+    useEffect(() => {
+        const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            recognition.onresult = (event: any) => {
+                const transcript = event.results[0][0].transcript;
+                setInput(transcript);
+                setIsListening(false);
+            };
+
+            recognition.onerror = (event: any) => {
+                console.error("Speech recognition error:", event.error);
+                toast({ title: 'Voice Error', description: `An error occurred: ${event.error}`, variant: 'destructive'});
+                setIsListening(false);
+            };
+
+            recognition.onend = () => {
+                setIsListening(false);
+            };
+        }
+        
+        // Pre-create the audio element
+        if (!audioRef.current) {
+            audioRef.current = new Audio();
+        }
+    }, [toast]);
+
 
     const scrollToBottom = () => {
         if (scrollAreaRef.current) {
@@ -42,6 +84,35 @@ export function ChatWidget() {
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
+    
+    const handleVoiceClick = () => {
+        if (!recognition) {
+            toast({ title: 'Voice Not Supported', description: 'Your browser does not support voice recognition.', variant: 'destructive'});
+            return;
+        }
+        if (isListening) {
+            recognition.stop();
+            setIsListening(false);
+        } else {
+            recognition.start();
+            setIsListening(true);
+        }
+    };
+
+    const playAudio = async (text: string) => {
+        if (!isTtsEnabled || !text) return;
+
+        try {
+            const { audioDataUri } = await generateSpeech(text);
+            if (audioRef.current && audioDataUri) {
+                audioRef.current.src = audioDataUri;
+                audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
+            }
+        } catch (error) {
+            console.error("Error generating speech:", error);
+            toast({ title: 'Audio Error', description: 'Could not generate audio for the response.', variant: 'destructive'});
+        }
+    };
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -53,12 +124,14 @@ export function ChatWidget() {
         setIsLoading(true);
 
         try {
-            const response = await askAIAssistant({
+            const responseText = await askAIAssistant({
                 query: input,
                 history: messages,
             });
-            const modelMessage: Message = { role: 'model', content: response };
+            const modelMessage: Message = { role: 'model', content: responseText };
             setMessages(prev => [...prev, modelMessage]);
+            await playAudio(responseText);
+
         } catch (error) {
             console.error("Error calling AI assistant:", error);
             const errorMessage: Message = { role: 'model', content: "Sorry, I'm having trouble connecting right now. Please try again later." };
@@ -88,18 +161,24 @@ export function ChatWidget() {
             >
                 <Card className="flex flex-col h-full border-none shadow-none">
                     <CardHeader className="bg-primary text-primary-foreground">
-                        <div className="flex items-center gap-4">
-                            <div className="p-2 bg-white/20 rounded-full">
-                                <Sparkles className="h-6 w-6 text-white"/>
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className="p-2 bg-white/20 rounded-full">
+                                    <Sparkles className="h-6 w-6 text-white"/>
+                                </div>
+                                <div>
+                                    <CardTitle className="font-headline text-xl">Greens' Assistant</CardTitle>
+                                    <CardDescription className="text-primary-foreground/80 font-sans">Your guide to the retreat</CardDescription>
+                                </div>
                             </div>
-                            <div>
-                                <CardTitle className="font-headline text-xl">Greens' Assistant</CardTitle>
-                                <CardDescription className="text-primary-foreground/80 font-sans">Your guide to the retreat</CardDescription>
-                            </div>
+                            <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/20" onClick={() => setIsTtsEnabled(prev => !prev)}>
+                                {isTtsEnabled ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
+                                <span className="sr-only">Toggle Sound</span>
+                            </Button>
                         </div>
                     </CardHeader>
                     <CardContent className="flex-grow p-0 overflow-hidden">
-                        <ScrollArea className="h-full" ref={scrollAreaRef}>
+                        <ScrollArea className="h-full" viewportRef={scrollAreaRef}>
                             <div className="p-4 space-y-6">
                                 {messages.map((message, index) => (
                                     <div key={index} className={cn(
@@ -153,6 +232,17 @@ export function ChatWidget() {
                     </CardContent>
                     <CardFooter className="p-3 border-t bg-background">
                         <form onSubmit={handleSubmit} className="flex w-full items-center gap-2">
+                             <Button
+                                type="button"
+                                size="icon"
+                                variant="ghost"
+                                onClick={handleVoiceClick}
+                                className={cn("rounded-full", isListening ? 'text-destructive animate-pulse' : 'text-muted-foreground')}
+                                disabled={!recognition}
+                            >
+                                <Microphone className="h-5 w-5" />
+                                <span className="sr-only">Use Microphone</span>
+                            </Button>
                             <Input
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
