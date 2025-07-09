@@ -2,8 +2,6 @@
 import { adminDb } from '@/lib/firebase-admin';
 import type { DocumentData, Query } from 'firebase-admin/firestore';
 
-const FIREBASE_NOT_INITIALIZED_WARNING = 'Firestore Admin is not initialized. Cannot fetch data. Please check your server environment configuration.';
-
 export type Cottage = {
   id: string;
   name: string;
@@ -42,12 +40,9 @@ function docToCottage(doc: DocumentData): Cottage {
 }
 
 export async function getCottages(count?: number): Promise<Cottage[]> {
-    if (!adminDb) {
-        console.warn(FIREBASE_NOT_INITIALIZED_WARNING);
-        return [];
-    }
     try {
-        const snapshot = await adminDb.collection('cottages').get();
+        const db = adminDb();
+        const snapshot = await db.collection('cottages').get();
         
         let cottages = snapshot.docs.map(docToCottage);
 
@@ -58,17 +53,14 @@ export async function getCottages(count?: number): Promise<Cottage[]> {
         return cottages;
     } catch (error) {
         console.error("Error fetching cottages:", error);
-        return [];
+        throw new Error(`Failed to fetch cottages. Reason: ${error instanceof Error ? error.message : 'Unknown'}`);
     }
 }
 
 export async function getCottageBySlug(slug: string): Promise<Cottage | null> {
-    if (!adminDb) {
-        console.warn(FIREBASE_NOT_INITIALIZED_WARNING);
-        return null;
-    }
     try {
-        const q = adminDb.collection('cottages').where('slug', '==', slug).limit(1);
+        const db = adminDb();
+        const q = db.collection('cottages').where('slug', '==', slug).limit(1);
         const snapshot = await q.get();
 
         if (snapshot.empty) {
@@ -77,17 +69,14 @@ export async function getCottageBySlug(slug: string): Promise<Cottage | null> {
         return docToCottage(snapshot.docs[0]);
     } catch (error) {
         console.error(`Error fetching cottage by slug ${slug}:`, error);
-        return null;
+        throw new Error(`Failed to fetch cottage by slug ${slug}. Reason: ${error instanceof Error ? error.message : 'Unknown'}`);
     }
 }
 
 export async function getActivities(): Promise<Activity[]> {
-    if (!adminDb) {
-        console.warn(FIREBASE_NOT_INITIALIZED_WARNING);
-        return [];
-    }
     try {
-        const snapshot = await adminDb.collection('activities').get();
+        const db = adminDb();
+        const snapshot = await db.collection('activities').get();
 
         return snapshot.docs.map(doc => {
             const data = doc.data();
@@ -102,6 +91,6 @@ export async function getActivities(): Promise<Activity[]> {
         });
     } catch (error) {
         console.error("Error fetching activities:", error);
-        return [];
+        throw new Error(`Failed to fetch activities. Reason: ${error instanceof Error ? error.message : 'Unknown'}`);
     }
 }

@@ -30,14 +30,12 @@ export type Post = {
 };
 
 export async function createPost(postData: { title: string; content: string }): Promise<string> {
-  if (!adminDb) {
-    throw new Error("Content service is not available. Database not configured.");
-  }
+  const db = adminDb();
   const { title, content } = postData;
   const slug = slugify(title);
   const excerpt = content.substring(0, 150) + '...';
 
-  const postRef = adminDb.collection('posts').doc();
+  const postRef = db.collection('posts').doc();
   await postRef.set({
     title,
     content,
@@ -53,12 +51,9 @@ export async function createPost(postData: { title: string; content: string }): 
 }
 
 export async function getAllPosts(): Promise<Post[]> {
-    if (!adminDb) {
-        console.warn('Firestore Admin is not initialized. Cannot fetch posts.');
-        return [];
-    }
     try {
-        const postsRef = adminDb.collection('posts').orderBy('createdAt', 'desc');
+        const db = adminDb();
+        const postsRef = db.collection('posts').orderBy('createdAt', 'desc');
         const snapshot = await postsRef.get();
         if (snapshot.empty) {
             return [];
@@ -80,17 +75,14 @@ export async function getAllPosts(): Promise<Post[]> {
         });
     } catch (error) {
         console.error(`Error fetching all posts:`, error);
-        return [];
+        throw new Error(`Failed to fetch all posts. Reason: ${error instanceof Error ? error.message : 'Unknown'}`);
     }
 }
 
 export async function getPublishedPosts(): Promise<Post[]> {
-    if (!adminDb) {
-        console.warn('Firestore Admin is not initialized. Cannot fetch posts.');
-        return [];
-    }
     try {
-        const postsRef = adminDb.collection('posts')
+        const db = adminDb();
+        const postsRef = db.collection('posts')
             .where('status', '==', 'published')
             .orderBy('createdAt', 'desc');
         const snapshot = await postsRef.get();
@@ -114,17 +106,14 @@ export async function getPublishedPosts(): Promise<Post[]> {
         });
     } catch (error) {
         console.error(`Error fetching published posts:`, error);
-        return [];
+        throw new Error(`Failed to fetch published posts. Reason: ${error instanceof Error ? error.message : 'Unknown'}`);
     }
 }
 
 export async function getPostById(id: string): Promise<Post | null> {
-    if (!adminDb) {
-        console.warn('Firestore Admin is not initialized. Cannot fetch post.');
-        return null;
-    }
     try {
-        const postRef = adminDb.collection('posts').doc(id);
+        const db = adminDb();
+        const postRef = db.collection('posts').doc(id);
         const doc = await postRef.get();
         if (!doc.exists) {
             return null;
@@ -144,17 +133,14 @@ export async function getPostById(id: string): Promise<Post | null> {
         } as Post;
     } catch (error) {
         console.error(`Error fetching post by ID ${id}:`, error);
-        return null;
+        throw new Error(`Failed to fetch post by ID ${id}. Reason: ${error instanceof Error ? error.message : 'Unknown'}`);
     }
 }
 
 export async function getPublishedPostBySlug(slug: string): Promise<Post | null> {
-    if (!adminDb) {
-        console.warn('Firestore Admin is not initialized. Cannot fetch post.');
-        return null;
-    }
     try {
-        const q = adminDb.collection('posts')
+        const db = adminDb();
+        const q = db.collection('posts')
             .where('slug', '==', slug)
             .where('status', '==', 'published')
             .limit(1);
@@ -179,20 +165,18 @@ export async function getPublishedPostBySlug(slug: string): Promise<Post | null>
         } as Post;
     } catch (error) {
         console.error(`Error fetching post by slug ${slug}:`, error);
-        return null;
+        throw new Error(`Failed to fetch post by slug ${slug}. Reason: ${error instanceof Error ? error.message : 'Unknown'}`);
     }
 }
 
 
 export async function updatePost(id: string, postData: { title: string; content: string; imageUrl?: string }): Promise<void> {
-    if (!adminDb) {
-        throw new Error("Content service is not available. Database not configured.");
-    }
+    const db = adminDb();
     const { title, content, imageUrl } = postData;
     const slug = slugify(title);
     const excerpt = content.substring(0, 150) + '...';
 
-    const postRef = adminDb.collection('posts').doc(id);
+    const postRef = db.collection('posts').doc(id);
     
     const updateData: { [key: string]: any } = {
         title,
@@ -210,10 +194,8 @@ export async function updatePost(id: string, postData: { title: string; content:
 }
 
 export async function updatePostStatus(id: string, status: 'published' | 'draft'): Promise<Post> {
-    if (!adminDb) {
-        throw new Error("Content service is not available. Database not configured.");
-    }
-    const postRef = adminDb.collection('posts').doc(id);
+    const db = adminDb();
+    const postRef = db.collection('posts').doc(id);
     await postRef.update({
         status,
         updatedAt: FieldValue.serverTimestamp(),
@@ -224,10 +206,8 @@ export async function updatePostStatus(id: string, status: 'published' | 'draft'
 }
 
 export async function incrementPostLikes(id: string): Promise<void> {
-    if (!adminDb) {
-        throw new Error("Content service is not available. Database not configured.");
-    }
-    const postRef = adminDb.collection('posts').doc(id);
+    const db = adminDb();
+    const postRef = db.collection('posts').doc(id);
     await postRef.update({
         likes: FieldValue.increment(1),
     });

@@ -1,60 +1,58 @@
 
 import * as admin from 'firebase-admin';
-import { getApps } from 'firebase-admin/app';
+import { getApps, initializeApp, App } from 'firebase-admin/app';
+import { getFirestore, Firestore } from 'firebase-admin/firestore';
+import { getAuth, Auth } from 'firebase-admin/auth';
 
-let adminDb: admin.firestore.Firestore | null = null;
-let adminAuth: admin.auth.Auth | null = null;
+// This is a global cache for the initialized services to ensure it only runs once.
+let adminServices: { db: Firestore; auth: Auth } | null = null;
 
-// Check if running in a Google Cloud environment (like App Hosting) vs. local
-// App Hosting automatically sets APP_HOSTING_APP_ID
-const isGoogleCloud = !!process.env.APP_HOSTING_APP_ID;
+function getFirebaseAdmin() {
+  // If we've already initialized, just return the cached services.
+  if (adminServices) {
+    return adminServices;
+  }
 
-if (getApps().length === 0) {
+  // If there are no apps, we need to initialize one.
+  if (getApps().length === 0) {
+    // Check if running in a Google Cloud environment (like App Hosting).
+    const isGoogleCloud = !!process.env.APP_HOSTING_APP_ID;
+
     if (isGoogleCloud) {
         console.log('[Firebase Admin] Google Cloud environment detected. Initializing with Application Default Credentials.');
-        try {
-            admin.initializeApp();
-            console.log('✅ [Firebase Admin] SDK initialized successfully using ADC.');
-        } catch (error: any) {
-            console.error('❌ [CRITICAL ERROR] Firebase Admin SDK initialization failed on Google Cloud.');
-            console.error('   This usually means the runtime service account lacks necessary IAM permissions for Firestore.');
-            console.error(`   Original Error: ${error.message}`);
-        }
+        initializeApp();
     } else {
-        console.log('[Firebase Admin] Local environment detected. Initializing with credentials from .env file.');
+        console.log('[Firebase Admin] Local environment detected. Attempting to initialize with credentials from .env file.');
         const projectId = process.env.FIREBASE_PROJECT_ID;
         const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
         const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
-        const hasCredentials = projectId && clientEmail && privateKey;
 
-        if (hasCredentials) {
-            try {
-                admin.initializeApp({
-                    credential: admin.credential.cert({
-                        projectId,
-                        clientEmail,
-                        privateKey,
-                    }),
-                });
-                console.log('✅ [Firebase Admin] SDK initialized successfully from .env file!');
-            } catch (error: any) {
-                console.error('❌ [CRITICAL ERROR] Firebase Admin SDK initialization failed with .env credentials.');
-                console.error('   Please ensure your .env file contains the correct Firebase service account details.');
-                console.error(`   Original Error: ${error.message}`);
-            }
+        if (projectId && clientEmail && privateKey) {
+             initializeApp({
+                credential: admin.credential.cert({
+                    projectId,
+                    clientEmail,
+                    privateKey,
+                }),
+            });
+            console.log('✅ [Firebase Admin] SDK initialized successfully from .env file!');
         } else {
-            console.warn('⚠️ [Firebase Admin] Local environment credentials missing. Server-side features will be disabled.');
+            // This will cause a hard crash during local development if .env is missing,
+            // which is good because it surfaces the configuration error immediately.
+            throw new Error("[Firebase Admin] CRITICAL: Service account credentials missing from .env file. Cannot initialize for local development.");
         }
     }
+  }
+
+  // Get the default app and its services, then cache them.
+  const db = getFirestore();
+  const auth = getAuth();
+  
+  adminServices = { db, auth };
+  return adminServices;
 }
 
-// Get instances if they haven't been set yet
-// This check ensures that we only try to get instances if an app was successfully initialized.
-if (getApps().length > 0 && !adminDb) {
-    adminDb = admin.firestore();
-    adminAuth = admin.auth();
-} else if (getApps().length === 0) {
-     console.error('❌ [Firebase Admin] Could not get Firestore/Auth instances because no app was initialized.');
-}
-
-export { adminDb, adminAuth };
+// These are the exported functions that our services will use.
+// They ensure that getFirebaseAdmin() is called and initialization is complete.
+export const adminDb = () => getFirebaseAdmin().db;
+export const adminAuth = () => getFirebaseAdmin().auth;

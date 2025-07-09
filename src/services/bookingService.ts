@@ -42,30 +42,24 @@ function docToBooking(doc: FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.
 }
 
 export async function getBookingById(bookingId: string): Promise<Booking | null> {
-  if (!adminDb) {
-    console.warn('Firestore Admin is not initialized. Cannot fetch booking.');
-    return null;
-  }
   try {
-    const doc = await adminDb.collection('bookings').doc(bookingId).get();
+    const db = adminDb();
+    const doc = await db.collection('bookings').doc(bookingId).get();
     if (!doc.exists) {
       return null;
     }
     return docToBooking(doc);
   } catch (error) {
     console.error(`Error fetching booking by ID ${bookingId}:`, error);
-    return null;
+    throw new Error(`Failed to fetch booking by ID ${bookingId}. Reason: ${error instanceof Error ? error.message : 'Unknown'}`);
   }
 }
 
 
 export async function getAllBookings(): Promise<Booking[]> {
-  if (!adminDb) {
-    console.warn('Firestore Admin is not initialized. Cannot fetch bookings.');
-    return [];
-  }
   try {
-    const bookingsRef = adminDb.collection('bookings').orderBy('createdAt', 'desc');
+    const db = adminDb();
+    const bookingsRef = db.collection('bookings').orderBy('createdAt', 'desc');
     const snapshot = await bookingsRef.get();
     if (snapshot.empty) {
       return [];
@@ -73,17 +67,13 @@ export async function getAllBookings(): Promise<Booking[]> {
     return snapshot.docs.map(docToBooking);
   } catch (error) {
     console.error(`Error fetching all bookings:`, error);
-    return [];
+    throw new Error(`Failed to fetch all bookings. Reason: ${error instanceof Error ? error.message : 'Unknown'}`);
   }
 }
 
 export async function getBookingsForCottage(cottageId: string): Promise<BookingDateRange[]> {
-  if (!adminDb) {
-    console.warn('Firestore Admin is not initialized. Cannot fetch bookings.');
-    return [];
-  }
-  
-  const bookingsRef = adminDb.collection('bookings');
+  const db = adminDb();
+  const bookingsRef = db.collection('bookings');
   const query = bookingsRef.where('cottageId', '==', cottageId).where('status', '!=', 'cancelled');
 
   try {
@@ -93,34 +83,26 @@ export async function getBookingsForCottage(cottageId: string): Promise<BookingD
     }
     return snapshot.docs.map(doc => {
       const data = doc.data();
-      // Firestore timestamps need to be converted to Date objects
       const checkIn = (data.checkIn as Timestamp).toDate();
       const checkOut = (data.checkOut as Timestamp).toDate();
       return { from: checkIn, to: checkOut };
     });
   } catch (error) {
     console.error(`Error fetching bookings for cottage ${cottageId}:`, error);
-    return [];
+    throw new Error(`Failed to fetch bookings for cottage ${cottageId}. Reason: ${error instanceof Error ? error.message : 'Unknown'}`);
   }
 }
 
 export async function checkAvailability(cottageId: string, checkInDate: Date, checkOutDate: Date): Promise<boolean> {
-  if (!adminDb) {
-    console.warn('Firestore Admin is not initialized. Cannot check availability.');
-    // Fail open or closed? Let's fail closed to prevent double bookings.
-    return false;
-  }
-  
-  const bookingsRef = adminDb.collection('bookings');
-  // Check for any booking that overlaps with the requested dates
+  const db = adminDb();
+  const bookingsRef = db.collection('bookings');
   const query = bookingsRef
     .where('cottageId', '==', cottageId)
     .where('status', '!=', 'cancelled')
-    .where('checkIn', '<', checkOutDate) // An existing booking's check-in is before the new check-out
-    .where('checkOut', '>', checkInDate); // and its check-out is after the new check-in
+    .where('checkIn', '<', checkOutDate)
+    .where('checkOut', '>', checkInDate);
 
   const snapshot = await query.get();
-  // If snapshot is empty, no overlapping bookings were found, so it's available.
   return snapshot.empty;
 }
 
@@ -131,10 +113,6 @@ export async function createBooking(bookingData: {
   guestName: string;
   guestEmail: string;
 }): Promise<string> {
-    if (!adminDb) {
-        throw new Error("Booking service is not available. Database not configured.");
-    }
-
     const { cottageId, checkIn, checkOut, guestName, guestEmail } = bookingData;
 
     if (!cottageId || !checkIn || !checkOut || !guestName || !guestEmail) {
@@ -146,7 +124,8 @@ export async function createBooking(bookingData: {
         throw new Error("Sorry, the selected dates are no longer available. Please choose different dates.");
     }
 
-    const bookingRef = adminDb.collection('bookings').doc();
+    const db = adminDb();
+    const bookingRef = db.collection('bookings').doc();
     
     await bookingRef.set({
         ...bookingData,
@@ -161,10 +140,8 @@ export async function createBooking(bookingData: {
 }
 
 export async function confirmBookingPayment(bookingId: string, paymentDetails: PaymentDetails): Promise<Booking | null> {
-  if (!adminDb) {
-    throw new Error("Booking service is not available. Database not configured.");
-  }
-  const bookingRef = adminDb.collection('bookings').doc(bookingId);
+  const db = adminDb();
+  const bookingRef = db.collection('bookings').doc(bookingId);
 
   const doc = await bookingRef.get();
   if (!doc.exists) {
