@@ -54,7 +54,7 @@ const DEFAULT_AGENTS: AgentConfig[] = [
 export async function getKnowledgeBase(): Promise<string> {
   try {
     const db = adminDb();
-    const docRef = db.collection(KB_COLlection).doc(KB_DOC_ID);
+    const docRef = db.collection(KB_COLLECTION).doc(KB_DOC_ID);
     const doc = await docRef.get();
 
     if (!doc.exists) {
