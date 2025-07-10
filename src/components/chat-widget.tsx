@@ -11,10 +11,11 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Send, Loader2, User, Sparkles, MessageCircle, Mic, Volume2, VolumeX } from 'lucide-react';
+import { Send, Loader2, User, MessageCircle, Mic, Volume2, VolumeX } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useToast } from '@/hooks/use-toast';
+import { Logo } from '@/components/logo';
 
 type Message = {
     role: 'user' | 'model';
@@ -163,9 +164,7 @@ export function ChatWidget() {
                     <CardHeader className="bg-primary text-primary-foreground">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-4">
-                                <div className="p-2 bg-white/20 rounded-full">
-                                    <Sparkles className="h-6 w-6 text-white"/>
-                                </div>
+                                <Logo size={40} className="bg-white/20 rounded-full p-1"/>
                                 <div>
                                     <CardTitle className="font-headline text-xl">Greens' Assistant</CardTitle>
                                     <CardDescription className="text-primary-foreground/80 font-sans">Your guide to the retreat</CardDescription>
@@ -188,7 +187,7 @@ export function ChatWidget() {
                                         {message.role === 'model' && (
                                             <Avatar className="h-8 w-8 border-2 border-primary/50">
                                                 <AvatarFallback className="bg-primary/20 text-primary">
-                                                    <Sparkles className="h-5 w-5"/>
+                                                    <Logo size={20} />
                                                 </AvatarFallback>
                                             </Avatar>
                                         )}
@@ -216,7 +215,7 @@ export function ChatWidget() {
                                     <div className="flex gap-3 items-start justify-start">
                                         <Avatar className="h-8 w-8 border-2 border-primary/50">
                                             <AvatarFallback className="bg-primary/20 text-primary">
-                                                <Sparkles className="h-5 w-5"/>
+                                               <Logo size={20} />
                                             </AvatarFallback>
                                         </Avatar>
                                         <div className="rounded-xl p-3 max-w-[80%] bg-muted rounded-bl-none">
