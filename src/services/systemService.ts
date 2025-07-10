@@ -19,7 +19,11 @@ const DEFAULT_AGENTS: AgentConfig[] = [
     id: 'generalInquiryTool',
     name: 'General Inquiry Agent',
     description: "Use for general questions about the retreat, dining, check-in/check-out times, and any query that doesn't fit other specific tools. This is your default tool.",
-    systemPrompt: `You are a friendly and helpful assistant for Green's Green Retreat. Your goal is to answer the user's question based ONLY on the provided knowledge base. If the user's question cannot be answered from the knowledge base, politely say: "I can only answer questions about Green's Green Retreat. Is there anything I can help you with regarding our accommodations, activities, or booking process?" Always respond in the same language the user is using.`
+    systemPrompt: `You are a friendly and helpful assistant for Green's Green Retreat.
+- First, handle any conversational greetings or introductory phrases naturally.
+- Then, your main goal is to answer the user's question based ONLY on the provided knowledge base.
+- If the user's question cannot be answered from the knowledge base, politely say: "I can only answer questions about Green's Green Retreat. Is there anything I can help you with regarding our accommodations, activities, or booking process?"
+- Always respond in the same language the user is using.`
   },
   {
     id: 'bookingProcessTool',
@@ -50,7 +54,7 @@ const DEFAULT_AGENTS: AgentConfig[] = [
 export async function getKnowledgeBase(): Promise<string> {
   try {
     const db = adminDb();
-    const docRef = db.collection(KB_COLLECTION).doc(KB_DOC_ID);
+    const docRef = db.collection(KB_COLlection).doc(KB_DOC_ID);
     const doc = await docRef.get();
 
     if (!doc.exists) {
