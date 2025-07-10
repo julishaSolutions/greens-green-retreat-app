@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Send, Loader2, User, Sparkles, MessageCircle, Microphone, Volume2, VolumeX } from 'lucide-react';
+import { Send, Loader2, User, Sparkles, MessageCircle, Mic, Volume2, VolumeX } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useToast } from '@/hooks/use-toast';
@@ -44,7 +44,7 @@ export function ChatWidget() {
 
     // Initialize SpeechRecognition and Audio on component mount (client-side only)
     useEffect(() => {
-        const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
+        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
         if (SpeechRecognition) {
             recognition = new SpeechRecognition();
             recognition.continuous = false;
@@ -240,7 +240,7 @@ export function ChatWidget() {
                                 className={cn("rounded-full", isListening ? 'text-destructive animate-pulse' : 'text-muted-foreground')}
                                 disabled={!recognition}
                             >
-                                <Microphone className="h-5 w-5" />
+                                <Mic className="h-5 w-5" />
                                 <span className="sr-only">Use Microphone</span>
                             </Button>
                             <Input
