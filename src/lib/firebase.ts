@@ -11,6 +11,7 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
+// Check that all required environment variables are present.
 const isFirebaseConfigValid = Object.values(firebaseConfig).every(Boolean);
 
 let app: FirebaseApp | null = null;
@@ -26,7 +27,7 @@ if (isFirebaseConfigValid) {
         console.error("Failed to initialize client-side Firebase", e);
     }
 } else {
-    console.warn("Firebase client configuration is incomplete. Client-side Firebase features will be disabled. Please check your .env file.");
+    console.warn("Firebase client configuration is incomplete. Client-side Firebase features will be disabled. Please check your NEXT_PUBLIC_ environment variables in your .env file.");
 }
 
 export { app, db, auth };
