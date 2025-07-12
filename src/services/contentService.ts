@@ -1,6 +1,6 @@
 
 import { adminDb } from '@/lib/firebase-admin';
-import type { DocumentData, Query } from 'firebase-admin/firestore';
+import type { DocumentData } from 'firebase-admin/firestore';
 
 export type Cottage = {
   id: string;
@@ -9,7 +9,7 @@ export type Cottage = {
   guests: number;
   imageUrls: string[];
   description: string;
-  slug?: string;
+  slug: string;
   [key: string]: any; 
 };
 
@@ -32,7 +32,7 @@ function docToCottage(doc: DocumentData): Cottage {
         name: data.name || '',
         price: data.price || 0,
         guests: guests,
-        imageUrls: Array.isArray(imageUrls) ? imageUrls : [imageUrls],
+        imageUrls: Array.isArray(imageUrls) ? imageUrls.filter(url => typeof url === 'string' && url) : (typeof imageUrls === 'string' ? [imageUrls] : []),
         description: data.description || '',
         slug: data.slug || '',
         ...data,
@@ -53,11 +53,12 @@ export async function getCottages(count?: number): Promise<Cottage[]> {
         return cottages;
     } catch (error) {
         console.error("Error fetching cottages:", error);
-        throw new Error(`Failed to fetch cottages. Reason: ${error instanceof Error ? error.message : 'Unknown'}`);
+        throw new Error(`Failed to fetch cottages.`);
     }
 }
 
 export async function getCottageBySlug(slug: string): Promise<Cottage | null> {
+    if (!slug) return null;
     try {
         const db = adminDb();
         const q = db.collection('cottages').where('slug', '==', slug).limit(1);
@@ -69,7 +70,7 @@ export async function getCottageBySlug(slug: string): Promise<Cottage | null> {
         return docToCottage(snapshot.docs[0]);
     } catch (error) {
         console.error(`Error fetching cottage by slug ${slug}:`, error);
-        throw new Error(`Failed to fetch cottage by slug ${slug}. Reason: ${error instanceof Error ? error.message : 'Unknown'}`);
+        throw new Error(`Failed to fetch cottage by slug ${slug}.`);
     }
 }
 
@@ -91,6 +92,6 @@ export async function getActivities(): Promise<Activity[]> {
         });
     } catch (error) {
         console.error("Error fetching activities:", error);
-        throw new Error(`Failed to fetch activities. Reason: ${error instanceof Error ? error.message : 'Unknown'}`);
+        throw new Error(`Failed to fetch activities.`);
     }
 }

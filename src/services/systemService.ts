@@ -45,21 +45,7 @@ const DEFAULT_AGENTS: AgentConfig[] = [
   }
 ];
 
-
-/**
- * Fetches the knowledge base content from Firestore.
- * If it doesn't exist, it creates a default one.
- * @returns {Promise<string>} The knowledge base content.
- */
-export async function getKnowledgeBase(): Promise<string> {
-  try {
-    const db = adminDb();
-    const docRef = db.collection(KB_COLLECTION).doc(KB_DOC_ID);
-    const doc = await docRef.get();
-
-    if (!doc.exists) {
-      console.log('[SystemService] Knowledge base not found, creating a default one.');
-      const defaultContent = `
+const DEFAULT_KNOWLEDGE_BASE = `
 **Booking Information:**
 To book, guests should call +254 714 281 791 or visit the 'Inquire Now' page on our website. We use a direct inquiry process to provide the most personal service. To confirm a booking, please pay the full amount before check-in day via Paybill: 625625, Account: 01520262670600. Check-in is at 10:30 AM, and check-out is at 12:00 PM the following day.
 
@@ -78,14 +64,27 @@ We offer a self-catering model. Each cottage has a well-equipped kitchen. Day vi
 - **Fishing**: You are welcome to bring your own fishing gear and enjoy fishing in our well-stocked dam.
 - **Bird Watching**: The retreat is home to diverse birdlife, perfect for bird watching enthusiasts.
 `;
-      await docRef.set({ content: defaultContent });
-      return defaultContent;
+
+/**
+ * Fetches the knowledge base content from Firestore.
+ * If it doesn't exist, it creates a default one.
+ * @returns {Promise<string>} The knowledge base content.
+ */
+export async function getKnowledgeBase(): Promise<string> {
+  try {
+    const db = adminDb();
+    const docRef = db.collection(KB_COLLECTION).doc(KB_DOC_ID);
+    const doc = await docRef.get();
+
+    if (!doc.exists) {
+      console.log('[SystemService] Knowledge base not found, creating a default one.');
+      await docRef.set({ content: DEFAULT_KNOWLEDGE_BASE });
+      return DEFAULT_KNOWLEDGE_BASE;
     }
 
     return doc.data()?.content || '';
   } catch (error) {
     console.error('Error fetching knowledge base:', error);
-    // Return a fallback message on error to prevent chat from breaking
     return 'Error: Could not load knowledge base.';
   }
 }
@@ -117,17 +116,22 @@ export async function updateKnowledgeBase(newContent: string): Promise<void> {
 async function initializeDefaultAgents(): Promise<void> {
   const db = adminDb();
   const agentCollection = db.collection(AGENT_COLLECTION);
-  const snapshot = await agentCollection.limit(1).get();
+  
+  try {
+    const snapshot = await agentCollection.limit(1).get();
 
-  if (snapshot.empty) {
-    console.log('[SystemService] No agent configurations found, initializing default agents.');
-    const batch = db.batch();
-    DEFAULT_AGENTS.forEach(agent => {
-      const docRef = agentCollection.doc(agent.id);
-      batch.set(docRef, agent);
-    });
-    await batch.commit();
-    console.log('[SystemService] Default agents created successfully.');
+    if (snapshot.empty) {
+      console.log('[SystemService] No agent configurations found, initializing default agents.');
+      const batch = db.batch();
+      DEFAULT_AGENTS.forEach(agent => {
+        const docRef = agentCollection.doc(agent.id);
+        batch.set(docRef, agent);
+      });
+      await batch.commit();
+      console.log('[SystemService] Default agents created successfully.');
+    }
+  } catch (error) {
+     console.error('[SystemService] Failed to initialize default agents:', error);
   }
 }
 
@@ -137,10 +141,15 @@ async function initializeDefaultAgents(): Promise<void> {
  * @returns {Promise<AgentConfig[]>} A list of agent configurations.
  */
 export async function getAllAgentConfigs(): Promise<AgentConfig[]> {
-  await initializeDefaultAgents(); // Ensure defaults exist before fetching
-  const db = adminDb();
-  const snapshot = await db.collection(AGENT_COLLECTION).get();
-  return snapshot.docs.map(doc => doc.data() as AgentConfig);
+  await initializeDefaultAgents();
+  try {
+    const db = adminDb();
+    const snapshot = await db.collection(AGENT_COLLECTION).get();
+    return snapshot.docs.map(doc => doc.data() as AgentConfig);
+  } catch (error) {
+    console.error('Error fetching all agent configs:', error);
+    return DEFAULT_AGENTS; // Return defaults as a fallback
+  }
 }
 
 /**

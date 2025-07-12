@@ -25,71 +25,70 @@ export type PaymentDetails = {
   paymentStatus: string;
 };
 
-function docToBooking(doc: FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData>): Booking {
-    const data = doc.data()!;
+function docToBooking(doc: FirebaseFirestore.DocumentSnapshot): Booking | null {
+    const data = doc.data();
+    if (!data) return null;
+
     return {
         id: doc.id,
-        guestName: data.guestName,
-        guestEmail: data.guestEmail,
-        cottageId: data.cottageId,
-        checkIn: (data.checkIn as Timestamp).toDate(),
-        checkOut: (data.checkOut as Timestamp).toDate(),
-        status: data.status,
-        createdAt: (data.createdAt as Timestamp).toDate(),
+        guestName: data.guestName || '',
+        guestEmail: data.guestEmail || '',
+        cottageId: data.cottageId || '',
+        checkIn: (data.checkIn as Timestamp)?.toDate(),
+        checkOut: (data.checkOut as Timestamp)?.toDate(),
+        status: data.status || 'pending_confirmation',
+        createdAt: (data.createdAt as Timestamp)?.toDate(),
         paymentStatus: data.paymentStatus,
         transactionId: data.transactionId,
     };
 }
 
 export async function getBookingById(bookingId: string): Promise<Booking | null> {
+  if (!bookingId) return null;
   try {
     const db = adminDb();
     const doc = await db.collection('bookings').doc(bookingId).get();
     if (!doc.exists) {
+      console.warn(`[BookingService] Booking with ID ${bookingId} not found.`);
       return null;
     }
     return docToBooking(doc);
   } catch (error) {
     console.error(`Error fetching booking by ID ${bookingId}:`, error);
-    throw new Error(`Failed to fetch booking by ID ${bookingId}. Reason: ${error instanceof Error ? error.message : 'Unknown'}`);
+    throw new Error(`Failed to fetch booking by ID ${bookingId}.`);
   }
 }
-
 
 export async function getAllBookings(): Promise<Booking[]> {
   try {
     const db = adminDb();
     const bookingsRef = db.collection('bookings').orderBy('createdAt', 'desc');
     const snapshot = await bookingsRef.get();
-    if (snapshot.empty) {
-      return [];
-    }
-    return snapshot.docs.map(docToBooking);
+    return snapshot.docs.map(doc => docToBooking(doc)).filter((b): b is Booking => b !== null);
   } catch (error) {
     console.error(`Error fetching all bookings:`, error);
-    throw new Error(`Failed to fetch all bookings. Reason: ${error instanceof Error ? error.message : 'Unknown'}`);
+    throw new Error(`Failed to fetch all bookings.`);
   }
 }
 
 export async function getBookingsForCottage(cottageId: string): Promise<BookingDateRange[]> {
+  if (!cottageId) return [];
   const db = adminDb();
   const bookingsRef = db.collection('bookings');
   const query = bookingsRef.where('cottageId', '==', cottageId).where('status', '!=', 'cancelled');
 
   try {
     const snapshot = await query.get();
-    if (snapshot.empty) {
-      return [];
-    }
     return snapshot.docs.map(doc => {
       const data = doc.data();
-      const checkIn = (data.checkIn as Timestamp).toDate();
-      const checkOut = (data.checkOut as Timestamp).toDate();
-      return { from: checkIn, to: checkOut };
-    });
+      return { 
+        from: (data.checkIn as Timestamp).toDate(), 
+        to: (data.checkOut as Timestamp).toDate() 
+      };
+    }).filter(range => range.from && range.to);
   } catch (error) {
     console.error(`Error fetching bookings for cottage ${cottageId}:`, error);
-    throw new Error(`Failed to fetch bookings for cottage ${cottageId}. Reason: ${error instanceof Error ? error.message : 'Unknown'}`);
+    throw new Error(`Failed to fetch bookings for cottage ${cottageId}.`);
   }
 }
 
@@ -99,11 +98,20 @@ export async function checkAvailability(cottageId: string, checkInDate: Date, ch
   const query = bookingsRef
     .where('cottageId', '==', cottageId)
     .where('status', '!=', 'cancelled')
-    .where('checkIn', '<', checkOutDate)
     .where('checkOut', '>', checkInDate);
 
-  const snapshot = await query.get();
-  return snapshot.empty;
+  try {
+    const snapshot = await query.get();
+    const overlappingBookings = snapshot.docs.filter(doc => {
+        const data = doc.data();
+        const bookingCheckIn = (data.checkIn as Timestamp).toDate();
+        return bookingCheckIn < checkOutDate;
+    });
+    return overlappingBookings.length === 0;
+  } catch(e) {
+      console.error('Error checking availability:', e);
+      return false;
+  }
 }
 
 export async function createBooking(bookingData: {
@@ -143,23 +151,28 @@ export async function confirmBookingPayment(bookingId: string, paymentDetails: P
   const db = adminDb();
   const bookingRef = db.collection('bookings').doc(bookingId);
 
-  const doc = await bookingRef.get();
-  if (!doc.exists) {
-      throw new Error(`Booking with ID ${bookingId} not found.`);
+  try {
+    const doc = await bookingRef.get();
+    if (!doc.exists) {
+        throw new Error(`Booking with ID ${bookingId} not found.`);
+    }
+
+    const updatePayload: { [key: string]: any } = {
+      paymentStatus: (paymentDetails.paymentStatus || 'unknown').toUpperCase(),
+      transactionId: paymentDetails.transactionId,
+      updatedAt: FieldValue.serverTimestamp(),
+    };
+
+    if (updatePayload.paymentStatus === 'COMPLETE') {
+      updatePayload.status = 'confirmed';
+    }
+
+    await bookingRef.update(updatePayload);
+
+    const updatedDoc = await bookingRef.get();
+    return docToBooking(updatedDoc);
+  } catch(error) {
+    console.error(`Error confirming payment for booking ${bookingId}:`, error);
+    throw error;
   }
-
-  const updatePayload: { [key: string]: any } = {
-    paymentStatus: paymentDetails.paymentStatus.toUpperCase(),
-    transactionId: paymentDetails.transactionId,
-    updatedAt: FieldValue.serverTimestamp(),
-  };
-
-  if (paymentDetails.paymentStatus.toUpperCase() === 'COMPLETE') {
-    updatePayload.status = 'confirmed';
-  }
-
-  await bookingRef.update(updatePayload);
-
-  const updatedDoc = await bookingRef.get();
-  return docToBooking(updatedDoc);
 }

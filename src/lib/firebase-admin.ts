@@ -16,7 +16,8 @@ function getFirebaseAdmin() {
   // If there are no apps, we need to initialize one.
   if (getApps().length === 0) {
     // Check if running in a Google Cloud environment (like App Hosting).
-    const isGoogleCloud = !!process.env.APP_HOSTING_APP_ID;
+    // The GAE_VARS_PATH is a reliable indicator of a Google-managed environment.
+    const isGoogleCloud = !!process.env.GAE_VARS_PATH;
 
     if (isGoogleCloud) {
         console.log('[Firebase Admin] Google Cloud environment detected. Initializing with Application Default Credentials.');
