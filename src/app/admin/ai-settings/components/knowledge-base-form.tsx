@@ -1,8 +1,8 @@
 
 'use client';
 
-import { useActionState, useEffect } from 'react';
-import { useFormStatus } from 'react-dom';
+import { useEffect } from 'react';
+import { useFormState, useFormStatus } from 'react-dom';
 import { saveKnowledgeBase, type FormState } from '../actions';
 import { useToast } from '@/hooks/use-toast';
 
@@ -40,7 +40,7 @@ function SubmitButton() {
 
 export function KnowledgeBaseForm({ initialContent }: { initialContent: string }) {
   const { toast } = useToast();
-  const [state, formAction] = useActionState(saveKnowledgeBase, initialState);
+  const [state, formAction] = useFormState(saveKnowledgeBase, initialState);
 
   useEffect(() => {
     if (state.message) {

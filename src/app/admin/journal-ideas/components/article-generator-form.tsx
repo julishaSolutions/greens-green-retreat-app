@@ -1,8 +1,7 @@
 
 'use client';
 
-import { useFormStatus } from 'react-dom';
-import { useActionState } from 'react';
+import { useFormStatus, useFormState } from 'react-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -66,8 +65,8 @@ function SaveButton() {
 }
 
 export function ArticleGeneratorForm() {
-  const [state, formAction] = useActionState(generateArticle, initialArticleState);
-  const [saveState, saveFormAction] = useActionState(saveArticle, initialSaveState);
+  const [state, formAction] = useFormState(generateArticle, initialArticleState);
+  const [saveState, saveFormAction] = useFormState(saveArticle, initialSaveState);
 
   return (
     <div className="space-y-6">

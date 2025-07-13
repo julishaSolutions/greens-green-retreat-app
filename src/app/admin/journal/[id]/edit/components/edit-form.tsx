@@ -1,8 +1,8 @@
 
 'use client';
 
-import { useActionState, useEffect } from 'react';
-import { useFormStatus } from 'react-dom';
+import { useEffect } from 'react';
+import { useFormState, useFormStatus } from 'react-dom';
 import { type Post } from '@/services/postService';
 import { saveChanges, publishPost, unpublishPost, type EditFormState } from '../actions';
 import { useToast } from '@/hooks/use-toast';
@@ -44,7 +44,7 @@ function SubmitButton({ text, icon }: { text: string; icon: React.ReactNode }) {
 
 export function EditForm({ post }: { post: Post }) {
   const { toast } = useToast();
-  const [state, formAction] = useActionState(saveChanges, initialState);
+  const [state, formAction] = useFormState(saveChanges, initialState);
   const { pending } = useFormStatus();
 
   useEffect(() => {
