@@ -7,6 +7,11 @@ import Footer from '@/components/footer';
 import { headers } from 'next/headers';
 import { ChatWidget } from '@/components/chat-widget';
 
+import '@/ai/flows/suggest-journal-post-titles.ts';
+import '@/ai/flows/generate-journal-post.ts';
+import '@/ai/flows/ai-assistant.ts';
+import '@/ai/flows/text-to-speech.ts';
+
 export const metadata: Metadata = {
   title: "Green's Green Retreat",
   description: "A Sanctuary of Serenity. Escape to Green's Green Retreat, a family-owned sanctuary in the highlands of Tigoni, Limuru.",
