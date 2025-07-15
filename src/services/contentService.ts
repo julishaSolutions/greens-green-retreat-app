@@ -53,7 +53,9 @@ export async function getCottages(count?: number): Promise<Cottage[]> {
         return cottages;
     } catch (error) {
         console.error("Error fetching cottages:", error);
-        throw new Error(`Failed to fetch cottages.`);
+        // Return an empty array instead of throwing an error to avoid crashing the page.
+        // The page will show a skeleton/loading state, which is a better user experience.
+        return [];
     }
 }
 
