@@ -53,8 +53,6 @@ export async function getCottages(count?: number): Promise<Cottage[]> {
         return cottages;
     } catch (error) {
         console.error("Error fetching cottages:", error);
-        // Return an empty array instead of throwing an error to avoid crashing the page.
-        // The page will show a skeleton/loading state, which is a better user experience.
         return [];
     }
 }
@@ -83,17 +81,18 @@ export async function getActivities(): Promise<Activity[]> {
 
         return snapshot.docs.map(doc => {
             const data = doc.data();
+            const imageUrl = data.imageUrl || data['imageUrl '];
             return {
                 id: doc.id,
                 name: data.name || '',
                 description: data.description || '',
-                imageUrl: data.imageUrl || data['imageUrl '] || '', 
+                imageUrl: imageUrl || '', 
                 imageHint: data.imageHint || '',
                 ...data,
             }
         });
     } catch (error) {
         console.error("Error fetching activities:", error);
-        throw new Error(`Failed to fetch activities.`);
+        return [];
     }
 }
