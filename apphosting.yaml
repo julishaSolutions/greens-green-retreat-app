@@ -10,3 +10,6 @@ runConfig:
   maxInstances: 1
   # Specify the Node.js version for the runtime environment.
   runtime: nodejs20
+# By not specifying a serviceAccount, we instruct App Hosting to use its own
+# managed service account, which is the recommended and most secure practice.
+# This also simplifies the deployment process by removing the need for manual logins.
