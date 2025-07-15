@@ -1,3 +1,5 @@
+sh
+git checkout dev
 # Firebase Studio
 
 This is a NextJS starter in Firebase Studio.
