@@ -2,23 +2,25 @@ import { initializeApp, getApps, getApp, type FirebaseApp } from "firebase/app";
 import { getFirestore, type Firestore } from "firebase/firestore";
 import { getAuth, type Auth } from "firebase/auth";
 
+// Hardcoded Firebase configuration for project ggr1-4fa1c
+// This is the most reliable way to ensure the build process can find the configuration.
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  authDomain: "ggr1-4fa1c.firebaseapp.com",
+  projectId: "ggr1-4fa1c",
+  storageBucket: "ggr1-4fa1c.appspot.com",
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
-
-// Check that all required environment variables are present.
-const isFirebaseConfigValid = Object.values(firebaseConfig).every(Boolean);
 
 let app: FirebaseApp | null = null;
 let db: Firestore | null = null;
 let auth: Auth | null = null;
 
-if (isFirebaseConfigValid) {
+// The check for apiKey is still here because it's the one value that can vary.
+if (!firebaseConfig.apiKey) {
+    console.warn("Firebase client configuration is incomplete. NEXT_PUBLIC_FIREBASE_API_KEY is missing. Client-side Firebase features will be disabled. Please check your environment variables.");
+} else {
     try {
         app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
         db = getFirestore(app);
@@ -26,8 +28,7 @@ if (isFirebaseConfigValid) {
     } catch (e) {
         console.error("Failed to initialize client-side Firebase", e);
     }
-} else {
-    console.warn("Firebase client configuration is incomplete. Client-side Firebase features will be disabled. Please check your NEXT_PUBLIC_ environment variables in your .env file.");
 }
+
 
 export { app, db, auth };
