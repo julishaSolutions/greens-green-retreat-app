@@ -1,3 +1,6 @@
 src/lib/serviceAccountKey.json
 node_modules
 /.next/
+/.next/
+dataconnect/
+firebase-debug.log
