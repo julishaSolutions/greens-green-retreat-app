@@ -1,12 +1,14 @@
 
 import * as admin from 'firebase-admin';
-import { getApps, initializeApp, type App, cert, getApp } from 'firebase-admin/app';
+import { getApps, initializeApp, type App, getApp } from 'firebase-admin/app';
 import { getFirestore, type Firestore } from 'firebase-admin/firestore';
 import { getAuth, type Auth } from 'firebase-admin/auth';
 
 let adminApp: App;
 let adminAuthInstance: Auth;
 let adminDbInstance: Firestore;
+
+const projectId = 'ggr1-4fa1c';
 
 // This is the single, robust initialization function
 function initializeFirebaseAdmin() {
@@ -17,12 +19,12 @@ function initializeFirebaseAdmin() {
     const serviceAccountKey = process.env.SERVICE_ACCOUNT_KEY;
 
     if (serviceAccountKey) {
-      // For local development using a service account key
+      // For local development using a service account key from .env.local
       try {
         const serviceAccount = JSON.parse(serviceAccountKey);
         adminApp = initializeApp({
           credential: admin.credential.cert(serviceAccount),
-          projectId: 'ggr1-4fa1c',
+          projectId: projectId,
         });
         console.log('[Firebase Admin] Initialized with Service Account Key.');
       } catch (error) {
@@ -33,7 +35,7 @@ function initializeFirebaseAdmin() {
       // For production environment (e.g., Firebase App Hosting)
       console.log('[Firebase Admin] Initializing with Application Default Credentials.');
       adminApp = initializeApp({
-          projectId: 'ggr1-4fa1c',
+          projectId: projectId,
       });
     }
   }
@@ -47,6 +49,9 @@ try {
   initializeFirebaseAdmin();
 } catch (error) {
   console.error('CRITICAL: Firebase Admin initialization failed.', error);
+  // We re-throw the error to ensure server startup fails if Firebase Admin can't initialize.
+  // This prevents the application from running in a broken state.
+  throw error;
 }
 
 export const adminDb = () => adminDbInstance;
