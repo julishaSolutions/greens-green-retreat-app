@@ -3,14 +3,13 @@ import { initializeApp, getApps, getApp, type FirebaseApp } from "firebase/app";
 import { getFirestore, type Firestore } from "firebase/firestore";
 import { getAuth, type Auth } from "firebase/auth";
 
-// Hardcoded Firebase configuration for project ggr1-4fa1c.
-// This is the most reliable way to ensure the build process can find the configuration
-// and is standard practice for public client-side keys.
+// This configuration uses environment variables provided by Next.js.
+// It's crucial that these variables are defined in your .env.local file.
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: "ggr1-4fa1c.firebaseapp.com",
-  projectId: "ggr1-4fa1c",
-  storageBucket: "ggr1-4fa1c.appspot.com",
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
@@ -21,11 +20,21 @@ let auth: Auth | null = null;
 
 // Initialize Firebase
 if (getApps().length === 0) {
-  try {
-    app = initializeApp(firebaseConfig);
-  } catch (e) {
-    console.error("Failed to initialize client-side Firebase", e);
+  // Check if all required config values are present
+  if (
+    firebaseConfig.apiKey &&
+    firebaseConfig.authDomain &&
+    firebaseConfig.projectId
+  ) {
+     try {
+        app = initializeApp(firebaseConfig);
+    } catch (e) {
+        console.error("Failed to initialize client-side Firebase", e);
+    }
+  } else {
+    console.warn("Firebase client config is incomplete. Check your NEXT_PUBLIC_ environment variables.");
   }
+ 
 } else {
   app = getApp();
 }
