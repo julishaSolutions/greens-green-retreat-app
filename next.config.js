@@ -65,7 +65,6 @@ const nextConfig = {
       },
     ],
   },
-  serverExternalPackages: ['firebase-admin'],
 };
 
 module.exports = nextConfig;
