@@ -65,21 +65,18 @@ export function SocialToolbar({ postId, slug, initialLikes, postTitle }: SocialT
           url: window.location.href,
         });
       } catch (error) {
-        // Don't show an error if the user cancels the share dialog.
-        if (error instanceof DOMException && error.name === 'AbortError') {
-          console.log('Share was cancelled by the user.');
-        } else {
-          console.error('Error sharing:', error);
-           toast({
-            title: 'Sharing failed',
-            description: "There was an error trying to share. You can copy the URL to share.",
-          });
-        }
+        // Catch all errors (including AbortError and Permission Denied)
+        // and provide a consistent fallback message.
+        console.error('Web Share API Error:', error);
+        toast({
+          title: 'Sharing failed',
+          description: "There was an error trying to share. You can copy the URL instead.",
+        });
       }
     } else {
         toast({
             title: 'Sharing not supported',
-            description: "Your browser doesn't support the Web Share API. You can copy the URL to share.",
+            description: "Your browser doesn't support this feature. You can copy the URL to share.",
         });
     }
   };
