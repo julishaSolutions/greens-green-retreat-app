@@ -33,6 +33,7 @@ function initializeFirebaseAdmin() {
       }
     } else {
       // For production environment (e.g., Firebase App Hosting)
+      // It will use Application Default Credentials automatically.
       console.log('[Firebase Admin] Initializing with Application Default Credentials.');
       adminApp = initializeApp({
           projectId: projectId,
@@ -44,7 +45,7 @@ function initializeFirebaseAdmin() {
   adminDbInstance = getFirestore(adminApp);
 }
 
-// Call the initialization function
+// Call the initialization function immediately when the module is loaded.
 try {
   initializeFirebaseAdmin();
 } catch (error) {
