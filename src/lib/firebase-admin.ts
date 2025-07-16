@@ -16,10 +16,10 @@ if (!getApps().length) {
       const serviceAccount = JSON.parse(serviceAccountKey);
       adminApp = initializeApp({
         credential: admin.credential.cert(serviceAccount),
-        projectId: serviceAccount.project_id,
       });
     } catch (e) {
       console.error('Error parsing service account key or initializing Firebase Admin SDK:', e);
+      // Fallback to default initialization if parsing fails
       adminApp = initializeApp();
     }
   } else {
