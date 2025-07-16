@@ -1,8 +1,8 @@
 
 'use client';
 
-import { useEffect } from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useEffect, useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { type AgentConfig } from '@/services/systemService';
 import { saveAgentConfig, type FormState } from '../actions';
 import { useToast } from '@/hooks/use-toast';
@@ -42,7 +42,7 @@ function SubmitButton({ agentName }: { agentName: string }) {
 
 function AgentConfigForm({ agent }: { agent: AgentConfig }) {
   const { toast } = useToast();
-  const [state, formAction] = useFormState(saveAgentConfig, initialState);
+  const [state, formAction] = useActionState(saveAgentConfig, initialState);
 
   useEffect(() => {
     if (state.message) {

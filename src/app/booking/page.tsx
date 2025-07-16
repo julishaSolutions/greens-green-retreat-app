@@ -1,8 +1,7 @@
 
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { useFormState } from 'react-dom';
+import { useEffect, useRef, useState, useActionState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { type DateRange } from 'react-day-picker';
 import { addDays, format } from 'date-fns';
@@ -32,7 +31,7 @@ export default function BookingPage() {
   const cottageName = searchParams.get('cottageName') || 'one of our cottages';
 
   const { toast } = useToast();
-  const [state, formAction] = useFormState(submitBooking, initialState);
+  const [state, formAction] = useActionState(submitBooking, initialState);
   const formRef = useRef<HTMLFormElement>(null);
 
   const [date, setDate] = useState<DateRange | undefined>({
