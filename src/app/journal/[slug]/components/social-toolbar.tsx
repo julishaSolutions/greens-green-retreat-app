@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -64,7 +65,16 @@ export function SocialToolbar({ postId, slug, initialLikes, postTitle }: SocialT
           url: window.location.href,
         });
       } catch (error) {
-        console.error('Error sharing:', error);
+        // Don't show an error if the user cancels the share dialog.
+        if (error instanceof DOMException && error.name === 'AbortError') {
+          console.log('Share was cancelled by the user.');
+        } else {
+          console.error('Error sharing:', error);
+           toast({
+            title: 'Sharing failed',
+            description: "There was an error trying to share. You can copy the URL to share.",
+          });
+        }
       }
     } else {
         toast({
