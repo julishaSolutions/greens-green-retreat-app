@@ -8,23 +8,27 @@ let adminApp: App;
 let adminAuthInstance: Auth;
 let adminDbInstance: Firestore;
 
-if (!getApps().length) {
-  const serviceAccountKey = process.env.SERVICE_ACCOUNT_KEY;
+const serviceAccountKey = process.env.SERVICE_ACCOUNT_KEY;
 
-  if (serviceAccountKey) {
-    try {
-      const serviceAccount = JSON.parse(serviceAccountKey);
-      adminApp = initializeApp({
-        credential: admin.credential.cert(serviceAccount),
-      });
-    } catch (e) {
-      console.error('Error parsing service account key or initializing Firebase Admin SDK:', e);
-      // Fallback to default initialization if parsing fails
-      adminApp = initializeApp();
-    }
-  } else {
-    console.log("SERVICE_ACCOUNT_KEY not found. Initializing with Application Default Credentials.");
-    adminApp = initializeApp();
+if (!getApps().length) {
+  if (!serviceAccountKey) {
+    // This is a critical error. The app cannot function without credentials.
+    // Throwing an error here provides a clear, immediate signal of what's wrong.
+    throw new Error('CRITICAL: SERVICE_ACCOUNT_KEY environment variable is not set. The application cannot start.');
+  }
+
+  try {
+    const serviceAccount = JSON.parse(serviceAccountKey);
+    adminApp = initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+      // Explicitly providing the projectId from the service account key
+      // is more robust than relying on auto-detection.
+      projectId: serviceAccount.project_id,
+    });
+  } catch (e) {
+    console.error('Failed to parse SERVICE_ACCOUNT_KEY or initialize Firebase Admin SDK:', e);
+    // If parsing fails, we cannot continue.
+    throw new Error('Failed to initialize Firebase Admin SDK due to invalid credentials.');
   }
 } else {
   adminApp = getApps()[0];
