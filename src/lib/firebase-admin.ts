@@ -8,20 +8,34 @@ let adminApp: App;
 let adminAuthInstance: Auth;
 let adminDbInstance: Firestore;
 
+const serviceAccountKey = process.env.SERVICE_ACCOUNT_KEY;
+
 function initializeFirebaseAdmin() {
   if (getApps().length === 0) {
     console.log('[Firebase Admin] Initializing Firebase Admin SDK...');
-    try {
-      // When running in a Google Cloud environment (like App Hosting),
-      // using `applicationDefault()` allows the SDK to automatically find the service account credentials.
-      initializeApp({
-        credential: admin.credential.applicationDefault(),
-        projectId: 'ggr1-4fa1c',
-      });
-      console.log('✅ [Firebase Admin] SDK initialized successfully using Application Default Credentials.');
-    } catch (error) {
-      console.error('❌ [Firebase Admin] Error initializing Admin SDK:', error);
-      throw new Error('Could not initialize Firebase Admin SDK. Service account credentials may be missing or invalid.');
+    if (serviceAccountKey) {
+        try {
+            const credentials = JSON.parse(serviceAccountKey);
+            initializeApp({
+                credential: cert(credentials),
+                projectId: 'ggr1-4fa1c',
+            });
+            console.log('✅ [Firebase Admin] SDK initialized successfully using Service Account Key.');
+        } catch(error) {
+            console.error('❌ [Firebase Admin] Error initializing with Service Account Key:', error);
+            throw new Error('Could not initialize Firebase Admin SDK. The Service Account Key may be invalid.');
+        }
+    } else {
+        try {
+            initializeApp({
+                credential: admin.credential.applicationDefault(),
+                projectId: 'ggr1-4fa1c',
+            });
+            console.log('✅ [Firebase Admin] SDK initialized successfully using Application Default Credentials.');
+        } catch (error) {
+            console.error('❌ [Firebase Admin] Error initializing with Application Default Credentials:', error);
+            throw new Error('Could not initialize Firebase Admin SDK. Credentials not found.');
+        }
     }
   }
   
@@ -30,7 +44,6 @@ function initializeFirebaseAdmin() {
   adminDbInstance = getFirestore(adminApp);
 }
 
-// Call the initialization function immediately so the instances are ready.
 initializeFirebaseAdmin();
 
 export const adminDb = () => adminDbInstance;
