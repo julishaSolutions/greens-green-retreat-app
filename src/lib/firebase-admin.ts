@@ -1,6 +1,6 @@
 
 import * as admin from 'firebase-admin';
-import { getApps, initializeApp, type App } from 'firebase-admin/app';
+import { getApps, initializeApp, type App, cert, getApp } from 'firebase-admin/app';
 import { getFirestore, type Firestore } from 'firebase-admin/firestore';
 import { getAuth, type Auth } from 'firebase-admin/auth';
 
@@ -13,20 +13,19 @@ function initializeFirebaseAdmin() {
     console.log('[Firebase Admin] Initializing Firebase Admin SDK...');
     try {
       // When running in a Google Cloud environment (like App Hosting),
-      // the SDK automatically finds the service account credentials.
+      // using `applicationDefault()` allows the SDK to automatically find the service account credentials.
       initializeApp({
-        projectId: 'ggr1-4fa1c', // Explicitly setting the project ID
+        credential: admin.credential.applicationDefault(),
+        projectId: 'ggr1-4fa1c',
       });
-      console.log('✅ [Firebase Admin] SDK initialized successfully in Cloud environment.');
+      console.log('✅ [Firebase Admin] SDK initialized successfully using Application Default Credentials.');
     } catch (error) {
       console.error('❌ [Firebase Admin] Error initializing Admin SDK:', error);
-      // This path is more likely to be hit in local development if credentials aren't set.
-      // In a deployed environment, this would signify a major configuration issue.
       throw new Error('Could not initialize Firebase Admin SDK. Service account credentials may be missing or invalid.');
     }
   }
   
-  adminApp = getApps()[0];
+  adminApp = getApp();
   adminAuthInstance = getAuth(adminApp);
   adminDbInstance = getFirestore(adminApp);
 }
@@ -36,4 +35,3 @@ initializeFirebaseAdmin();
 
 export const adminDb = () => adminDbInstance;
 export const adminAuth = () => adminAuthInstance;
-
