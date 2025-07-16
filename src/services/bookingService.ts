@@ -95,21 +95,30 @@ export async function getBookingsForCottage(cottageId: string): Promise<BookingD
 export async function checkAvailability(cottageId: string, checkInDate: Date, checkOutDate: Date): Promise<boolean> {
   const db = adminDb();
   const bookingsRef = db.collection('bookings');
+  
+  // An overlap exists if a new booking's start date is before an existing one's end date,
+  // AND the new booking's end date is after the existing one's start date.
+  // We check for all bookings that could possibly overlap.
   const query = bookingsRef
     .where('cottageId', '==', cottageId)
     .where('status', '!=', 'cancelled')
-    .where('checkOut', '>', checkInDate);
+    .where('checkIn', '<', checkOutDate); // Find bookings that start before the new one ends.
 
   try {
     const snapshot = await query.get();
+    
+    // Now, from the potential overlaps, filter in code to find true overlaps.
     const overlappingBookings = snapshot.docs.filter(doc => {
         const data = doc.data();
-        const bookingCheckIn = (data.checkIn as Timestamp).toDate();
-        return bookingCheckIn < checkOutDate;
+        const existingCheckOut = (data.checkOut as Timestamp).toDate();
+        // An overlap exists if an existing booking's checkout is after the new one's check-in.
+        return existingCheckOut > checkInDate;
     });
-    return overlappingBookings.length === 0;
+
+    return overlappingBookings.length === 0; // It's available if there are NO overlapping bookings.
   } catch(e) {
       console.error('Error checking availability:', e);
+      // Fail safe: if the check fails, assume it's not available to prevent double booking.
       return false;
   }
 }
