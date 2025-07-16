@@ -1,4 +1,6 @@
 
+'use server';
+
 import { adminDb } from '@/lib/firebase-admin';
 import { FieldValue, Timestamp } from 'firebase-admin/firestore';
 
@@ -16,6 +18,7 @@ export type Booking = {
   checkOut: Date;
   status: 'pending_confirmation' | 'confirmed' | 'cancelled';
   createdAt: Date;
+  expiresAt?: Date;
   paymentStatus?: string;
   transactionId?: string;
 };
@@ -38,6 +41,7 @@ function docToBooking(doc: FirebaseFirestore.DocumentSnapshot): Booking | null {
         checkOut: (data.checkOut as Timestamp)?.toDate(),
         status: data.status || 'pending_confirmation',
         createdAt: (data.createdAt as Timestamp)?.toDate(),
+        expiresAt: (data.expiresAt as Timestamp)?.toDate(),
         paymentStatus: data.paymentStatus,
         transactionId: data.transactionId,
     };
@@ -74,18 +78,33 @@ export async function getAllBookings(): Promise<Booking[]> {
 export async function getBookingsForCottage(cottageId: string): Promise<BookingDateRange[]> {
   if (!cottageId) return [];
   const db = adminDb();
-  const bookingsRef = db.collection('bookings');
-  const query = bookingsRef.where('cottageId', '==', cottageId).where('status', '!=', 'cancelled');
-
+  
   try {
-    const snapshot = await query.get();
-    return snapshot.docs.map(doc => {
+    const now = Timestamp.now();
+    const confirmedBookingsQuery = db.collection('bookings')
+        .where('cottageId', '==', cottageId)
+        .where('status', '==', 'confirmed');
+    
+    const pendingBookingsQuery = db.collection('bookings')
+        .where('cottageId', '==', cottageId)
+        .where('status', '==', 'pending_confirmation')
+        .where('expiresAt', '>', now);
+
+    const [confirmedSnapshot, pendingSnapshot] = await Promise.all([
+        confirmedBookingsQuery.get(),
+        pendingBookingsQuery.get()
+    ]);
+    
+    const bookings = [...confirmedSnapshot.docs, ...pendingSnapshot.docs];
+
+    return bookings.map(doc => {
       const data = doc.data();
       return { 
         from: (data.checkIn as Timestamp).toDate(), 
         to: (data.checkOut as Timestamp).toDate() 
       };
     }).filter(range => range.from && range.to);
+
   } catch (error) {
     console.error(`Error fetching bookings for cottage ${cottageId}:`, error);
     throw new Error(`Failed to fetch bookings for cottage ${cottageId}.`);
@@ -94,7 +113,7 @@ export async function getBookingsForCottage(cottageId: string): Promise<BookingD
 
 /**
  * Checks if a cottage is available for a given date range.
- * This is the correct and final implementation.
+ * This implementation fetches all relevant bookings and checks for overlaps in the code.
  * @param {string} cottageId - The ID of the cottage.
  * @param {Date} newCheckIn - The check-in date for the new booking.
  * @param {Date} newCheckOut - The check-out date for the new booking.
@@ -102,29 +121,34 @@ export async function getBookingsForCottage(cottageId: string): Promise<BookingD
  */
 export async function checkAvailability(cottageId: string, newCheckIn: Date, newCheckOut: Date): Promise<boolean> {
   const db = adminDb();
-  const bookingsRef = db.collection('bookings');
-
-  // We only need to check against confirmed or pending bookings for the specific cottage.
-  const query = bookingsRef
-    .where('cottageId', '==', cottageId)
-    .where('status', 'in', ['confirmed', 'pending_confirmation']);
+  const now = Timestamp.now();
 
   try {
-    const snapshot = await query.get();
-    if (snapshot.empty) {
-      // No existing bookings for this cottage, so it's available.
-      return true;
-    }
+    // Get all confirmed bookings for the cottage
+    const confirmedQuery = db.collection('bookings')
+      .where('cottageId', '==', cottageId)
+      .where('status', '==', 'confirmed');
 
-    const existingBookings = snapshot.docs.map(doc => {
-      const data = doc.data();
-      return {
-        checkIn: (data.checkIn as Timestamp).toDate(),
-        checkOut: (data.checkOut as Timestamp).toDate(),
-      };
+    // Get all PENDING bookings that have NOT expired
+    const pendingQuery = db.collection('bookings')
+        .where('cottageId', '==', cottageId)
+        .where('status', '==', 'pending_confirmation')
+        .where('expiresAt', '>', now);
+    
+    const [confirmedSnapshot, pendingSnapshot] = await Promise.all([
+        confirmedQuery.get(),
+        pendingQuery.get(),
+    ]);
+
+    const existingBookings = [...confirmedSnapshot.docs, ...pendingSnapshot.docs].map(doc => {
+        const data = doc.data();
+        return {
+            checkIn: (data.checkIn as Timestamp).toDate(),
+            checkOut: (data.checkOut as Timestamp).toDate(),
+        };
     });
 
-    // Now, we check for overlaps in our application code.
+    // Check for overlaps with the new booking.
     // An overlap exists if (StartA < EndB) and (EndA > StartB).
     const isOverlapping = existingBookings.some(existing => 
         newCheckIn < existing.checkOut && newCheckOut > existing.checkIn
@@ -156,17 +180,23 @@ export async function createBooking(bookingData: {
     
     const isAvailable = await checkAvailability(cottageId, checkIn, checkOut);
     if (!isAvailable) {
+        console.warn(`Booking attempt failed for cottage ${cottageId} for dates ${checkIn} to ${checkOut}. Dates no longer available.`);
         throw new Error("Sorry, the selected dates are no longer available. Please choose different dates.");
     }
 
     const db = adminDb();
     const bookingRef = db.collection('bookings').doc();
     
+    // Set expiry for 10 minutes from now
+    const TEN_MINUTES_IN_MS = 10 * 60 * 1000;
+    const expiresAt = Timestamp.fromMillis(Date.now() + TEN_MINUTES_IN_MS);
+    
     await bookingRef.set({
         ...bookingData,
         checkIn: Timestamp.fromDate(checkIn),
         checkOut: Timestamp.fromDate(checkOut),
         createdAt: FieldValue.serverTimestamp(),
+        expiresAt: expiresAt,
         status: 'pending_confirmation',
         paymentStatus: 'pending_payment',
     });
@@ -188,6 +218,8 @@ export async function confirmBookingPayment(bookingId: string, paymentDetails: P
       paymentStatus: (paymentDetails.paymentStatus || 'unknown').toUpperCase(),
       transactionId: paymentDetails.transactionId,
       updatedAt: FieldValue.serverTimestamp(),
+      // Remove the expiry date upon successful payment
+      expiresAt: FieldValue.delete(),
     };
 
     if (updatePayload.paymentStatus === 'COMPLETE') {
