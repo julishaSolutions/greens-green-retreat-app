@@ -8,9 +8,7 @@ let adminApp: App;
 let adminAuthInstance: Auth;
 let adminDbInstance: Firestore;
 
-const projectId = 'ggr1-4fa1c';
-
-// This is the single, robust initialization function
+// This is the single, robust initialization function.
 function initializeFirebaseAdmin() {
   if (getApps().length > 0) {
     adminApp = getApp();
@@ -18,27 +16,18 @@ function initializeFirebaseAdmin() {
     console.log('[Firebase Admin] Initializing Firebase Admin SDK...');
     const serviceAccountKey = process.env.SERVICE_ACCOUNT_KEY;
 
-    if (serviceAccountKey) {
-      // For local development using a service account key from .env.local
-      try {
-        const serviceAccount = JSON.parse(serviceAccountKey);
-        adminApp = initializeApp({
-          credential: admin.credential.cert(serviceAccount),
-          projectId: projectId,
-        });
-        console.log('[Firebase Admin] Initialized with Service Account Key.');
-      } catch (error) {
-        console.error('❌ [Firebase Admin] Error parsing SERVICE_ACCOUNT_KEY:', error);
-        throw new Error('The SERVICE_ACCOUNT_KEY environment variable is not a valid JSON string.');
-      }
-    } else {
-      // For production environment (e.g., Firebase App Hosting)
-      // It will use Application Default Credentials automatically.
-      console.log('[Firebase Admin] Initializing with Application Default Credentials.');
-      adminApp = initializeApp({
-          projectId: projectId,
-      });
-    }
+    const config = {
+      // Explicitly providing the public project config ensures the SDK has the correct context.
+      authDomain: "ggr1-4fa1c.firebaseapp.com",
+      projectId: "ggr1-4fa1c",
+      storageBucket: "ggr1-4fa1c.appspot.com",
+      credential: serviceAccountKey 
+        ? admin.credential.cert(JSON.parse(serviceAccountKey)) 
+        : admin.credential.applicationDefault(),
+    };
+
+    adminApp = initializeApp(config);
+    console.log('[Firebase Admin] Initialization complete.');
   }
 
   adminAuthInstance = getAuth(adminApp);
@@ -50,8 +39,7 @@ try {
   initializeFirebaseAdmin();
 } catch (error) {
   console.error('CRITICAL: Firebase Admin initialization failed.', error);
-  // We re-throw the error to ensure server startup fails if Firebase Admin can't initialize.
-  // This prevents the application from running in a broken state.
+  // Re-throw the error to ensure server startup fails if Firebase Admin can't initialize.
   throw error;
 }
 
