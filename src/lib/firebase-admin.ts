@@ -27,13 +27,14 @@ function initializeFirebaseAdmin() {
         }
     } else {
         try {
+            // This will work in deployed environments with Application Default Credentials
             initializeApp({
-                credential: admin.credential.applicationDefault(),
                 projectId: 'ggr1-4fa1c',
             });
             console.log('✅ [Firebase Admin] SDK initialized successfully using Application Default Credentials.');
         } catch (error) {
             console.error('❌ [Firebase Admin] Error initializing with Application Default Credentials:', error);
+            console.warn('[Firebase Admin] Hint: For local development, set the SERVICE_ACCOUNT_KEY environment variable.');
             throw new Error('Could not initialize Firebase Admin SDK. Credentials not found.');
         }
     }
