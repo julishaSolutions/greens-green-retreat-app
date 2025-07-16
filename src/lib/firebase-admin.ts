@@ -13,7 +13,21 @@ const serviceAccountKey = process.env.SERVICE_ACCOUNT_KEY;
 function initializeFirebaseAdmin() {
   if (getApps().length === 0) {
     console.log('[Firebase Admin] Initializing Firebase Admin SDK...');
-    if (serviceAccountKey) {
+    
+    // Check if running in a Google Cloud environment (like App Hosting or Cloud Run)
+    if (process.env.GCP_PROJECT) {
+        console.log('[Firebase Admin] Google Cloud environment detected. Using Application Default Credentials.');
+        try {
+            initializeApp({
+                projectId: 'ggr1-4fa1c',
+            });
+            console.log('✅ [Firebase Admin] SDK initialized successfully using Application Default Credentials.');
+        } catch (error) {
+            console.error('❌ [Firebase Admin] Error initializing with Application Default Credentials:', error);
+            throw new Error('Could not initialize Firebase Admin SDK in GCP environment.');
+        }
+    } else if (serviceAccountKey) {
+        console.log('[Firebase Admin] Service Account Key found. Initializing for local development.');
         try {
             const credentials = JSON.parse(serviceAccountKey);
             initializeApp({
@@ -26,17 +40,8 @@ function initializeFirebaseAdmin() {
             throw new Error('Could not initialize Firebase Admin SDK. The Service Account Key may be invalid.');
         }
     } else {
-        try {
-            // This will work in deployed environments with Application Default Credentials
-            initializeApp({
-                projectId: 'ggr1-4fa1c',
-            });
-            console.log('✅ [Firebase Admin] SDK initialized successfully using Application Default Credentials.');
-        } catch (error) {
-            console.error('❌ [Firebase Admin] Error initializing with Application Default Credentials:', error);
-            console.warn('[Firebase Admin] Hint: For local development, set the SERVICE_ACCOUNT_KEY environment variable.');
-            throw new Error('Could not initialize Firebase Admin SDK. Credentials not found.');
-        }
+        console.warn('[Firebase Admin] No credentials found. For local development, set the SERVICE_ACCOUNT_KEY environment variable. For deployed environments, ensure the GCP_PROJECT variable is set.');
+        throw new Error('Could not initialize Firebase Admin SDK. Credentials not found.');
     }
   }
   
