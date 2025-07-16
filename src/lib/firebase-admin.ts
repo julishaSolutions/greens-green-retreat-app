@@ -12,11 +12,14 @@ if (!getApps().length) {
   const serviceAccountKey = process.env.SERVICE_ACCOUNT_KEY;
   if (serviceAccountKey) {
     // For local development with a service account key file
+    const serviceAccount = JSON.parse(serviceAccountKey);
     adminApp = initializeApp({
-      credential: admin.credential.cert(JSON.parse(serviceAccountKey)),
+      credential: admin.credential.cert(serviceAccount),
+      projectId: serviceAccount.project_id, // Explicitly set the project ID
     });
   } else {
-    // For production environments (like Firebase App Hosting) where credentials are automatically provided
+    // For production environments (like Firebase App Hosting)
+    // where credentials are automatically provided.
     adminApp = initializeApp();
   }
 } else {
