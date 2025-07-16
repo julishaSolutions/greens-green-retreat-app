@@ -95,27 +95,45 @@ export async function getBookingsForCottage(cottageId: string): Promise<BookingD
 export async function checkAvailability(cottageId: string, checkInDate: Date, checkOutDate: Date): Promise<boolean> {
   const db = adminDb();
   const bookingsRef = db.collection('bookings');
+
+  // Firestore does not support complex OR queries. We must check for overlaps with two separate queries.
+  // An overlap exists if a new booking starts before an existing one ends AND the new one ends after the existing one starts.
+  // This is equivalent to checking two conditions:
+  // 1. A booking starts within the new range.
+  // 2. A booking ends within the new range.
+  // 3. A booking envelops the new range (covered by 1 and 2).
   
-  // An overlap exists if a new booking's start date is before an existing one's end date,
-  // AND the new booking's end date is after the existing one's start date.
-  // We check for all bookings that could possibly overlap.
-  const query = bookingsRef
-    .where('cottageId', '==', cottageId)
-    .where('status', '!=', 'cancelled')
-    .where('checkIn', '<', checkOutDate); // Find bookings that start before the new one ends.
-
   try {
-    const snapshot = await query.get();
-    
-    // Now, from the potential overlaps, filter in code to find true overlaps.
-    const overlappingBookings = snapshot.docs.filter(doc => {
-        const data = doc.data();
-        const existingCheckOut = (data.checkOut as Timestamp).toDate();
-        // An overlap exists if an existing booking's checkout is after the new one's check-in.
-        return existingCheckOut > checkInDate;
-    });
+    const q1 = bookingsRef
+      .where('cottageId', '==', cottageId)
+      .where('status', '!=', 'cancelled')
+      .where('checkIn', '>=', checkInDate)
+      .where('checkIn', '<', checkOutDate);
 
-    return overlappingBookings.length === 0; // It's available if there are NO overlapping bookings.
+    const q2 = bookingsRef
+      .where('cottageId', '==', cottageId)
+      .where('status', '!=', 'cancelled')
+      .where('checkOut', '>', checkInDate)
+      .where('checkOut', '<=', checkOutDate);
+
+    const [snapshot1, snapshot2] = await Promise.all([q1.get(), q2.get()]);
+
+    if (!snapshot1.empty || !snapshot2.empty) {
+      // An overlap was found in one of the queries
+      return false;
+    }
+
+    // A final check for a booking that completely envelops the requested range
+    const q3 = bookingsRef
+      .where('cottageId', '==', cottageId)
+      .where('status', '!=', 'cancelled')
+      .where('checkIn', '<', checkInDate)
+      .where('checkOut', '>', checkOutDate);
+
+    const snapshot3 = await q3.get();
+    
+    return snapshot3.empty; // Available only if all queries find no overlaps
+
   } catch(e) {
       console.error('Error checking availability:', e);
       // Fail safe: if the check fails, assume it's not available to prevent double booking.
