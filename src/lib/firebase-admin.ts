@@ -8,38 +8,32 @@ let adminApp: App;
 let adminAuthInstance: Auth;
 let adminDbInstance: Firestore;
 
-// This is the single, robust initialization function.
 function initializeFirebaseAdmin() {
   if (getApps().length > 0) {
     adminApp = getApp();
   } else {
-    console.log('[Firebase Admin] Initializing Firebase Admin SDK...');
     const serviceAccountKey = process.env.SERVICE_ACCOUNT_KEY;
 
-    const config = {
-      // Explicitly providing the public project config ensures the SDK has the correct context.
-      authDomain: "ggr1-4fa1c.firebaseapp.com",
-      projectId: "ggr1-4fa1c",
-      storageBucket: "ggr1-4fa1c.appspot.com",
-      credential: serviceAccountKey 
-        ? admin.credential.cert(JSON.parse(serviceAccountKey)) 
-        : admin.credential.applicationDefault(),
-    };
-
-    adminApp = initializeApp(config);
-    console.log('[Firebase Admin] Initialization complete.');
+    if (serviceAccountKey) {
+      // For local development with a service account key
+      adminApp = initializeApp({
+        credential: admin.credential.cert(JSON.parse(serviceAccountKey)),
+      });
+    } else {
+      // For production environments (like Firebase App Hosting)
+      adminApp = initializeApp();
+    }
   }
 
   adminAuthInstance = getAuth(adminApp);
   adminDbInstance = getFirestore(adminApp);
 }
 
-// Call the initialization function immediately when the module is loaded.
+// Initialize immediately
 try {
   initializeFirebaseAdmin();
 } catch (error) {
   console.error('CRITICAL: Firebase Admin initialization failed.', error);
-  // Re-throw the error to ensure server startup fails if Firebase Admin can't initialize.
   throw error;
 }
 
