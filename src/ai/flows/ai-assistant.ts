@@ -20,7 +20,7 @@ const HistoryMessageSchema = z.object({
 
 // Define the input schema for the AI assistant flow
 const AIAssistantInputSchema = z.object({
-  query: z.string().describe('The user\'s question.'),
+  query: z.string().describe("The user's question."),
   history: z.array(HistoryMessageSchema).describe('The conversation history.'),
 });
 export type AIAssistantInput = z.infer<typeof AIAssistantInputSchema>;
