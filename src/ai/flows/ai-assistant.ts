@@ -78,11 +78,12 @@ If no specific agent seems appropriate, choose 'generalInquiryTool'.`;
     // 4. Find the configuration for the chosen agent
     let chosenAgent = agentConfigs.find(agent => agent.id === chosenAgentId);
     
+    // Fallback logic
     if (!chosenAgent) {
         console.warn(`Supervisor chose an invalid agent ID: '${chosenAgentId}'. Falling back to general agent.`);
         chosenAgent = agentConfigs.find(agent => agent.id === 'generalInquiryTool');
         if (!chosenAgent) {
-            console.error("Critical error: Could not find fallback 'generalInquiryTool' agent.");
+            console.error("CRITICAL: Could not find fallback 'generalInquiryTool' agent. This should not happen if defaults are seeded.");
             return { text: "I'm sorry, a critical internal error occurred. Please contact support." };
         }
     }
