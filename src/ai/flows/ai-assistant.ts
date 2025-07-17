@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview A multi-agent AI assistant for Green's Green Retreat.
@@ -9,6 +10,7 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 import { getAllAgentConfigs, getKnowledgeBase } from '@/services/systemService';
+import { generateSpeech } from './text-to-speech';
 
 // Define the structure of a single message in the chat history
 const HistoryMessageSchema = z.object({
@@ -23,8 +25,11 @@ const AIAssistantInputSchema = z.object({
 });
 export type AIAssistantInput = z.infer<typeof AIAssistantInputSchema>;
 
-// Define the output schema (a simple string response)
-const AIAssistantOutputSchema = z.string();
+// Define the output schema to include both text and audio
+const AIAssistantOutputSchema = z.object({
+  text: z.string(),
+  audioDataUri: z.string().optional(),
+});
 export type AIAssistantOutput = z.infer<typeof AIAssistantOutputSchema>;
 
 // This is the main "Supervisor" flow, which now uses a two-step router pattern.
@@ -52,7 +57,6 @@ ${availableAgentsPrompt}
 If no specific agent seems appropriate, choose 'generalInquiryTool'.`;
 
     // 3. First LLM call: Supervisor chooses the agent.
-    // We only need the current query for routing, not the whole history.
     const supervisorChoiceResponse = await ai.generate({
       model: 'googleai/gemini-2.0-flash',
       prompt: `User Query: "${query}"\n\nBased on the user query, which agent ID should handle this?`,
@@ -68,19 +72,18 @@ If no specific agent seems appropriate, choose 'generalInquiryTool'.`;
     
     if (!chosenAgentId) {
       console.error("Supervisor failed to choose an agent. Raw response:", supervisorChoiceResponse.text);
-      return "I'm sorry, I'm having trouble routing your request. Please try again.";
+      return { text: "I'm sorry, I'm having trouble routing your request. Please try again." };
     }
     
     // 4. Find the configuration for the chosen agent
     let chosenAgent = agentConfigs.find(agent => agent.id === chosenAgentId);
     
-    // If the supervisor hallucinates an invalid agent ID, fall back to the general agent.
     if (!chosenAgent) {
         console.warn(`Supervisor chose an invalid agent ID: '${chosenAgentId}'. Falling back to general agent.`);
         chosenAgent = agentConfigs.find(agent => agent.id === 'generalInquiryTool');
         if (!chosenAgent) {
             console.error("Critical error: Could not find fallback 'generalInquiryTool' agent.");
-            return "I'm sorry, a critical internal error occurred. Please contact support.";
+            return { text: "I'm sorry, a critical internal error occurred. Please contact support." };
         }
     }
 
@@ -94,8 +97,29 @@ If no specific agent seems appropriate, choose 'generalInquiryTool'.`;
             content: [{ text: msg.content }]
         }))
     });
+    
+    const responseText = specialistResponse.text;
 
-    return specialistResponse.text || "I'm sorry, but I encountered an issue and can't respond right now. Please try again in a moment.";
+    if (!responseText) {
+        return { text: "I'm sorry, but I encountered an issue and can't respond right now. Please try again in a moment." };
+    }
+    
+    // 6. Generate speech in parallel with the text response.
+    try {
+      // We don't await here directly, we let Promise.all handle it.
+      const speechPromise = generateSpeech(responseText);
+      const [{ audioDataUri }] = await Promise.all([speechPromise]);
+      
+      return {
+        text: responseText,
+        audioDataUri: audioDataUri,
+      };
+
+    } catch (speechError) {
+      console.error("TTS generation failed, returning text only.", speechError);
+      // If speech generation fails, we still return the text response.
+      return { text: responseText, audioDataUri: undefined };
+    }
   }
 );
 

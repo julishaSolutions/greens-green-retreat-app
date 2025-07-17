@@ -3,7 +3,6 @@
 
 import { useState, useRef, useEffect, type FormEvent } from 'react';
 import { askAIAssistant } from '@/ai/flows/ai-assistant';
-import { generateSpeech } from '@/ai/flows/text-to-speech';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -100,21 +99,6 @@ export function ChatWidget() {
         }
     };
 
-    const playAudio = async (text: string) => {
-        if (!isTtsEnabled || !text) return;
-
-        try {
-            const { audioDataUri } = await generateSpeech(text);
-            if (audioRef.current && audioDataUri) {
-                audioRef.current.src = audioDataUri;
-                audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
-            }
-        } catch (error) {
-            console.error("Error generating speech:", error);
-            toast({ title: 'Audio Error', description: 'Could not generate audio for the response.', variant: 'destructive'});
-        }
-    };
-
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!input.trim() || isLoading) return;
@@ -125,13 +109,17 @@ export function ChatWidget() {
         setIsLoading(true);
 
         try {
-            const responseText = await askAIAssistant({
+            const { text, audioDataUri } = await askAIAssistant({
                 query: input,
                 history: messages,
             });
-            const modelMessage: Message = { role: 'model', content: responseText };
+            const modelMessage: Message = { role: 'model', content: text };
             setMessages(prev => [...prev, modelMessage]);
-            await playAudio(responseText);
+
+            if (isTtsEnabled && audioRef.current && audioDataUri) {
+                audioRef.current.src = audioDataUri;
+                audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
+            }
 
         } catch (error) {
             console.error("Error calling AI assistant:", error);
