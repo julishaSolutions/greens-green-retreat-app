@@ -14,8 +14,16 @@ test.describe('Admin Dashboard', () => {
     const welcomeMessage = page.locator('h2:has-text("Welcome, Administrator!")');
     await expect(welcomeMessage).toBeVisible();
 
-    // Check if the navigation sidebar is present
-    const sidebar = page.locator('nav a:has-text("Bookings")');
-    await expect(sidebar).toBeVisible();
+    // Check if the navigation sidebar is present and check key links
+    const sidebarBookings = page.locator('nav a:has-text("Bookings")');
+    await expect(sidebarBookings).toBeVisible();
+    
+    const sidebarJournalIdeas = page.locator('nav a:has-text("AI Content Studio")');
+    await expect(sidebarJournalIdeas).toBeVisible();
+    
+    const sidebarJournal = page.locator('nav a:has-text("Journal")');
+    await expect(sidebarJournal).toBeVisible();
   });
 });
+
+    
