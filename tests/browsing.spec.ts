@@ -13,7 +13,7 @@ test.describe('Public Site Browsing', () => {
     await expect(page.locator('h1:has-text("The Suites & Cottages")')).toBeVisible();
 
     // Find the card for "Alma 1 Treehouse" and check its contents
-    const almaCottageCard = page.locator('div[role="article"]:has-text("Alma 1 Treehouse")').first();
+    const almaCottageCard = page.locator('div[id="cottage-1"]');
     await expect(almaCottageCard).toBeVisible();
     await expect(almaCottageCard).toContainText('Kes 14,000 / night');
     await expect(almaCottageCard).toContainText('Up to 2 guests');

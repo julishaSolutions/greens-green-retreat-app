@@ -6,7 +6,7 @@ test.describe('Public Site Navigation', () => {
   test('should allow a user to navigate through all main public pages', async ({ page }) => {
     // Start at the homepage
     await page.goto('/');
-    await expect(page).toHaveTitle(/Breathe. Unwind. Reconnect./);
+    await expect(page).toHaveTitle("Green's Green Retreat");
 
     // Navigate to The Retreat
     await page.getByRole('link', { name: 'The Retreat' }).first().click();
@@ -31,7 +31,7 @@ test.describe('Public Site Navigation', () => {
     // Navigate back to Home via the logo
     await page.getByAltText("Green's Green Retreat Logo").first().click();
     await expect(page).toHaveURL('/');
-    await expect(page).toHaveTitle(/Breathe. Unwind. Reconnect./);
+    await expect(page).toHaveTitle("Green's Green Retreat");
   });
 
 });
