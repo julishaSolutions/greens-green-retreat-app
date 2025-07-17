@@ -118,17 +118,17 @@ async function initializeDefaultAgents(): Promise<void> {
   const agentCollection = db.collection(AGENT_COLLECTION);
   
   try {
-    const snapshot = await agentCollection.limit(1).get();
+    const snapshot = await agentCollection.get();
 
-    if (snapshot.empty) {
-      console.log('[SystemService] No agent configurations found, initializing default agents.');
+    if (snapshot.docs.length < DEFAULT_AGENTS.length) {
+      console.log('[SystemService] Agent configurations mismatch, re-initializing default agents.');
       const batch = db.batch();
       DEFAULT_AGENTS.forEach(agent => {
         const docRef = agentCollection.doc(agent.id);
         batch.set(docRef, agent);
       });
       await batch.commit();
-      console.log('[SystemService] Default agents created successfully.');
+      console.log('[SystemService] Default agents created/updated successfully.');
     }
   } catch (error) {
      console.error('[SystemService] Failed to initialize default agents:', error);
