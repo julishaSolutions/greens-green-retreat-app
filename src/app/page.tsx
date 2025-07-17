@@ -1,5 +1,7 @@
 
+'use client';
 
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
@@ -28,8 +30,23 @@ const experiences = [
   },
 ];
 
-export default async function Home() {
-  const suites = await getCottages(3);
+export default function Home() {
+  const [suites, setSuites] = useState<Suite[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadCottages() {
+      try {
+        const fetchedSuites = await getCottages(3);
+        setSuites(fetchedSuites);
+      } catch (error) {
+        console.error("Failed to fetch cottages:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadCottages();
+  }, []);
 
   return (
     <div className="flex flex-col">
@@ -92,7 +109,7 @@ export default async function Home() {
             </p>
           </div>
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {!suites || suites.length === 0 ? (
+            {isLoading ? (
               Array.from({ length: 3 }).map((_, i) => (
                 <Card key={i} className="overflow-hidden flex flex-col group">
                   <CardHeader className="p-0">
