@@ -1,8 +1,6 @@
 
-import { initializeApp, cert, getApps } from 'firebase-admin/app';
+import { initializeApp, getApps } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
-import * as fs from 'fs';
-import * as path from 'path';
 
 // This script seeds the Firestore emulator with data for testing.
 // It's designed to be run before Playwright tests start.
@@ -70,7 +68,7 @@ process.env.FIRESTORE_EMULATOR_HOST = 'localhost:8085';
 
 // Initialize Firebase Admin SDK
 // When FIRESTORE_EMULATOR_HOST is set, the Admin SDK automatically connects
-// to the emulator without needing a service account key.
+// to the emulator without needing a service account key or any credentials.
 try {
   if (getApps().length === 0) {
     initializeApp({
