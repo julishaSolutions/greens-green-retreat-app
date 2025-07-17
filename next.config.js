@@ -52,7 +52,8 @@ const nextConfig = {
         pathname: '/**',
       },
       {
-        protocol: 'https',
+        protocol: 'https'
+        ,
         hostname: 'tigoni.life',
         port: '',
         pathname: '/**',

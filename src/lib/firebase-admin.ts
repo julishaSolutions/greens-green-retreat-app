@@ -2,10 +2,9 @@
 import * as admin from 'firebase-admin';
 import { getAuth, type Auth } from 'firebase-admin/auth';
 import { getFirestore, type Firestore } from 'firebase-admin/firestore';
-import { serviceAccount } from './service-account';
 
 // This is the definitive singleton pattern for initializing Firebase Admin in a Next.js environment.
-// It ensures that the SDK is initialized only once.
+// It ensures that the SDK is initialized only once and uses Application Default Credentials.
 
 let adminApp: admin.app.App | null = null;
 let adminAuthInstance: Auth | null = null;
@@ -13,20 +12,18 @@ let adminDbInstance: Firestore | null = null;
 
 function initializeAdminApp(): admin.app.App {
   if (admin.apps.length > 0) {
-    // If an app is already initialized, return it.
+    // Return the already initialized app.
     // This happens in development with hot-reloading.
     return admin.apps[0]!;
   }
   
   try {
-    // Directly use the imported service account object.
-    const app = admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-      projectId: serviceAccount.project_id,
-    });
+    // When no credentials are provided, the SDK automatically uses Application Default Credentials.
+    // This is the standard and recommended practice for Firebase/Google Cloud environments.
+    const app = admin.initializeApp();
     return app;
   } catch (e) {
-    console.error('CRITICAL: Failed to initialize Firebase Admin SDK. Check your service-account.ts file.', e);
+    console.error('CRITICAL: Failed to initialize Firebase Admin SDK. Check server logs for details.', e);
     // This is a critical failure, the application cannot proceed.
     throw new Error('Firebase Admin SDK initialization failed.');
   }

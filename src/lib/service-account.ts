@@ -1,9 +1,5 @@
-
-// This file is server-only and should not be exposed to the client.
-// It securely holds the service account credentials for the Firebase Admin SDK.
-
-if (!process.env.SERVICE_ACCOUNT_KEY) {
-    throw new Error('CRITICAL: SERVICE_ACCOUNT_KEY environment variable is not set.');
-}
-
-export const serviceAccount = JSON.parse(process.env.SERVICE_ACCOUNT_KEY);
+// This file is intentionally left blank.
+// The Firebase Admin SDK will automatically use Application Default Credentials
+// when running in a Firebase/Google Cloud environment.
+// Manual service account key handling is not required.
+export {};
