@@ -22,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const headersList = headers();
-  const pathname = headersList.get('next-url') || '';
+  const pathname = headersList.get('x-next-pathname') || headersList.get('next-url') || '';
   const isAdminPage = pathname.startsWith('/admin');
 
   return (
