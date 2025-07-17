@@ -25,5 +25,3 @@ test.describe('Admin Dashboard', () => {
     await expect(sidebarJournal).toBeVisible();
   });
 });
-
-    
