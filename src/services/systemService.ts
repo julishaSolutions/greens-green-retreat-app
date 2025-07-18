@@ -66,6 +66,32 @@ We offer a self-catering model. Each cottage has a well-equipped kitchen. Day vi
 `;
 
 /**
+ * Initializes the default agent configurations in Firestore if they don't exist.
+ * This is a setup function and should not be called on every request.
+ */
+async function initializeDefaultAgents(): Promise<void> {
+  const db = adminDb();
+  const agentCollection = db.collection(AGENT_COLLECTION);
+  
+  try {
+    const snapshot = await agentCollection.get();
+
+    if (snapshot.docs.length < DEFAULT_AGENTS.length) {
+      console.log('[SystemService] Agent configurations mismatch, re-initializing default agents.');
+      const batch = db.batch();
+      DEFAULT_AGENTS.forEach(agent => {
+        const docRef = agentCollection.doc(agent.id);
+        batch.set(docRef, agent);
+      });
+      await batch.commit();
+      console.log('[SystemService] Default agents created/updated successfully.');
+    }
+  } catch (error) {
+     console.error('[SystemService] Failed to initialize default agents:', error);
+  }
+}
+
+/**
  * Fetches the knowledge base content from Firestore.
  * If it doesn't exist, it creates a default one.
  * @returns {Promise<string>} The knowledge base content.
@@ -110,45 +136,32 @@ export async function updateKnowledgeBase(newContent: string): Promise<void> {
   }
 }
 
-/**
- * Initializes the default agent configurations in Firestore if they don't exist.
- */
-async function initializeDefaultAgents(): Promise<void> {
-  const db = adminDb();
-  const agentCollection = db.collection(AGENT_COLLECTION);
-  
-  try {
-    const snapshot = await agentCollection.get();
-
-    if (snapshot.docs.length < DEFAULT_AGENTS.length) {
-      console.log('[SystemService] Agent configurations mismatch, re-initializing default agents.');
-      const batch = db.batch();
-      DEFAULT_AGENTS.forEach(agent => {
-        const docRef = agentCollection.doc(agent.id);
-        batch.set(docRef, agent);
-      });
-      await batch.commit();
-      console.log('[SystemService] Default agents created/updated successfully.');
-    }
-  } catch (error) {
-     console.error('[SystemService] Failed to initialize default agents:', error);
-  }
-}
 
 /**
  * Fetches all agent configurations from Firestore.
- * Initializes default agents if none are found.
+ * NOTE: This function no longer auto-initializes agents to prevent server errors.
+ * Seeding should be handled by a dedicated script.
  * @returns {Promise<AgentConfig[]>} A list of agent configurations.
  */
 export async function getAllAgentConfigs(): Promise<AgentConfig[]> {
-  await initializeDefaultAgents();
   try {
     const db = adminDb();
     const snapshot = await db.collection(AGENT_COLLECTION).get();
+    
+    // If no agents are found in the DB, return the hardcoded defaults as a fallback.
+    if (snapshot.empty) {
+        console.warn('[SystemService] No agent configurations found in Firestore. Returning hardcoded defaults. Run a seeding script to populate the database.');
+        // We run the initialization function here ONLY if the collection is empty.
+        // This is a one-time operation per environment.
+        await initializeDefaultAgents();
+        return DEFAULT_AGENTS;
+    }
+    
     return snapshot.docs.map(doc => doc.data() as AgentConfig);
   } catch (error) {
     console.error('Error fetching all agent configs:', error);
-    return DEFAULT_AGENTS; // Return defaults as a fallback
+    // Return hardcoded defaults if there's an error connecting to the DB.
+    return DEFAULT_AGENTS;
   }
 }
 
