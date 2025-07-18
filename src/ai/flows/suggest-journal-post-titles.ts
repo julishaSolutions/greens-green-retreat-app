@@ -48,7 +48,15 @@ const suggestJournalPostTitlesFlow = ai.defineFlow(
     outputSchema: SuggestJournalPostTitlesOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
-    return output!;
+    try {
+        const {output} = await prompt(input);
+        if (!output || !output.suggestedTitles || output.suggestedTitles.length === 0) {
+            throw new Error('The AI model did not return any suggested titles.');
+        }
+        return output;
+    } catch (error) {
+        console.error("Error in suggestJournalPostTitlesFlow:", error);
+        throw new Error("Failed to suggest titles. The AI model may have returned an error or blocked the response.");
+    }
   }
 );

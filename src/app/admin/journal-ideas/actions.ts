@@ -1,4 +1,3 @@
-
 'use server';
 
 import { suggestJournalPostTitles } from '@/ai/flows/suggest-journal-post-titles';
@@ -36,23 +35,16 @@ export async function getSuggestions(prevState: SuggestionFormState, formData: F
 
   try {
     const result = await suggestJournalPostTitles({ guestReviews: validatedFields.data.reviews });
-    if (result.suggestedTitles && result.suggestedTitles.length > 0) {
-        return {
-            message: 'Successfully generated titles!',
-            errors: {},
-            data: result.suggestedTitles,
-        };
-    } else {
-        return {
-            message: 'AI could not generate titles based on the provided text.',
-            errors: {},
-            data: [],
-        }
-    }
+    return {
+        message: 'Successfully generated titles!',
+        errors: {},
+        data: result.suggestedTitles,
+    };
   } catch (error) {
     console.error(error);
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
     return {
-      message: 'An unexpected error occurred while fetching suggestions.',
+      message: errorMessage,
       errors: {},
       data: [],
     };
@@ -89,25 +81,17 @@ export async function generateArticle(prevState: ArticleFormState, formData: For
 
     try {
         const result = await generateJournalPost({ title: validatedFields.data.title });
-        if (result.articleContent) {
-            return {
-                message: 'Successfully generated article!',
-                errors: {},
-                title: validatedFields.data.title,
-                article: result.articleContent,
-            };
-        } else {
-            return {
-                message: 'AI could not generate an article for that title.',
-                errors: {},
-                title: validatedFields.data.title,
-                article: null,
-            };
-        }
+        return {
+            message: 'Successfully generated article!',
+            errors: {},
+            title: validatedFields.data.title,
+            article: result.articleContent,
+        };
     } catch (error) {
         console.error(error);
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
         return {
-            message: 'An unexpected error occurred while generating the article.',
+            message: errorMessage,
             errors: {},
             title: validatedFields.data.title,
             article: null,

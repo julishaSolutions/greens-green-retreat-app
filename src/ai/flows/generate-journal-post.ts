@@ -52,7 +52,15 @@ const generateJournalPostFlow = ai.defineFlow(
     outputSchema: GenerateJournalPostOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
-    return output!;
+    try {
+      const {output} = await prompt(input);
+      if (!output) {
+        throw new Error('The AI model did not return any output.');
+      }
+      return output;
+    } catch (error) {
+       console.error("Error in generateJournalPostFlow:", error);
+       throw new Error("Failed to generate journal post. The AI model may have returned an error or blocked the response.");
+    }
   }
 );
