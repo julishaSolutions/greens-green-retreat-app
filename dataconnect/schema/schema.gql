@@ -1,0 +1,71 @@
+type User @table {
+  displayName: String!
+  email: String!
+  createdAt: Timestamp!
+  photoUrl: String
+  lastLoginAt: Timestamp
+  subscriptionType: SubscriptionType
+}
+
+type Location @table {
+  name: String!
+  address: String!
+  city: String!
+  state: String!
+  country: String!
+  createdAt: Timestamp!
+  description: String
+  latitude: Float
+  longitude: Float
+  photos: [String]
+}
+
+type Retreat @table {
+  name: String!
+  description: String!
+  startDate: Date!
+  endDate: Date!
+  price: Float!
+  capacity: Int!
+  location: Location!
+  createdAt: Timestamp!
+  theme: String
+  imageUrl: String
+}
+
+type Activity @table {
+  name: String!
+  retreat: Retreat!
+  startTime: Timestamp!
+  endTime: Timestamp!
+  createdAt: Timestamp!
+  description: String
+  instructor: String
+}
+
+type Booking @table {
+  user: User!
+  retreat: Retreat!
+  bookingDate: Timestamp!
+  status: String!
+  totalPrice: Float!
+  createdAt: Timestamp!
+  numberOfAttendees: Int
+}
+
+type Review @table {
+  user: User!
+  retreat: Retreat!
+  rating: Int!
+  createdAt: Timestamp!
+  comment: String
+}
+
+type SubscriptionType @table {
+  name: String!
+  price: Float!
+  durationInDays: Int!
+  createdAt: Timestamp!
+  description: String
+  features: [String]
+}

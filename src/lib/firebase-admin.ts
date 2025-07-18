@@ -2,9 +2,11 @@
 import * as admin from 'firebase-admin';
 import { getAuth, type Auth } from 'firebase-admin/auth';
 import { getFirestore, type Firestore } from 'firebase-admin/firestore';
+import { credential } from 'firebase-admin';
+import serviceAccount from '@/lib/service-account.json';
 
 // This is the definitive singleton pattern for initializing Firebase Admin in a Next.js environment.
-// It ensures that the SDK is initialized only once and uses Application Default Credentials.
+// It ensures that the SDK is initialized only once.
 
 let adminApp: admin.app.App | null = null;
 let adminAuthInstance: Auth | null = null;
@@ -16,17 +18,34 @@ function initializeAdminApp(): admin.app.App {
     // This happens in development with hot-reloading.
     return admin.apps[0]!;
   }
-  
+
   try {
-    // When no credentials are provided, the SDK automatically uses Application Default Credentials.
-    // However, explicitly setting the projectId from environment variables is more robust.
+    // Check if the service account key has been populated.
+    // The 'type' property is a required field in service account JSON files.
+    if (serviceAccount.type) {
+      console.log('[FirebaseAdmin] Initializing with service account credentials...');
+      const app = admin.initializeApp({
+        credential: credential.cert(serviceAccount),
+        projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+      });
+      return app;
+    }
+  } catch (e) {
+    // This catch block handles cases where service-account.json might be malformed
+    // or when there's an issue with initialization. We fall back to ADC.
+    console.warn('[FirebaseAdmin] Service account JSON appears invalid, falling back to Application Default Credentials.', e);
+  }
+
+  // Fallback to Application Default Credentials (ADC) if service account is not available.
+  // This is the default behavior for deployed Firebase/Google Cloud environments.
+  console.log('[FirebaseAdmin] Initializing with Application Default Credentials...');
+  try {
     const app = admin.initializeApp({
       projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
     });
     return app;
   } catch (e) {
     console.error('CRITICAL: Failed to initialize Firebase Admin SDK. Check server logs for details.', e);
-    // This is a critical failure, the application cannot proceed.
     throw new Error('Firebase Admin SDK initialization failed.');
   }
 }
