@@ -68,7 +68,7 @@ export async function getAllBookings(): Promise<Booking[]> {
     const db = adminDb();
     const bookingsRef = db.collection('bookings').orderBy('createdAt', 'desc');
     const snapshot = await bookingsRef.get();
-    return snapshot.docs.map(doc => docToBooking(doc)).filter((b): b is Booking => b !== null);
+    return snapshot.docs.map(docToBooking).filter((b): b is Booking => b !== null);
   } catch (error) {
     console.error(`Error fetching all bookings:`, error);
     throw new Error(`Failed to fetch all bookings.`);
