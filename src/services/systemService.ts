@@ -175,4 +175,3 @@ export async function updateAgentConfig(id: string, data: Partial<Omit<AgentConf
   await db.collection(AGENT_COLLECTION).doc(id).update(data);
   console.log(`[SystemService] Agent configuration for '${id}' updated successfully.`);
 }
-
