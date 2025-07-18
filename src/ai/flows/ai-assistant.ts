@@ -9,7 +9,7 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
-import { getAllAgentConfigs, getKnowledgeBase } from '@/services/systemService';
+import { getAllAgentConfigs, getKnowledgeBase, type AgentConfig } from '@/services/systemService';
 import { generateSpeech } from './text-to-speech';
 
 // Define the structure of a single message in the chat history
@@ -32,7 +32,43 @@ const AIAssistantOutputSchema = z.object({
 });
 export type AIAssistantOutput = z.infer<typeof AIAssistantOutputSchema>;
 
-// This is the main "Supervisor" flow, which now uses a two-step router pattern.
+
+/**
+ * Selects the best agent based on keywords in the user's query.
+ * This is much faster than using an LLM for routing.
+ * @param query - The user's input string.
+ * @param agents - The list of available agent configurations.
+ * @returns The chosen AgentConfig.
+ */
+function selectAgentWithKeywords(query: string, agents: AgentConfig[]): AgentConfig {
+    const lowerCaseQuery = query.toLowerCase();
+
+    // Define keywords for each agent. These should be chosen carefully.
+    const keywordMap: { [agentId: string]: string[] } = {
+        'bookingProcessTool': ['book', 'booking', 'reservation', 'reserve', 'payment', 'pay', 'confirm'],
+        'accommodationsTool': ['cottage', 'treehouse', 'room', 'price', 'cost', 'how much', 'stay'],
+        'activitiesTool': ['activity', 'activities', 'things to do', 'slides', 'boat', 'fishing', 'watch'],
+    };
+
+    for (const agentId in keywordMap) {
+        const keywords = keywordMap[agentId];
+        if (keywords.some(keyword => lowerCaseQuery.includes(keyword))) {
+            const agent = agents.find(a => a.id === agentId);
+            if (agent) return agent;
+        }
+    }
+
+    // If no keywords match, fall back to the general inquiry tool.
+    const generalAgent = agents.find(a => a.id === 'generalInquiryTool');
+    if (!generalAgent) {
+        // This should theoretically never happen if defaults are seeded correctly.
+        throw new Error("CRITICAL: Default 'generalInquiryTool' agent not found.");
+    }
+    return generalAgent;
+}
+
+
+// This flow is now optimized to be much faster.
 const aiAssistantFlow = ai.defineFlow(
   {
     name: 'aiAssistantFlow',
@@ -40,55 +76,16 @@ const aiAssistantFlow = ai.defineFlow(
     outputSchema: AIAssistantOutputSchema,
   },
   async ({ query, history }) => {
-    // 1. Fetch all agent configurations and the knowledge base from the database
-    const agentConfigs = await getAllAgentConfigs();
-    const knowledgeBase = await getKnowledgeBase();
+    // 1. Fetch agent configurations and knowledge base in parallel.
+    const [agentConfigs, knowledgeBase] = await Promise.all([
+      getAllAgentConfigs(),
+      getKnowledgeBase(),
+    ]);
 
-    // 2. Create a prompt for the supervisor listing available agents
-    const availableAgentsPrompt = agentConfigs
-      .map(agent => `- ${agent.id}: ${agent.description}`)
-      .join('\n');
-
-    const supervisorSystemPrompt = `You are a supervisor AI for Green's Green Retreat. Your job is to intelligently route the user's query to the correct specialized agent based on its description. Review the available agents below and respond with ONLY the ID of the best agent to use (e.g., 'generalInquiryTool').
-
-Available Agents:
-${availableAgentsPrompt}
-
-If no specific agent seems appropriate, choose 'generalInquiryTool'.`;
-
-    // 3. First LLM call: Supervisor chooses the agent.
-    const supervisorChoiceResponse = await ai.generate({
-      model: 'googleai/gemini-2.0-flash',
-      prompt: `User Query: "${query}"\n\nBased on the user query, which agent ID should handle this?`,
-      system: supervisorSystemPrompt,
-      output: {
-        schema: z.object({
-          agentId: z.string().describe("The ID of the agent to use, e.g., 'generalInquiryTool'"),
-        })
-      }
-    });
-
-    const chosenAgentId = supervisorChoiceResponse.output?.agentId;
+    // 2. Select the specialist agent using fast keyword matching.
+    const chosenAgent = selectAgentWithKeywords(query, agentConfigs);
     
-    if (!chosenAgentId) {
-      console.error("Supervisor failed to choose an agent. Raw response:", supervisorChoiceResponse.text);
-      return { text: "I'm sorry, I'm having trouble routing your request. Please try again." };
-    }
-    
-    // 4. Find the configuration for the chosen agent
-    let chosenAgent = agentConfigs.find(agent => agent.id === chosenAgentId);
-    
-    // Fallback logic
-    if (!chosenAgent) {
-        console.warn(`Supervisor chose an invalid agent ID: '${chosenAgentId}'. Falling back to general agent.`);
-        chosenAgent = agentConfigs.find(agent => agent.id === 'generalInquiryTool');
-        if (!chosenAgent) {
-            console.error("CRITICAL: Could not find fallback 'generalInquiryTool' agent. This should not happen if defaults are seeded.");
-            return { text: "I'm sorry, a critical internal error occurred. Please contact support." };
-        }
-    }
-
-    // 5. Second LLM call: Specialist agent answers the query using the full history.
+    // 3. Make a single LLM call for the specialist agent to answer.
     const specialistResponse = await ai.generate({
         model: 'googleai/gemini-2.0-flash',
         system: `${chosenAgent.systemPrompt}\n\nKnowledge Base:\n---\n${knowledgeBase}\n---`,
@@ -105,9 +102,8 @@ If no specific agent seems appropriate, choose 'generalInquiryTool'.`;
         return { text: "I'm sorry, but I encountered an issue and can't respond right now. Please try again in a moment." };
     }
     
-    // 6. Generate speech in parallel with the text response.
+    // 4. Generate speech in parallel with the text response.
     try {
-      // We don't await here directly, we let Promise.all handle it.
       const speechPromise = generateSpeech(responseText);
       const [{ audioDataUri }] = await Promise.all([speechPromise]);
       
