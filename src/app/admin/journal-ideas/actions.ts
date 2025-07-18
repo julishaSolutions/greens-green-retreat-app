@@ -1,3 +1,4 @@
+
 'use server';
 
 import { suggestJournalPostTitles } from '@/ai/flows/suggest-journal-post-titles';

@@ -7,9 +7,7 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  experimental: {
-    serverComponentsExternalPackages: ['farmhash-modern'],
-  },
+  serverExternalPackages: ['farmhash-modern'],
   webpack(config) {
     config.experiments = { ...config.experiments, asyncWebAssembly: true };
     return config;
