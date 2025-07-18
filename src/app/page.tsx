@@ -8,8 +8,8 @@ import { cn } from '@/lib/utils';
 import { ArrowRight, Trees, Leaf, Sparkles, AlertCircle } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getCottages, type Cottage as Suite } from '@/services/contentService';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import type { Cottage as Suite } from '@/services/contentService';
+import { getCottagesForHomepage } from './page/actions';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const experiences = [
@@ -37,7 +37,7 @@ export default function Home() {
   useEffect(() => {
     async function loadCottages() {
       try {
-        const fetchedSuites = await getCottages(3);
+        const fetchedSuites = await getCottagesForHomepage();
         setSuites(fetchedSuites);
       } catch (error) {
         console.error("Failed to fetch cottages:", error);
