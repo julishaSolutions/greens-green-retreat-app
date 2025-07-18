@@ -36,8 +36,8 @@ export const metadata: Metadata = {
   title: "Green's Green Retreat",
   description: "A Sanctuary of Serenity. Escape to Green's Green Retreat, a family-owned sanctuary in the highlands of Tigoni, Limuru.",
   icons: {
-    icon: 'https://res.cloudinary.com/dx6zxdlts/image/upload/v1751720688/GGR_Favicon_c4kj1x.png',
-    apple: 'https://res.cloudinary.com/dx6zxdlts/image/upload/v1751720688/GGR_Favicon_c4kj1x.png',
+    icon: 'https://res.cloudinary.com/dx6zxdlts/image/upload/v1751699621/Asset_1_qan94h.png',
+    apple: 'https://res.cloudinary.com/dx6zxdlts/image/upload/v1751699621/Asset_1_qan94h.png',
   },
 };
 
