@@ -3,7 +3,6 @@ import * as admin from 'firebase-admin';
 import { getAuth, type Auth } from 'firebase-admin/auth';
 import { getFirestore, type Firestore } from 'firebase-admin/firestore';
 import { credential } from 'firebase-admin';
-import serviceAccount from '@/lib/service-account.json';
 
 // This is the definitive singleton pattern for initializing Firebase Admin in a Next.js environment.
 // It ensures that the SDK is initialized only once.
@@ -12,6 +11,17 @@ let adminApp: admin.app.App | null = null;
 let adminAuthInstance: Auth | null = null;
 let adminDbInstance: Firestore | null = null;
 
+// Dynamically import the service account key.
+// This allows the app to function without the key file (e.g., in deployed environments).
+let serviceAccount: any = null;
+try {
+  // The 'any' type is used here to avoid TypeScript errors if the file doesn't exist.
+  serviceAccount = require('@/lib/service-account.json');
+} catch (e) {
+  // It's safe to ignore this error. It just means the service account file isn't present.
+  console.log('[FirebaseAdmin] Service account key not found. Using Application Default Credentials. This is normal for deployed environments.');
+}
+
 function initializeAdminApp(): admin.app.App {
   if (admin.apps.length > 0) {
     // Return the already initialized app.
@@ -19,24 +29,21 @@ function initializeAdminApp(): admin.app.App {
     return admin.apps[0]!;
   }
 
-  try {
-    // Check if the service account key has been populated.
-    // The 'type' property is a required field in service account JSON files.
-    if (serviceAccount.type) {
-      console.log('[FirebaseAdmin] Initializing with service account credentials...');
-      const app = admin.initializeApp({
+  // Check if a valid service account object was loaded.
+  // The 'type' property is a required field in service account JSON files.
+  if (serviceAccount && serviceAccount.type) {
+    console.log('[FirebaseAdmin] Initializing with service account credentials...');
+    try {
+      return admin.initializeApp({
         credential: credential.cert(serviceAccount),
-        projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+        projectId: serviceAccount.project_id || process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
       });
-      return app;
+    } catch (e) {
+       console.warn('[FirebaseAdmin] Service account JSON appears invalid, falling back to Application Default Credentials.', e);
     }
-  } catch (e) {
-    // This catch block handles cases where service-account.json might be malformed
-    // or when there's an issue with initialization. We fall back to ADC.
-    console.warn('[FirebaseAdmin] Service account JSON appears invalid, falling back to Application Default Credentials.', e);
   }
 
-  // Fallback to Application Default Credentials (ADC) if service account is not available.
+  // Fallback to Application Default Credentials (ADC) if service account is not available or invalid.
   // This is the default behavior for deployed Firebase/Google Cloud environments.
   console.log('[FirebaseAdmin] Initializing with Application Default Credentials...');
   try {
