@@ -7,6 +7,30 @@ import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { headers } from 'next/headers';
 import { ChatWidget } from '@/components/chat-widget';
+import { Lato, Merriweather, Playfair_Display } from 'next/font/google';
+
+const playfairDisplay = Playfair_Display({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-playfair-display',
+});
+
+const merriweather = Merriweather({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  style: ['normal', 'italic'],
+  display: 'swap',
+  variable: '--font-merriweather',
+});
+
+const lato = Lato({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  style: ['normal', 'italic'],
+  display: 'swap',
+  variable: '--font-lato',
+});
+
 
 export const metadata: Metadata = {
   title: "Green's Green Retreat",
@@ -27,12 +51,7 @@ export default function RootLayout({
   const isAdminPage = pathname.startsWith('/admin');
 
   return (
-    <html lang="en" className="scroll-smooth light">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />
-      </head>
+    <html lang="en" className={cn("scroll-smooth light", playfairDisplay.variable, merriweather.variable, lato.variable)}>
       <body className={cn('font-body antialiased flex flex-col min-h-screen')}>
         {!isAdminPage && <Header />}
         <main className={cn('flex-grow', { 'flex': isAdminPage, 'w-full': isAdminPage })}>{children}</main>

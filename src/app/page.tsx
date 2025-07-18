@@ -1,11 +1,8 @@
 
-'use client';
-
-import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { ArrowRight, Trees, Leaf, Sparkles, AlertCircle } from 'lucide-react';
+import { ArrowRight, Trees, Leaf, Sparkles } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Cottage as Suite } from '@/services/contentService';
@@ -30,23 +27,68 @@ const experiences = [
   },
 ];
 
-export default function Home() {
-  const [suites, setSuites] = useState<Suite[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+function SuitesList({ suites }: { suites: Suite[] }) {
+  if (!suites || suites.length === 0) {
+    return (
+       <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <Card key={i} className="overflow-hidden flex flex-col group">
+            <CardHeader className="p-0">
+              <Skeleton className="h-60 w-full" />
+            </CardHeader>
+            <CardContent className="pt-6 flex-grow">
+              <Skeleton className="h-6 w-2/3 mb-2" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-5/6 mt-2" />
+            </CardContent>
+            <CardFooter>
+              <Skeleton className="h-10 w-full" />
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+    )
+  }
 
-  useEffect(() => {
-    async function loadCottages() {
-      try {
-        const fetchedSuites = await getCottagesForHomepage();
-        setSuites(fetchedSuites);
-      } catch (error) {
-        console.error("Failed to fetch cottages:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    loadCottages();
-  }, []);
+  return (
+    <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {suites.map((item) => {
+        const firstValidImage = Array.isArray(item.imageUrls)
+          ? item.imageUrls.find(url => typeof url === 'string' && url.trim() !== '')
+          : undefined;
+
+        return (
+          <Card key={item.id} className="overflow-hidden flex flex-col group">
+            <CardHeader className="p-0">
+              <div className="relative h-60 w-full overflow-hidden">
+                <Image
+                  src={firstValidImage || 'https://placehold.co/600x400.png'}
+                  alt={item.name}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                  data-ai-hint="luxury cottage exterior"
+                />
+              </div>
+            </CardHeader>
+            <CardContent className="pt-6 flex-grow">
+              <CardTitle className={cn("font-headline text-2xl")}>{item.name}</CardTitle>
+              <CardDescription className="mt-2 text-base font-body">{item.description}</CardDescription>
+            </CardContent>
+            <CardFooter>
+              <Button asChild className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-sans">
+                <Link href={item.slug ? `/cottages/${item.slug}` : `/the-retreat#${item.id}`}>Learn More</Link>
+              </Button>
+            </CardFooter>
+          </Card>
+        );
+      })}
+    </div>
+  )
+}
+
+export default async function Home() {
+  const suites = await getCottagesForHomepage();
 
   return (
     <div className="flex flex-col">
@@ -108,57 +150,7 @@ export default function Home() {
               Restorative luxury, rooted in nature.
             </p>
           </div>
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {isLoading ? (
-              Array.from({ length: 3 }).map((_, i) => (
-                <Card key={i} className="overflow-hidden flex flex-col group">
-                  <CardHeader className="p-0">
-                    <Skeleton className="h-60 w-full" />
-                  </CardHeader>
-                  <CardContent className="pt-6 flex-grow">
-                    <Skeleton className="h-6 w-2/3 mb-2" />
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-5/6 mt-2" />
-                  </CardContent>
-                  <CardFooter>
-                    <Skeleton className="h-10 w-full" />
-                  </CardFooter>
-                </Card>
-              ))
-            ) : (
-              suites.map((item) => {
-                const firstValidImage = Array.isArray(item.imageUrls)
-                  ? item.imageUrls.find(url => typeof url === 'string' && url.trim() !== '')
-                  : undefined;
-
-                return (
-                  <Card key={item.id} className="overflow-hidden flex flex-col group">
-                    <CardHeader className="p-0">
-                      <div className="relative h-60 w-full overflow-hidden">
-                        <Image
-                          src={firstValidImage || 'https://placehold.co/600x400.png'}
-                          alt={item.name}
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-500"
-                          sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                          data-ai-hint="luxury cottage exterior"
-                        />
-                      </div>
-                    </CardHeader>
-                    <CardContent className="pt-6 flex-grow">
-                      <CardTitle className={cn("font-headline text-2xl")}>{item.name}</CardTitle>
-                      <CardDescription className="mt-2 text-base font-body">{item.description}</CardDescription>
-                    </CardContent>
-                    <CardFooter>
-                      <Button asChild className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-sans">
-                        <Link href={item.slug ? `/cottages/${item.slug}` : `/the-retreat#${item.id}`}>Learn More</Link>
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                );
-              })
-            )}
-          </div>
+          <SuitesList suites={suites} />
         </div>
       </section>
 
