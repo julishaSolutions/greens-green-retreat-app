@@ -29,6 +29,8 @@ function initializeAdminApp(): admin.app.App {
     return admin.apps[0]!;
   }
 
+  const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+
   // Check if a valid service account object was loaded.
   // The 'type' property is a required field in service account JSON files.
   if (serviceAccount && serviceAccount.type) {
@@ -36,7 +38,8 @@ function initializeAdminApp(): admin.app.App {
     try {
       return admin.initializeApp({
         credential: credential.cert(serviceAccount),
-        projectId: serviceAccount.project_id || process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+        // Explicitly use the project ID from environment variables to ensure we connect to the correct project.
+        projectId: projectId,
       });
     } catch (e) {
        console.warn('[FirebaseAdmin] Service account JSON appears invalid, falling back to Application Default Credentials.', e);
@@ -48,7 +51,7 @@ function initializeAdminApp(): admin.app.App {
   console.log('[FirebaseAdmin] Initializing with Application Default Credentials...');
   try {
     const app = admin.initializeApp({
-      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+      projectId: projectId,
     });
     return app;
   } catch (e) {
