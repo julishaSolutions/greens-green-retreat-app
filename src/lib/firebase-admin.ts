@@ -19,8 +19,10 @@ function initializeAdminApp(): admin.app.App {
   
   try {
     // When no credentials are provided, the SDK automatically uses Application Default Credentials.
-    // This is the standard and recommended practice for Firebase/Google Cloud environments.
-    const app = admin.initializeApp();
+    // However, explicitly setting the projectId from environment variables is more robust.
+    const app = admin.initializeApp({
+      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    });
     return app;
   } catch (e) {
     console.error('CRITICAL: Failed to initialize Firebase Admin SDK. Check server logs for details.', e);
