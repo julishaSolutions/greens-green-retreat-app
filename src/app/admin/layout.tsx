@@ -1,14 +1,44 @@
 
+'use client';
+
+import { useState, useEffect } from 'react';
 import { SidebarProvider, Sidebar, SidebarHeader, SidebarTrigger, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter, SidebarInset } from '@/components/ui/sidebar';
 import { Home, Lightbulb, Newspaper, CalendarCheck, Cog } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import Link from 'next/link';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return (
+      <div className="flex min-h-screen w-full">
+         <div className="hidden md:block w-64 p-2 border-r">
+            <div className="flex flex-col gap-4">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-8 w-full" />
+                <Skeleton className="h-8 w-full" />
+                <Skeleton className="h-8 w-full" />
+                <Skeleton className="h-8 w-full" />
+            </div>
+         </div>
+         <div className="flex-1 p-8">
+            <Skeleton className="h-12 w-1/3 mb-6" />
+            <Skeleton className="h-48 w-full" />
+         </div>
+      </div>
+    );
+  }
+
   return (
     <SidebarProvider>
         <Sidebar>
