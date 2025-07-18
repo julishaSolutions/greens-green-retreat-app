@@ -1,8 +1,8 @@
 
 'use client';
 
-import { useFormStatus, useActionState } from 'react-dom';
-import { useEffect, useRef } from 'react';
+import { useFormStatus } from 'react-dom';
+import { useEffect, useRef, useActionState } from 'react';
 import { getSuggestions, type SuggestionFormState } from '../actions';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';

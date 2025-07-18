@@ -1,7 +1,8 @@
 
 'use client';
 
-import { useFormStatus, useActionState } from 'react-dom';
+import { useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
