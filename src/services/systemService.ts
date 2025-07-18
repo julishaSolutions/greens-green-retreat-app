@@ -151,9 +151,6 @@ export async function getAllAgentConfigs(): Promise<AgentConfig[]> {
     // If no agents are found in the DB, return the hardcoded defaults as a fallback.
     if (snapshot.empty) {
         console.warn('[SystemService] No agent configurations found in Firestore. Returning hardcoded defaults. Run a seeding script to populate the database.');
-        // We run the initialization function here ONLY if the collection is empty.
-        // This is a one-time operation per environment.
-        await initializeDefaultAgents();
         return DEFAULT_AGENTS;
     }
     
@@ -178,3 +175,4 @@ export async function updateAgentConfig(id: string, data: Partial<Omit<AgentConf
   await db.collection(AGENT_COLLECTION).doc(id).update(data);
   console.log(`[SystemService] Agent configuration for '${id}' updated successfully.`);
 }
+
