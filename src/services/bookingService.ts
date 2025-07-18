@@ -75,41 +75,50 @@ export async function getAllBookings(): Promise<Booking[]> {
   }
 }
 
-export async function getBookingsForCottage(cottageId: string): Promise<BookingDateRange[]> {
+/**
+ * Fetches all active (confirmed or non-expired pending) bookings for a cottage.
+ * This is a helper function to consolidate logic for availability checks.
+ */
+async function getActiveBookingsForCottage(cottageId: string): Promise<Booking[]> {
   if (!cottageId) return [];
   const db = adminDb();
-  
+  const now = new Date();
+
   try {
-    const now = Timestamp.now();
-    const confirmedBookingsQuery = db.collection('bookings')
-        .where('cottageId', '==', cottageId)
-        .where('status', '==', 'confirmed');
-    
-    const pendingBookingsQuery = db.collection('bookings')
-        .where('cottageId', '==', cottageId)
-        .where('status', '==', 'pending_confirmation')
-        .where('expiresAt', '>', now);
+    // Query all bookings for the cottage that haven't been explicitly cancelled.
+    const bookingsQuery = db.collection('bookings')
+      .where('cottageId', '==', cottageId)
+      .where('status', 'in', ['confirmed', 'pending_confirmation']);
+      
+    const snapshot = await bookingsQuery.get();
+    const allBookings = snapshot.docs.map(docToBooking).filter((b): b is Booking => b !== null);
 
-    const [confirmedSnapshot, pendingSnapshot] = await Promise.all([
-        confirmedBookingsQuery.get(),
-        pendingBookingsQuery.get()
-    ]);
-    
-    const bookings = [...confirmedSnapshot.docs, ...pendingSnapshot.docs];
-
-    return bookings.map(doc => {
-      const data = doc.data();
-      return { 
-        from: (data.checkIn as Timestamp).toDate(), 
-        to: (data.checkOut as Timestamp).toDate() 
-      };
-    }).filter(range => range.from && range.to);
-
+    // Filter out expired pending bookings in the code.
+    return allBookings.filter(booking => {
+      if (booking.status === 'confirmed') {
+        return true; // Always include confirmed bookings.
+      }
+      if (booking.status === 'pending_confirmation') {
+        // Include pending bookings only if they have not expired.
+        return booking.expiresAt ? booking.expiresAt > now : false;
+      }
+      return false;
+    });
   } catch (error) {
-    console.error(`Error fetching bookings for cottage ${cottageId}:`, error);
-    throw new Error(`Failed to fetch bookings for cottage ${cottageId}.`);
+    console.error(`Error fetching active bookings for cottage ${cottageId}:`, error);
+    throw new Error(`Failed to fetch active bookings for cottage ${cottageId}.`);
   }
 }
+
+
+export async function getBookingsForCottage(cottageId: string): Promise<BookingDateRange[]> {
+  const activeBookings = await getActiveBookingsForCottage(cottageId);
+  return activeBookings.map(booking => ({
+    from: booking.checkIn,
+    to: booking.checkOut,
+  }));
+}
+
 
 /**
  * Checks if a cottage is available for a given date range.
@@ -120,33 +129,8 @@ export async function getBookingsForCottage(cottageId: string): Promise<BookingD
  * @returns {Promise<boolean>} - True if available, false otherwise.
  */
 export async function checkAvailability(cottageId: string, newCheckIn: Date, newCheckOut: Date): Promise<boolean> {
-  const db = adminDb();
-  const now = Timestamp.now();
-
   try {
-    // Get all confirmed bookings for the cottage
-    const confirmedQuery = db.collection('bookings')
-      .where('cottageId', '==', cottageId)
-      .where('status', '==', 'confirmed');
-
-    // Get all PENDING bookings that have NOT expired
-    const pendingQuery = db.collection('bookings')
-        .where('cottageId', '==', cottageId)
-        .where('status', '==', 'pending_confirmation')
-        .where('expiresAt', '>', now);
-    
-    const [confirmedSnapshot, pendingSnapshot] = await Promise.all([
-        confirmedQuery.get(),
-        pendingQuery.get(),
-    ]);
-
-    const existingBookings = [...confirmedSnapshot.docs, ...pendingSnapshot.docs].map(doc => {
-        const data = doc.data();
-        return {
-            checkIn: (data.checkIn as Timestamp).toDate(),
-            checkOut: (data.checkOut as Timestamp).toDate(),
-        };
-    });
+    const existingBookings = await getActiveBookingsForCottage(cottageId);
 
     // Check for overlaps with the new booking.
     // An overlap exists if (StartA < EndB) and (EndA > StartB).
