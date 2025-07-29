@@ -3,10 +3,8 @@ rules_version = '2';
 
 service firebase.storage {
   match /b/{bucket}/o {
-    // By default, deny all read and write access to Cloud Storage.
-    // This is the most secure posture, as our application does not currently
-    // require users to upload or download files directly from the client.
-    // All image access is handled via public URLs (e.g., from Cloudinary).
+    // Default to locked down. Disallow all client-side file reads and writes.
+    // All file access should be done through the public URLs provided in Firestore documents.
     match /{allPaths=**} {
       allow read, write: if false;
     }
