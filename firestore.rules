@@ -3,25 +3,37 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-  
+
     // Default deny all reads and writes
     match /{document=**} {
       allow read, write: if false;
     }
-    
-    // Allow public read-only access to published posts
-    match /posts/{postId} {
-        allow read: if resource.data.status == 'published';
-    }
 
-    // Allow public read-only access to cottages
+    // Allow public read access for published posts and cottages
+    match /posts/{postId} {
+      allow read: if resource.data.status == 'published';
+    }
     match /cottages/{cottageId} {
       allow read: if true;
     }
-
-    // Allow public read-only access to activities
     match /activities/{activityId} {
       allow read: if true;
+    }
+    
+    // Allow creating bookings and reading their own booking
+    match /bookings/{bookingId} {
+      allow create: if request.auth == null; // Allow creation by unauthenticated users
+      allow read: if request.auth != null && resource.data.guestEmail == request.auth.token.email;
+    }
+
+    // Allow admins to read/write all data
+    // This assumes you will implement a custom claim for admins.
+    // For now, this is locked down but can be enabled later.
+    match /system_settings/{docId} {
+       allow read, write: if false;
+    }
+    match /ai_agents/{agentId} {
+       allow read, write: if false;
     }
   }
 }
