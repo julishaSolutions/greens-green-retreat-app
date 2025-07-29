@@ -1,11 +1,47 @@
+
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Lock down all client-side access by default.
-    // Server-side access via the Admin SDK is not affected by these rules.
+
+    // Lock down all collections by default.
     match /{document=**} {
       allow read, write: if false;
+    }
+
+    // Allow public read-only access to published posts.
+    match /posts/{postId} {
+      allow read: if resource.data.status == 'published';
+      allow update: if false; // No client-side updates
+    }
+    
+    // Allow public read-only access to cottages.
+    match /cottages/{cottageId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Allow public read-only access to activities.
+    match /activities/{activityId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    // Allow clients to create new bookings, but not read/update/delete them.
+    // Reading/updating will be handled by secure server-side logic.
+    match /bookings/{bookingId} {
+        allow create: if true;
+        allow read, update, delete: if false;
+    }
+    
+    // Allow clients to read system settings (like knowledge base) and agent configs.
+    match /system_settings/{docId} {
+        allow read: if true;
+        allow write: if false;
+    }
+    match /ai_agents/{agentId} {
+        allow read: if true;
+        allow write: if false;
     }
   }
 }

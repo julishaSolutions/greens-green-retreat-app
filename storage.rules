@@ -1,9 +1,12 @@
+
 rules_version = '2';
 
 service firebase.storage {
   match /b/{bucket}/o {
-    // Lock down all client-side access by default.
-    // Server-side access via the Admin SDK is not affected by these rules.
+    // By default, deny all read and write access to Cloud Storage.
+    // This is the most secure posture, as our application does not currently
+    // require users to upload or download files directly from the client.
+    // All image access is handled via public URLs (e.g., from Cloudinary).
     match /{allPaths=**} {
       allow read, write: if false;
     }
