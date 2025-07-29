@@ -1,14 +1,20 @@
+
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Deny all reads and writes by default for all collections.
+    // By default, deny all read/write access to all collections.
     match /{document=**} {
       allow read, write: if false;
     }
 
-    // Allow public, read-only access to collections needed for the website to function.
-    // This includes cottages, activities, and published journal posts.
+    // Allow public read-only access to published posts.
+    // This is secure because we are only allowing reads on a specific query.
+    match /posts/{postId} {
+      allow read: if resource.data.status == 'published';
+    }
+
+    // Allow public read access to cottages and activities.
     match /cottages/{cottageId} {
       allow read: if true;
     }
@@ -17,18 +23,19 @@ service cloud.firestore {
       allow read: if true;
     }
 
-    match /posts/{postId} {
-      // Only allow reading of posts that are explicitly 'published'.
-      allow read: if resource.data.status == 'published';
-    }
-
-    // Allow clients to create booking documents.
-    // Further validation (e.g., ensuring dates are valid) should be done in your backend/server-side logic.
+    // Allow creating new bookings, but not reading or updating them from the client.
+    // This is secure because users can only create new data, not see others' data.
     match /bookings/{bookingId} {
       allow create: if true;
-      // Allow a client to read their own booking confirmation after creation.
-      // This is less secure; ideally, this would be authenticated. For now, it's open.
-      allow read: if true; 
+      allow read, update, delete: if false;
+    }
+
+    // Allow anyone to read the system settings and AI agent configurations.
+    match /system_settings/{docId} {
+      allow read: if true;
+    }
+    match /ai_agents/{agentId} {
+        allow read: if true;
     }
   }
 }
