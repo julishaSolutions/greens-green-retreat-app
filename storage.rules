@@ -3,9 +3,9 @@ rules_version = '2';
 
 service firebase.storage {
   match /b/{bucket}/o {
-    // By default, deny all read/write access to all files.
-    // This is the most secure posture. Your application uses Cloudinary and other
-    // external services for images, so direct client access to Firebase Storage is not needed.
+    // By default, deny all client-side read/write access.
+    // This is the most secure posture. Your application's public images are
+    // accessible via their public URLs, not through the client SDK.
     match /{allPaths=**} {
       allow read, write: if false;
     }
