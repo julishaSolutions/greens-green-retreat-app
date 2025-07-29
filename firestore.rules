@@ -1,18 +1,11 @@
-
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // By default, deny all reads and writes to all collections.
-    // This is a secure default. Specific rules can be added below
-    // to grant access to specific collections or documents as needed.
+    // Lock down all client-side access by default.
+    // Server-side access via the Admin SDK is not affected by these rules.
     match /{document=**} {
       allow read, write: if false;
     }
-
-    // Example of allowing only authenticated users to read from a 'users' collection.
-    // match /users/{userId} {
-    //   allow read: if request.auth != null && request.auth.uid == userId;
-    // }
   }
 }
