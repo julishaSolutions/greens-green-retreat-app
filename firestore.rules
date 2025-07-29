@@ -1,33 +1,18 @@
+
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // cottages collection: Anyone can read this data to see available cottages.
-    // Nobody can write to it directly from the client-side.
-    match /cottages/{cottageId} {
-      allow read: if true;
-      allow write: if false;
+    // By default, deny all reads and writes to all collections.
+    // This is a secure default. Specific rules can be added below
+    // to grant access to specific collections or documents as needed.
+    match /{document=**} {
+      allow read, write: if false;
     }
 
-    // activities collection: Anyone can read this data.
-    match /activities/{activityId} {
-      allow read: if true;
-      allow write: if false;
-    }
-
-    // Bookings collection: This is where we secure the data.
-    match /bookings/{bookingId} {
-      // A user can only read their own booking documents.
-      // Your server action must add a 'guestId' field matching the authenticated user's ID.
-      allow read: if request.auth.uid == resource.data.guestId;
-
-      // Any authenticated user is allowed to create a new booking.
-      allow create: if request.auth.uid != null;
-
-      // Users are not allowed to update or delete their bookings directly.
-      // This should be handled by an admin or through a secure backend process.
-      allow update, delete: if false;
-    }
+    // Example of allowing only authenticated users to read from a 'users' collection.
+    // match /users/{userId} {
+    //   allow read: if request.auth != null && request.auth.uid == userId;
+    // }
   }
 }
