@@ -3,8 +3,7 @@ rules_version = '2';
 
 service firebase.storage {
   match /b/{bucket}/o {
-    // Default to locked down. Disallow all client-side file reads and writes.
-    // All file access should be done through the public URLs provided in Firestore documents.
+    // Default deny all reads and writes to Cloud Storage
     match /{allPaths=**} {
       allow read, write: if false;
     }

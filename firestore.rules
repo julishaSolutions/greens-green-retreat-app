@@ -3,36 +3,24 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Default to locked down.
+  
+    // Default deny all reads and writes
     match /{document=**} {
       allow read, write: if false;
     }
-
-    // Allow public read-only access to published journal posts.
+    
+    // Allow public read-only access to published posts
     match /posts/{postId} {
-      allow read: if resource.data.status == 'published';
+        allow read: if resource.data.status == 'published';
     }
 
-    // Allow public read-only access to cottages and activities.
+    // Allow public read-only access to cottages
     match /cottages/{cottageId} {
       allow read: if true;
     }
-    match /activities/{activityId} {
-      allow read: if true;
-    }
 
-    // Allow anyone to create a booking, but not read/update/delete them.
-    // This is secure because server-side logic handles validation.
-    match /bookings/{bookingId} {
-      allow create: if true;
-      allow read, update, delete: if false;
-    }
-    
-    // Allow clients to read the AI system settings and agent configs
-    match /system_settings/{docId} {
-      allow read: if true;
-    }
-    match /ai_agents/{agentId} {
+    // Allow public read-only access to activities
+    match /activities/{activityId} {
       allow read: if true;
     }
   }
