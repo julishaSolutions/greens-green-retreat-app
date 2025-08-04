@@ -94,7 +94,7 @@ export default async function Home() {
     <div className="flex flex-col">
       <section className="relative h-[90vh] min-h-[600px] w-full flex items-center justify-center text-center text-white overflow-hidden">
         <video
-          src="https://res.cloudinary.com/dx6zxdlts/video/upload/v1754300321/lv_0_20250804114422_jhzete.mp4"
+          src="https://res.cloudinary.com/desbmrrdo/video/upload/v1754334253/GGR_2k_Comp_u8gbu7.mp4"
           autoPlay
           loop
           muted
