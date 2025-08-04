@@ -93,14 +93,13 @@ export default async function Home() {
   return (
     <div className="flex flex-col">
       <section className="relative h-[90vh] min-h-[600px] w-full flex items-center justify-center text-center text-white overflow-hidden">
-        <Image
-          src="https://res.cloudinary.com/dx6zxdlts/image/upload/v1751711841/GGR_through_the_lens_of_a_client._happyclient_%EF%B8%8F_greens_green_retreat_8_gz71bu.jpg"
-          alt="A scenic view of Green's Green Retreat"
-          fill
-          priority
-          className="object-cover -z-10"
-          sizes="100vw"
-          data-ai-hint="retreat scenic view"
+        <video
+          src="https://res.cloudinary.com/dx6zxdlts/video/upload/v1754300321/lv_0_20250804114422_jhzete.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute top-0 left-0 w-full h-full object-cover -z-10"
         />
         <div className="absolute inset-0 bg-black/50 -z-10" />
         <div className="container mx-auto px-4">
