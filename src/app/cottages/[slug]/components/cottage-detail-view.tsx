@@ -39,18 +39,18 @@ export function CottageDetailView({ cottage, allCottages }: CottageDetailViewPro
   let prevCottage: CottageNavItem | null = null;
   let nextCottage: CottageNavItem | null = null;
   
-  // Corrected logic: Ensure there are at least two cottages to cycle through.
   if (cottageIndex !== -1 && allCottages.length > 1) {
-      const prevIndex = (cottageIndex - 1 + allCottages.length) % allCottages.length;
-      const nextIndex = (cottageIndex + 1) % allCottages.length;
-  
-      // Only set the nav item if it's different from the current cottage.
-      if (allCottages[prevIndex].slug !== cottage.slug) {
-          prevCottage = allCottages[prevIndex];
-      }
-      if (allCottages[nextIndex].slug !== cottage.slug) {
-          nextCottage = allCottages[nextIndex];
-      }
+    const prevIndex = (cottageIndex - 1 + allCottages.length) % allCottages.length;
+    const nextIndex = (cottageIndex + 1) % allCottages.length;
+
+    // Ensure the next/prev item is not the same as the current one.
+    // This prevents linking to the same page which can happen with only 2 items.
+    if (allCottages[prevIndex].slug !== cottage.slug) {
+      prevCottage = allCottages[prevIndex];
+    }
+    if (allCottages[nextIndex].slug !== cottage.slug) {
+      nextCottage = allCottages[nextIndex];
+    }
   }
 
 
@@ -141,7 +141,7 @@ export function CottageDetailView({ cottage, allCottages }: CottageDetailViewPro
                     <span className="sr-only">Previous Cottage</span>
                   </Link>
                 </Button>
-              ) : <div />}
+              ) : <div className="w-48" />}
               {nextCottage ? (
                 <Button asChild variant="outline" size="icon">
                   <Link href={`/cottages/${nextCottage.slug}`}>
@@ -149,7 +149,7 @@ export function CottageDetailView({ cottage, allCottages }: CottageDetailViewPro
                     <span className="sr-only">Next Cottage</span>
                   </Link>
                 </Button>
-              ) : <div />}
+              ) : <div className="w-48" />}
             </div>
           </div>
         </div>
