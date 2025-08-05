@@ -153,7 +153,7 @@ export default async function Home() {
         </div>
       </section>
 
-       <section id="experiences" className="py-20 md:py-32 bg-card">
+       <section id="experiences" className="py-20 mdpy-32 bg-card">
         <div className="container mx-auto px-4 text-center">
           <h2 className={cn('text-3xl md:text-4xl font-bold font-headline text-primary')}>Signature Experiences</h2>
           <p className="mt-2 text-lg max-w-2xl mx-auto text-foreground/80 font-body">
