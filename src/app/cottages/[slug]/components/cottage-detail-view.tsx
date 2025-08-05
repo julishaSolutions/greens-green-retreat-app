@@ -39,20 +39,20 @@ export function CottageDetailView({ cottage, allCottages }: CottageDetailViewPro
   let prevCottage: CottageNavItem | null = null;
   let nextCottage: CottageNavItem | null = null;
   
-  // Ensure we only set nav items if there are at least two cottages to cycle through.
+  // Corrected logic: Ensure there are at least two cottages to cycle through.
   if (cottageIndex !== -1 && allCottages.length > 1) {
-    const prevIndex = (cottageIndex - 1 + allCottages.length) % allCottages.length;
-    const nextIndex = (cottageIndex + 1) % allCottages.length;
-
-    // Only set the nav item if it's different from the current cottage.
-    // This prevents self-referential links when there are only two cottages.
-    if (allCottages[prevIndex].slug !== cottage.slug) {
-      prevCottage = allCottages[prevIndex];
-    }
-    if (allCottages[nextIndex].slug !== cottage.slug) {
-      nextCottage = allCottages[nextIndex];
-    }
+      const prevIndex = (cottageIndex - 1 + allCottages.length) % allCottages.length;
+      const nextIndex = (cottageIndex + 1) % allCottages.length;
+  
+      // Only set the nav item if it's different from the current cottage.
+      if (allCottages[prevIndex].slug !== cottage.slug) {
+          prevCottage = allCottages[prevIndex];
+      }
+      if (allCottages[nextIndex].slug !== cottage.slug) {
+          nextCottage = allCottages[nextIndex];
+      }
   }
+
 
   const validImageUrls = Array.isArray(cottage.imageUrls)
     ? cottage.imageUrls.filter(url => typeof url === 'string' && url.trim() !== '')
