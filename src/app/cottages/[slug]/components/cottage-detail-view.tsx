@@ -35,14 +35,23 @@ const staticAmenities = ['Wi-Fi', 'Spacious Deck', '24-hour Security'];
 export function CottageDetailView({ cottage, allCottages }: CottageDetailViewProps) {
   const isOliviaCottage = cottage.name === 'Olivia Cottage';
   const cottageIndex = allCottages.findIndex(c => c.slug === cottage.slug);
+  
   let prevCottage: CottageNavItem | null = null;
   let nextCottage: CottageNavItem | null = null;
   
+  // Ensure we only set nav items if there are at least two cottages to cycle through.
   if (cottageIndex !== -1 && allCottages.length > 1) {
     const prevIndex = (cottageIndex - 1 + allCottages.length) % allCottages.length;
     const nextIndex = (cottageIndex + 1) % allCottages.length;
-    prevCottage = allCottages[prevIndex];
-    nextCottage = allCottages[nextIndex];
+
+    // Only set the nav item if it's different from the current cottage.
+    // This prevents self-referential links when there are only two cottages.
+    if (allCottages[prevIndex].slug !== cottage.slug) {
+      prevCottage = allCottages[prevIndex];
+    }
+    if (allCottages[nextIndex].slug !== cottage.slug) {
+      nextCottage = allCottages[nextIndex];
+    }
   }
 
   const validImageUrls = Array.isArray(cottage.imageUrls)
@@ -102,7 +111,7 @@ export function CottageDetailView({ cottage, allCottages }: CottageDetailViewPro
         <div className="mb-8 text-center">
           {/* Desktop Header */}
           <div className="hidden md:flex justify-between items-center">
-            {prevCottage && prevCottage.slug !== cottage.slug ? (
+            {prevCottage ? (
               <Button asChild variant="outline" className="w-48 justify-start">
                 <Link href={`/cottages/${prevCottage.slug}`}>
                   <ChevronLeft className="mr-2 h-4 w-4" />
@@ -111,7 +120,7 @@ export function CottageDetailView({ cottage, allCottages }: CottageDetailViewPro
               </Button>
             ) : <div className="w-48" />}
             <h1 className={cn('flex-1 text-4xl md:text-5xl font-bold font-headline text-primary')}>{cottage.name}</h1>
-            {nextCottage && nextCottage.slug !== cottage.slug ? (
+            {nextCottage ? (
               <Button asChild variant="outline" className="w-48 justify-end">
                 <Link href={`/cottages/${nextCottage.slug}`}>
                   {nextCottage.name}
@@ -125,7 +134,7 @@ export function CottageDetailView({ cottage, allCottages }: CottageDetailViewPro
           <div className="md:hidden">
             <h1 className={cn('text-4xl font-bold font-headline text-primary mb-4')}>{cottage.name}</h1>
             <div className="flex justify-between items-center">
-              {prevCottage && prevCottage.slug !== cottage.slug ? (
+              {prevCottage ? (
                 <Button asChild variant="outline" size="icon">
                   <Link href={`/cottages/${prevCottage.slug}`}>
                     <ChevronLeft className="h-4 w-4" />
@@ -133,7 +142,7 @@ export function CottageDetailView({ cottage, allCottages }: CottageDetailViewPro
                   </Link>
                 </Button>
               ) : <div />}
-              {nextCottage && nextCottage.slug !== cottage.slug ? (
+              {nextCottage ? (
                 <Button asChild variant="outline" size="icon">
                   <Link href={`/cottages/${nextCottage.slug}`}>
                     <ChevronRight className="h-4 w-4" />
