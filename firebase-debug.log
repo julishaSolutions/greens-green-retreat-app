@@ -1,546 +1,152 @@
-[debug] [2025-07-30T09:24:21.667Z] ----------------------------------------------------------------------
-[debug] [2025-07-30T09:24:21.673Z] Command:       /nix/store/ws50yvm6vzlzf7jzz6n7xh4szddrack1-nodejs-20.19.1/bin/node /nix/store/gv0i9ndcpzjpfi2yr06402kzy90q51ki-firebase-tools-14.10.1/lib/node_modules/firebase-tools/lib/bin/firebase.js emulators:start --project=demo-app --only=auth,firestore
-[debug] [2025-07-30T09:24:21.675Z] CLI Version:   14.10.1
-[debug] [2025-07-30T09:24:21.676Z] Platform:      linux
-[debug] [2025-07-30T09:24:21.676Z] Node Version:  v20.19.1
-[debug] [2025-07-30T09:24:21.676Z] Time:          Wed Jul 30 2025 09:24:21 GMT+0000 (Coordinated Universal Time)
-[debug] [2025-07-30T09:24:21.677Z] ----------------------------------------------------------------------
+[debug] [2025-08-06T05:09:28.686Z] ----------------------------------------------------------------------
+[debug] [2025-08-06T05:09:28.690Z] Command:       /nix/store/ws50yvm6vzlzf7jzz6n7xh4szddrack1-nodejs-20.19.1/bin/node /home/user/.global_modules/bin/firebase apphosting:backends:create
+[debug] [2025-08-06T05:09:28.690Z] CLI Version:   14.10.1
+[debug] [2025-08-06T05:09:28.691Z] Platform:      linux
+[debug] [2025-08-06T05:09:28.691Z] Node Version:  v20.19.1
+[debug] [2025-08-06T05:09:28.691Z] Time:          Wed Aug 06 2025 05:09:28 GMT+0000 (Coordinated Universal Time)
+[debug] [2025-08-06T05:09:28.691Z] ----------------------------------------------------------------------
 [debug] 
-[debug] [2025-07-30T09:24:23.669Z] openjdk version "21.0.7" 2025-04-15
-
-[debug] [2025-07-30T09:24:23.671Z] OpenJDK Runtime Environment (build 21.0.7+6-nixos)
-OpenJDK 64-Bit Server VM (build 21.0.7+6-nixos, mixed mode, sharing)
-
-[debug] [2025-07-30T09:24:23.708Z] Parsed Java major version: 21
-[info] i  emulators: Starting emulators: auth, firestore {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth, firestore"}}
-[info] i  emulators: Detected demo project ID "demo-app", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail. {"metadata":{"emulator":{"name":"hub"},"message":"Detected demo project ID \"demo-app\", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail."}}
-[warn] ⚠  hub: Error when trying to check port 4400 on ::1: Error: listen EADDRNOTAVAIL: address not available ::1:4400 {"metadata":{"emulator":{"name":"hub"},"message":"Error when trying to check port 4400 on ::1: Error: listen EADDRNOTAVAIL: address not available ::1:4400"}}
-[warn] ⚠  hub: Port 4400 is available on 127.0.0.1 but not ::1. This may cause issues with some clients. {"metadata":{"emulator":{"name":"hub"},"message":"Port 4400 is available on 127.0.0.1 but not ::1. This may cause issues with some clients."}}
-[warn] ⚠  hub: If you encounter connectivity issues, consider switching to a different port or explicitly specifying "host": "<ip address>" instead of hostname in firebase.json {"metadata":{"emulator":{"name":"hub"},"message":"If you encounter connectivity issues, consider switching to a different port or explicitly specifying \"host\": \"<ip address>\" instead of hostname in firebase.json"}}
-[warn] ⚠  logging: Error when trying to check port 4500 on ::1: Error: listen EADDRNOTAVAIL: address not available ::1:4500 {"metadata":{"emulator":{"name":"logging"},"message":"Error when trying to check port 4500 on ::1: Error: listen EADDRNOTAVAIL: address not available ::1:4500"}}
-[warn] ⚠  logging: Port 4500 is available on 127.0.0.1 but not ::1. This may cause issues with some clients. {"metadata":{"emulator":{"name":"logging"},"message":"Port 4500 is available on 127.0.0.1 but not ::1. This may cause issues with some clients."}}
-[warn] ⚠  logging: If you encounter connectivity issues, consider switching to a different port or explicitly specifying "host": "<ip address>" instead of hostname in firebase.json {"metadata":{"emulator":{"name":"logging"},"message":"If you encounter connectivity issues, consider switching to a different port or explicitly specifying \"host\": \"<ip address>\" instead of hostname in firebase.json"}}
-[debug] [2025-07-30T09:24:23.727Z] assigned listening specs for emulators {"user":{"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9095}],"firestore":[{"address":"127.0.0.1","family":"IPv4","port":8085}],"firestore.websocket":[{"address":"127.0.0.1","family":"IPv4","port":9150}],"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}]},"metadata":{"message":"assigned listening specs for emulators"}}
-[debug] [2025-07-30T09:24:23.739Z] [hub] writing locator at /tmp/hub-demo-app.json
-[debug] [2025-07-30T09:24:23.774Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: auto_download"}}
-[debug] [2025-07-30T09:24:23.775Z] Ignoring unsupported arg: single_project_mode_error {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: single_project_mode_error"}}
-[debug] [2025-07-30T09:24:23.775Z] Starting Firestore Emulator with command {"binary":"java","args":["-Dgoogle.cloud_firestore.debug_log_level=FINE","-Duser.language=en","-jar","/nix/store/6630rdigdc1h6ay3q6zs9bnvj2zrs70g-emulators/cloud-firestore-emulator-v1.19.8.jar","--host","127.0.0.1","--port",8085,"--websocket_port",9150,"--project_id","demo-app","--rules","/home/user/studio/firestore.rules","--single_project_mode",true],"optionalArgs":["port","webchannel_port","host","rules","websocket_port","functions_emulator","seed_from_export","project_id","single_project_mode"],"joinArgs":false,"shell":false,"port":8085} {"metadata":{"emulator":{"name":"firestore"},"message":"Starting Firestore Emulator with command {\"binary\":\"java\",\"args\":[\"-Dgoogle.cloud_firestore.debug_log_level=FINE\",\"-Duser.language=en\",\"-jar\",\"/nix/store/6630rdigdc1h6ay3q6zs9bnvj2zrs70g-emulators/cloud-firestore-emulator-v1.19.8.jar\",\"--host\",\"127.0.0.1\",\"--port\",8085,\"--websocket_port\",9150,\"--project_id\",\"demo-app\",\"--rules\",\"/home/user/studio/firestore.rules\",\"--single_project_mode\",true],\"optionalArgs\":[\"port\",\"webchannel_port\",\"host\",\"rules\",\"websocket_port\",\"functions_emulator\",\"seed_from_export\",\"project_id\",\"single_project_mode\"],\"joinArgs\":false,\"shell\":false,\"port\":8085}"}}
-[info] i  firestore: Firestore Emulator logging to firestore-debug.log {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator logging to firestore-debug.log"}}
-[debug] [2025-07-30T09:24:27.893Z] Jul 30, 2025 9:24:27 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start
-INFO: Started WebSocket server on ws://127.0.0.1:9150
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jul 30, 2025 9:24:27 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start\nINFO: Started WebSocket server on ws://127.0.0.1:9150\n"}}
-[debug] [2025-07-30T09:24:27.966Z] API endpoint: http:// {"metadata":{"emulator":{"name":"firestore"},"message":"API endpoint: http://"}}
-[debug] [2025-07-30T09:24:27.967Z] 127.0.0.1:8085
-If you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:
-
-   export FIRESTORE_EMULATOR_HOST=127.0.0.1:8085
-
-If you are running a Firestore in Datastore Mode project, run:
-
-   export DATASTORE_EMULATOR_HOST=127.0.0.1:8085
-
-Note: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.
-Dev App Server is now running.
-
- {"metadata":{"emulator":{"name":"firestore"},"message":"127.0.0.1:8085\nIf you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:\n\n   export FIRESTORE_EMULATOR_HOST=127.0.0.1:8085\n\nIf you are running a Firestore in Datastore Mode project, run:\n\n   export DATASTORE_EMULATOR_HOST=127.0.0.1:8085\n\nNote: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.\nDev App Server is now running.\n\n"}}
-[info] ✔  firestore: Firestore Emulator UI websocket is running on 9150. {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator UI websocket is running on 9150."}}
-[info] i  firestore: Change detected, updating rules... 
-[debug] [2025-07-30T09:24:54.085Z] >>> [apiv2][query] PUT http://127.0.0.1:8085/emulator/v1/projects/demo-app:securityRules [none]
-[debug] [2025-07-30T09:24:54.085Z] >>> [apiv2][body] PUT http://127.0.0.1:8085/emulator/v1/projects/demo-app:securityRules {"ignore_errors":true,"rules":{"files":[{"name":"security.rules","content":"\nrules_version = '2';\n\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    // By default, deny all client-side read/write access.\n    // Server-side access (like from your Next.js server actions) using the Admin SDK will still work.\n    match /{document=**} {\n      allow read, write: if false;\n    }\n  }\n}\n"}]}}
-[debug] [2025-07-30T09:24:54.140Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: connect ECONNREFUSED 127.0.0.1:40001. If you are not running the Firebase Data Connect VSCode extension, this is expected and not an issue.
-[info] 
-┌─────────────────────────────────────────────────────────────┐
-│ ✔  All emulators ready! It is now safe to connect your app. │
-│ i  View Emulator UI at http://127.0.0.1:4000/               │
-└─────────────────────────────────────────────────────────────┘
-
-┌────────────────┬────────────────┬─────────────────────────────────┐
-│ Emulator       │ Host:Port      │ View in Emulator UI             │
-├────────────────┼────────────────┼─────────────────────────────────┤
-│ Authentication │ 127.0.0.1:9095 │ http://127.0.0.1:4000/auth      │
-├────────────────┼────────────────┼─────────────────────────────────┤
-│ Firestore      │ 127.0.0.1:8085 │ http://127.0.0.1:4000/firestore │
-└────────────────┴────────────────┴─────────────────────────────────┘
-  Emulator Hub host: 127.0.0.1 port: 4400
-  Other reserved ports: 4500, 9150
-
-Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
+[debug] [2025-08-06T05:09:29.203Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-08-06T05:09:29.204Z] > authorizing via signed-in user (julishaphotography@gmail.com)
+[debug] [2025-08-06T05:09:29.207Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:29.207Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:29.207Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-08-06T05:09:29.208Z] > authorizing via signed-in user (julishaphotography@gmail.com)
+[debug] [2025-08-06T05:09:29.208Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:29.208Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:29.209Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-08-06T05:09:29.209Z] > authorizing via signed-in user (julishaphotography@gmail.com)
+[debug] [2025-08-06T05:09:29.209Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:29.209Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:29.209Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-08-06T05:09:29.210Z] > authorizing via signed-in user (julishaphotography@gmail.com)
+[debug] [2025-08-06T05:09:29.210Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:29.210Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:29.210Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-08-06T05:09:29.210Z] > authorizing via signed-in user (julishaphotography@gmail.com)
+[debug] [2025-08-06T05:09:29.211Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:29.211Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:29.211Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-08-06T05:09:29.211Z] > authorizing via signed-in user (julishaphotography@gmail.com)
+[debug] [2025-08-06T05:09:29.211Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:29.211Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:29.211Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-08-06T05:09:29.211Z] > authorizing via signed-in user (julishaphotography@gmail.com)
+[debug] [2025-08-06T05:09:29.213Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/ggr1-4fa1c/services/developerconnect.googleapis.com [none]
+[debug] [2025-08-06T05:09:29.213Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/ggr1-4fa1c/services/developerconnect.googleapis.com x-goog-quota-user=projects/ggr1-4fa1c
+[debug] [2025-08-06T05:09:29.261Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/ggr1-4fa1c/services/cloudbuild.googleapis.com [none]
+[debug] [2025-08-06T05:09:29.262Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/ggr1-4fa1c/services/cloudbuild.googleapis.com x-goog-quota-user=projects/ggr1-4fa1c
+[debug] [2025-08-06T05:09:29.264Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/ggr1-4fa1c/services/secretmanager.googleapis.com [none]
+[debug] [2025-08-06T05:09:29.265Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/ggr1-4fa1c/services/secretmanager.googleapis.com x-goog-quota-user=projects/ggr1-4fa1c
+[debug] [2025-08-06T05:09:29.266Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/ggr1-4fa1c/services/run.googleapis.com [none]
+[debug] [2025-08-06T05:09:29.267Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/ggr1-4fa1c/services/run.googleapis.com x-goog-quota-user=projects/ggr1-4fa1c
+[debug] [2025-08-06T05:09:29.269Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/ggr1-4fa1c/services/artifactregistry.googleapis.com [none]
+[debug] [2025-08-06T05:09:29.269Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/ggr1-4fa1c/services/artifactregistry.googleapis.com x-goog-quota-user=projects/ggr1-4fa1c
+[debug] [2025-08-06T05:09:29.271Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/ggr1-4fa1c/services/iam.googleapis.com [none]
+[debug] [2025-08-06T05:09:29.271Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/ggr1-4fa1c/services/iam.googleapis.com x-goog-quota-user=projects/ggr1-4fa1c
+[debug] [2025-08-06T05:09:30.173Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/ggr1-4fa1c/services/secretmanager.googleapis.com 200
+[debug] [2025-08-06T05:09:30.174Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/ggr1-4fa1c/services/secretmanager.googleapis.com [omitted]
+[debug] [2025-08-06T05:09:30.187Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/ggr1-4fa1c/services/cloudbuild.googleapis.com 200
+[debug] [2025-08-06T05:09:30.187Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/ggr1-4fa1c/services/cloudbuild.googleapis.com [omitted]
+[debug] [2025-08-06T05:09:30.200Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/ggr1-4fa1c/services/developerconnect.googleapis.com 200
+[debug] [2025-08-06T05:09:30.201Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/ggr1-4fa1c/services/developerconnect.googleapis.com [omitted]
+[debug] [2025-08-06T05:09:30.216Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/ggr1-4fa1c/services/artifactregistry.googleapis.com 200
+[debug] [2025-08-06T05:09:30.218Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/ggr1-4fa1c/services/artifactregistry.googleapis.com [omitted]
+[debug] [2025-08-06T05:09:30.231Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/ggr1-4fa1c/services/iam.googleapis.com 200
+[debug] [2025-08-06T05:09:30.232Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/ggr1-4fa1c/services/iam.googleapis.com [omitted]
+[debug] [2025-08-06T05:09:30.252Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/ggr1-4fa1c/services/run.googleapis.com 200
+[debug] [2025-08-06T05:09:30.252Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/ggr1-4fa1c/services/run.googleapis.com [omitted]
+[debug] [2025-08-06T05:09:30.273Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:30.275Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:30.275Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-08-06T05:09:30.277Z] > authorizing via signed-in user (julishaphotography@gmail.com)
+[debug] [2025-08-06T05:09:30.278Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/ggr1-4fa1c/serviceAccounts/firebase-app-hosting-compute@ggr1-4fa1c.iam.gserviceaccount.com:testIamPermissions [none]
+[debug] [2025-08-06T05:09:30.278Z] >>> [apiv2][(partial)header] POST https://iam.googleapis.com/v1/projects/ggr1-4fa1c/serviceAccounts/firebase-app-hosting-compute@ggr1-4fa1c.iam.gserviceaccount.com:testIamPermissions x-goog-quota-user=projects/ggr1-4fa1c
+[debug] [2025-08-06T05:09:30.278Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/ggr1-4fa1c/serviceAccounts/firebase-app-hosting-compute@ggr1-4fa1c.iam.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-08-06T05:09:30.456Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/ggr1-4fa1c/serviceAccounts/firebase-app-hosting-compute@ggr1-4fa1c.iam.gserviceaccount.com:testIamPermissions 200
+[debug] [2025-08-06T05:09:30.457Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/ggr1-4fa1c/serviceAccounts/firebase-app-hosting-compute@ggr1-4fa1c.iam.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-08-06T05:09:30.459Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:30.460Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:30.460Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-08-06T05:09:30.462Z] > authorizing via signed-in user (julishaphotography@gmail.com)
+[debug] [2025-08-06T05:09:30.463Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/ggr1-4fa1c/serviceAccounts [none]
+[debug] [2025-08-06T05:09:30.463Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/ggr1-4fa1c/serviceAccounts {"accountId":"firebase-app-hosting-compute","serviceAccount":{"displayName":"Firebase App Hosting compute service account","description":"Default service account used to run builds and deploys for Firebase App Hosting"}}
+[debug] [2025-08-06T05:09:30.802Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/ggr1-4fa1c/serviceAccounts 409
+[debug] [2025-08-06T05:09:30.802Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/ggr1-4fa1c/serviceAccounts [omitted]
+[debug] [2025-08-06T05:09:30.808Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:30.808Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:30.810Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-08-06T05:09:30.812Z] > authorizing via signed-in user (julishaphotography@gmail.com)
+[debug] [2025-08-06T05:09:30.812Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/ggr1-4fa1c:getIamPolicy [none]
+[debug] [2025-08-06T05:09:31.605Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/ggr1-4fa1c:getIamPolicy 200
+[debug] [2025-08-06T05:09:31.607Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/ggr1-4fa1c:getIamPolicy {"version":1,"etag":"BwY7qwBEB6M=","bindings":[{"role":"roles/artifactregistry.serviceAgent","members":["serviceAccount:service-1065699589880@gcp-sa-artifactregistry.iam.gserviceaccount.com"]},{"role":"roles/cloudaicompanion.serviceAgent","members":["serviceAccount:service-1065699589880@gcp-sa-cloudaicompanion.iam.gserviceaccount.com"]},{"role":"roles/cloudbuild.builds.builder","members":["serviceAccount:1065699589880@cloudbuild.gserviceaccount.com"]},{"role":"roles/cloudbuild.serviceAgent","members":["serviceAccount:service-1065699589880@gcp-sa-cloudbuild.iam.gserviceaccount.com"]},{"role":"roles/compute.serviceAgent","members":["serviceAccount:service-1065699589880@compute-system.iam.gserviceaccount.com"]},{"role":"roles/containerregistry.ServiceAgent","members":["serviceAccount:service-1065699589880@containerregistry.iam.gserviceaccount.com"]},{"role":"roles/developerconnect.readTokenAccessor","members":["serviceAccount:firebase-app-hosting-compute@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/developerconnect.serviceAgent","members":["serviceAccount:service-1065699589880@gcp-sa-devconnect.iam.gserviceaccount.com"]},{"role":"roles/editor","members":["serviceAccount:1065699589880-compute@developer.gserviceaccount.com","serviceAccount:1065699589880@cloudservices.gserviceaccount.com","serviceAccount:firebase-adminsdk-fbsvc@ggr1-4fa1c.iam.gserviceaccount.com","serviceAccount:firebase-app-hosting-compute@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/firebase.admin","members":["serviceAccount:firebase-app-hosting-compute@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/firebase.managementServiceAgent","members":["serviceAccount:service-1065699589880@gcp-sa-firebase.iam.gserviceaccount.com"]},{"role":"roles/firebase.sdkAdminServiceAgent","members":["serviceAccount:firebase-adminsdk-fbsvc@ggr1-4fa1c.iam.gserviceaccount.com","serviceAccount:firebase-app-hosting-compute@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/firebaseappcheck.admin","members":["serviceAccount:firebase-adminsdk-fbsvc@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/firebaseapphosting.computeRunner","members":["serviceAccount:firebase-app-hosting-compute@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/firebaseapphosting.serviceAgent","members":["serviceAccount:service-1065699589880@gcp-sa-firebaseapphosting.iam.gserviceaccount.com"]},{"role":"roles/firebaseauth.admin","members":["serviceAccount:firebase-adminsdk-fbsvc@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/firebasehosting.admin","members":["serviceAccount:firebase-app-hosting-compute@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/firebaserules.system","members":["serviceAccount:service-1065699589880@firebase-rules.iam.gserviceaccount.com"]},{"role":"roles/firebasestorage.serviceAgent","members":["serviceAccount:service-1065699589880@gcp-sa-firebasestorage.iam.gserviceaccount.com"]},{"role":"roles/firestore.serviceAgent","members":["serviceAccount:service-1065699589880@gcp-sa-firestore.iam.gserviceaccount.com"]},{"role":"roles/iam.serviceAccountTokenCreator","members":["serviceAccount:firebase-adminsdk-fbsvc@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/owner","members":["user:julishaphotography@gmail.com"]},{"role":"roles/run.serviceAgent","members":["serviceAccount:service-1065699589880@serverless-robot-prod.iam.gserviceaccount.com"]},{"role":"roles/secretmanager.admin_withcond_731668a42284c65a487f","members":["serviceAccount:service-1065699589880@gcp-sa-devconnect.iam.gserviceaccount.com"]},{"role":"roles/storage.admin","members":["serviceAccount:firebase-adminsdk-fbsvc@ggr1-4fa1c.iam.gserviceaccount.com"]}]}
+[debug] [2025-08-06T05:09:31.609Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:31.609Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:31.611Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-08-06T05:09:31.611Z] > authorizing via signed-in user (julishaphotography@gmail.com)
+[debug] [2025-08-06T05:09:31.611Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/ggr1-4fa1c:setIamPolicy [none]
+[debug] [2025-08-06T05:09:31.612Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/ggr1-4fa1c:setIamPolicy {"policy":{"version":1,"etag":"BwY7qwBEB6M=","bindings":[{"role":"roles/artifactregistry.serviceAgent","members":["serviceAccount:service-1065699589880@gcp-sa-artifactregistry.iam.gserviceaccount.com"]},{"role":"roles/cloudaicompanion.serviceAgent","members":["serviceAccount:service-1065699589880@gcp-sa-cloudaicompanion.iam.gserviceaccount.com"]},{"role":"roles/cloudbuild.builds.builder","members":["serviceAccount:1065699589880@cloudbuild.gserviceaccount.com"]},{"role":"roles/cloudbuild.serviceAgent","members":["serviceAccount:service-1065699589880@gcp-sa-cloudbuild.iam.gserviceaccount.com"]},{"role":"roles/compute.serviceAgent","members":["serviceAccount:service-1065699589880@compute-system.iam.gserviceaccount.com"]},{"role":"roles/containerregistry.ServiceAgent","members":["serviceAccount:service-1065699589880@containerregistry.iam.gserviceaccount.com"]},{"role":"roles/developerconnect.readTokenAccessor","members":["serviceAccount:firebase-app-hosting-compute@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/developerconnect.serviceAgent","members":["serviceAccount:service-1065699589880@gcp-sa-devconnect.iam.gserviceaccount.com"]},{"role":"roles/editor","members":["serviceAccount:1065699589880-compute@developer.gserviceaccount.com","serviceAccount:1065699589880@cloudservices.gserviceaccount.com","serviceAccount:firebase-adminsdk-fbsvc@ggr1-4fa1c.iam.gserviceaccount.com","serviceAccount:firebase-app-hosting-compute@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/firebase.admin","members":["serviceAccount:firebase-app-hosting-compute@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/firebase.managementServiceAgent","members":["serviceAccount:service-1065699589880@gcp-sa-firebase.iam.gserviceaccount.com"]},{"role":"roles/firebase.sdkAdminServiceAgent","members":["serviceAccount:firebase-adminsdk-fbsvc@ggr1-4fa1c.iam.gserviceaccount.com","serviceAccount:firebase-app-hosting-compute@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/firebaseappcheck.admin","members":["serviceAccount:firebase-adminsdk-fbsvc@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/firebaseapphosting.computeRunner","members":["serviceAccount:firebase-app-hosting-compute@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/firebaseapphosting.serviceAgent","members":["serviceAccount:service-1065699589880@gcp-sa-firebaseapphosting.iam.gserviceaccount.com"]},{"role":"roles/firebaseauth.admin","members":["serviceAccount:firebase-adminsdk-fbsvc@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/firebasehosting.admin","members":["serviceAccount:firebase-app-hosting-compute@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/firebaserules.system","members":["serviceAccount:service-1065699589880@firebase-rules.iam.gserviceaccount.com"]},{"role":"roles/firebasestorage.serviceAgent","members":["serviceAccount:service-1065699589880@gcp-sa-firebasestorage.iam.gserviceaccount.com"]},{"role":"roles/firestore.serviceAgent","members":["serviceAccount:service-1065699589880@gcp-sa-firestore.iam.gserviceaccount.com"]},{"role":"roles/iam.serviceAccountTokenCreator","members":["serviceAccount:firebase-adminsdk-fbsvc@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/owner","members":["user:julishaphotography@gmail.com"]},{"role":"roles/run.serviceAgent","members":["serviceAccount:service-1065699589880@serverless-robot-prod.iam.gserviceaccount.com"]},{"role":"roles/secretmanager.admin_withcond_731668a42284c65a487f","members":["serviceAccount:service-1065699589880@gcp-sa-devconnect.iam.gserviceaccount.com"]},{"role":"roles/storage.admin","members":["serviceAccount:firebase-adminsdk-fbsvc@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/storage.objectViewer","members":["serviceAccount:firebase-app-hosting-compute@ggr1-4fa1c.iam.gserviceaccount.com"]}]},"updateMask":"bindings"}
+[debug] [2025-08-06T05:09:32.846Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/ggr1-4fa1c:setIamPolicy 200
+[debug] [2025-08-06T05:09:32.847Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/ggr1-4fa1c:setIamPolicy {"version":1,"etag":"BwY7q1iikyI=","bindings":[{"role":"roles/artifactregistry.serviceAgent","members":["serviceAccount:service-1065699589880@gcp-sa-artifactregistry.iam.gserviceaccount.com"]},{"role":"roles/cloudaicompanion.serviceAgent","members":["serviceAccount:service-1065699589880@gcp-sa-cloudaicompanion.iam.gserviceaccount.com"]},{"role":"roles/cloudbuild.builds.builder","members":["serviceAccount:1065699589880@cloudbuild.gserviceaccount.com"]},{"role":"roles/cloudbuild.serviceAgent","members":["serviceAccount:service-1065699589880@gcp-sa-cloudbuild.iam.gserviceaccount.com"]},{"role":"roles/compute.serviceAgent","members":["serviceAccount:service-1065699589880@compute-system.iam.gserviceaccount.com"]},{"role":"roles/containerregistry.ServiceAgent","members":["serviceAccount:service-1065699589880@containerregistry.iam.gserviceaccount.com"]},{"role":"roles/developerconnect.readTokenAccessor","members":["serviceAccount:firebase-app-hosting-compute@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/developerconnect.serviceAgent","members":["serviceAccount:service-1065699589880@gcp-sa-devconnect.iam.gserviceaccount.com"]},{"role":"roles/editor","members":["serviceAccount:1065699589880-compute@developer.gserviceaccount.com","serviceAccount:1065699589880@cloudservices.gserviceaccount.com","serviceAccount:firebase-adminsdk-fbsvc@ggr1-4fa1c.iam.gserviceaccount.com","serviceAccount:firebase-app-hosting-compute@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/firebase.admin","members":["serviceAccount:firebase-app-hosting-compute@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/firebase.managementServiceAgent","members":["serviceAccount:service-1065699589880@gcp-sa-firebase.iam.gserviceaccount.com"]},{"role":"roles/firebase.sdkAdminServiceAgent","members":["serviceAccount:firebase-adminsdk-fbsvc@ggr1-4fa1c.iam.gserviceaccount.com","serviceAccount:firebase-app-hosting-compute@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/firebaseappcheck.admin","members":["serviceAccount:firebase-adminsdk-fbsvc@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/firebaseapphosting.computeRunner","members":["serviceAccount:firebase-app-hosting-compute@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/firebaseapphosting.serviceAgent","members":["serviceAccount:service-1065699589880@gcp-sa-firebaseapphosting.iam.gserviceaccount.com"]},{"role":"roles/firebaseauth.admin","members":["serviceAccount:firebase-adminsdk-fbsvc@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/firebasehosting.admin","members":["serviceAccount:firebase-app-hosting-compute@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/firebaserules.system","members":["serviceAccount:service-1065699589880@firebase-rules.iam.gserviceaccount.com"]},{"role":"roles/firebasestorage.serviceAgent","members":["serviceAccount:service-1065699589880@gcp-sa-firebasestorage.iam.gserviceaccount.com"]},{"role":"roles/firestore.serviceAgent","members":["serviceAccount:service-1065699589880@gcp-sa-firestore.iam.gserviceaccount.com"]},{"role":"roles/iam.serviceAccountTokenCreator","members":["serviceAccount:firebase-adminsdk-fbsvc@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/owner","members":["user:julishaphotography@gmail.com"]},{"role":"roles/run.serviceAgent","members":["serviceAccount:service-1065699589880@serverless-robot-prod.iam.gserviceaccount.com"]},{"role":"roles/secretmanager.admin_withcond_731668a42284c65a487f","members":["serviceAccount:service-1065699589880@gcp-sa-devconnect.iam.gserviceaccount.com"]},{"role":"roles/storage.admin","members":["serviceAccount:firebase-adminsdk-fbsvc@ggr1-4fa1c.iam.gserviceaccount.com"]},{"role":"roles/storage.objectViewer","members":["serviceAccount:firebase-app-hosting-compute@ggr1-4fa1c.iam.gserviceaccount.com"]}]}
+[debug] [2025-08-06T05:09:32.848Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:32.848Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:32.848Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-08-06T05:09:32.852Z] > authorizing via signed-in user (julishaphotography@gmail.com)
+[debug] [2025-08-06T05:09:32.853Z] >>> [apiv2][query] GET https://firebaseapphosting.googleapis.com/v1beta/projects/ggr1-4fa1c/locations 
+[debug] [2025-08-06T05:09:33.632Z] <<< [apiv2][status] GET https://firebaseapphosting.googleapis.com/v1beta/projects/ggr1-4fa1c/locations 200
+[debug] [2025-08-06T05:09:33.635Z] <<< [apiv2][body] GET https://firebaseapphosting.googleapis.com/v1beta/projects/ggr1-4fa1c/locations {"locations":[{"name":"projects/ggr1-4fa1c/locations/asia-east1","locationId":"asia-east1","displayName":"Taiwan"},{"name":"projects/ggr1-4fa1c/locations/europe-west4","locationId":"europe-west4","displayName":"Netherlands"},{"name":"projects/ggr1-4fa1c/locations/us-central1","locationId":"us-central1","displayName":"Iowa"}]}
+[info] ✔  Location set to us-central1.
  
-[debug] [2025-07-30T09:24:54.266Z] Jul 30, 2025 9:24:54 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jul 30, 2025 9:24:54 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-07-30T09:24:54.964Z] Jul 30, 2025 9:24:54 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jul 30, 2025 9:24:54 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected HTTP/2 connection.\n"}}
-[debug] [2025-07-30T09:24:58.106Z] <<< [apiv2][status] PUT http://127.0.0.1:8085/emulator/v1/projects/demo-app:securityRules 200
-[debug] [2025-07-30T09:24:58.111Z] <<< [apiv2][body] PUT http://127.0.0.1:8085/emulator/v1/projects/demo-app:securityRules {}
-[info] ✔  firestore: Rules updated. 
-[debug] [2025-08-03T03:48:10.375Z] ----------------------------------------------------------------------
-[debug] [2025-08-03T03:48:10.381Z] Command:       /nix/store/ws50yvm6vzlzf7jzz6n7xh4szddrack1-nodejs-20.19.1/bin/node /nix/store/fsdlxfaxdgx27856x49qycgdsyx5jxd3-firebase-tools-14.11.2/lib/node_modules/firebase-tools/lib/bin/firebase.js emulators:start --project=demo-app --only=auth,firestore
-[debug] [2025-08-03T03:48:10.382Z] CLI Version:   14.11.2
-[debug] [2025-08-03T03:48:10.383Z] Platform:      linux
-[debug] [2025-08-03T03:48:10.383Z] Node Version:  v20.19.1
-[debug] [2025-08-03T03:48:10.383Z] Time:          Sun Aug 03 2025 03:48:10 GMT+0000 (Coordinated Universal Time)
-[debug] [2025-08-03T03:48:10.384Z] ----------------------------------------------------------------------
-[debug] 
-[debug] [2025-08-03T03:48:10.389Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
-[debug] [2025-08-03T03:48:11.730Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
-[debug] [2025-08-03T03:48:11.731Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
-[debug] [2025-08-03T03:48:12.108Z] openjdk version "21.0.7" 2025-04-15
-OpenJDK Runtime Environment (build 21.0.7+6-nixos)
-OpenJDK 64-Bit Server VM (build 21.0.7+6-nixos, mixed mode, sharing)
-
-[debug] [2025-08-03T03:48:12.146Z] Parsed Java major version: 21
-[info] i  emulators: Starting emulators: auth, firestore {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth, firestore"}}
-[info] i  emulators: Detected demo project ID "demo-app", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail. {"metadata":{"emulator":{"name":"hub"},"message":"Detected demo project ID \"demo-app\", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail."}}
-[warn] ⚠  hub: Error when trying to check port 4400 on ::1: Error: listen EADDRNOTAVAIL: address not available ::1:4400 {"metadata":{"emulator":{"name":"hub"},"message":"Error when trying to check port 4400 on ::1: Error: listen EADDRNOTAVAIL: address not available ::1:4400"}}
-[warn] ⚠  hub: Port 4400 is available on 127.0.0.1 but not ::1. This may cause issues with some clients. {"metadata":{"emulator":{"name":"hub"},"message":"Port 4400 is available on 127.0.0.1 but not ::1. This may cause issues with some clients."}}
-[warn] ⚠  hub: If you encounter connectivity issues, consider switching to a different port or explicitly specifying "host": "<ip address>" instead of hostname in firebase.json {"metadata":{"emulator":{"name":"hub"},"message":"If you encounter connectivity issues, consider switching to a different port or explicitly specifying \"host\": \"<ip address>\" instead of hostname in firebase.json"}}
-[warn] ⚠  logging: Error when trying to check port 4500 on ::1: Error: listen EADDRNOTAVAIL: address not available ::1:4500 {"metadata":{"emulator":{"name":"logging"},"message":"Error when trying to check port 4500 on ::1: Error: listen EADDRNOTAVAIL: address not available ::1:4500"}}
-[warn] ⚠  logging: Port 4500 is available on 127.0.0.1 but not ::1. This may cause issues with some clients. {"metadata":{"emulator":{"name":"logging"},"message":"Port 4500 is available on 127.0.0.1 but not ::1. This may cause issues with some clients."}}
-[warn] ⚠  logging: If you encounter connectivity issues, consider switching to a different port or explicitly specifying "host": "<ip address>" instead of hostname in firebase.json {"metadata":{"emulator":{"name":"logging"},"message":"If you encounter connectivity issues, consider switching to a different port or explicitly specifying \"host\": \"<ip address>\" instead of hostname in firebase.json"}}
-[debug] [2025-08-03T03:48:12.159Z] assigned listening specs for emulators {"user":{"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9095}],"firestore":[{"address":"127.0.0.1","family":"IPv4","port":8085}],"firestore.websocket":[{"address":"127.0.0.1","family":"IPv4","port":9150}],"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}]},"metadata":{"message":"assigned listening specs for emulators"}}
-[debug] [2025-08-03T03:48:12.166Z] [hub] writing locator at /tmp/hub-demo-app.json
-[debug] [2025-08-03T03:48:12.183Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: auto_download"}}
-[debug] [2025-08-03T03:48:12.183Z] Ignoring unsupported arg: single_project_mode_error {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: single_project_mode_error"}}
-[debug] [2025-08-03T03:48:12.184Z] Starting Firestore Emulator with command {"binary":"java","args":["-Dgoogle.cloud_firestore.debug_log_level=FINE","-Duser.language=en","-jar","/nix/store/n1m2a7x1hx6vgvmanjin6yd0b16nafz0-emulators/cloud-firestore-emulator-v1.19.8.jar","--host","127.0.0.1","--port",8085,"--websocket_port",9150,"--project_id","demo-app","--rules","/home/user/studio/firestore.rules","--single_project_mode",true],"optionalArgs":["port","webchannel_port","host","rules","websocket_port","functions_emulator","seed_from_export","project_id","single_project_mode"],"joinArgs":false,"shell":false,"port":8085} {"metadata":{"emulator":{"name":"firestore"},"message":"Starting Firestore Emulator with command {\"binary\":\"java\",\"args\":[\"-Dgoogle.cloud_firestore.debug_log_level=FINE\",\"-Duser.language=en\",\"-jar\",\"/nix/store/n1m2a7x1hx6vgvmanjin6yd0b16nafz0-emulators/cloud-firestore-emulator-v1.19.8.jar\",\"--host\",\"127.0.0.1\",\"--port\",8085,\"--websocket_port\",9150,\"--project_id\",\"demo-app\",\"--rules\",\"/home/user/studio/firestore.rules\",\"--single_project_mode\",true],\"optionalArgs\":[\"port\",\"webchannel_port\",\"host\",\"rules\",\"websocket_port\",\"functions_emulator\",\"seed_from_export\",\"project_id\",\"single_project_mode\"],\"joinArgs\":false,\"shell\":false,\"port\":8085}"}}
-[info] i  firestore: Firestore Emulator logging to firestore-debug.log {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator logging to firestore-debug.log"}}
-[debug] [2025-08-03T03:48:15.770Z] Aug 03, 2025 3:48:15 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start
-INFO: Started WebSocket server on ws://127.0.0.1:9150
- {"metadata":{"emulator":{"name":"firestore"},"message":"Aug 03, 2025 3:48:15 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start\nINFO: Started WebSocket server on ws://127.0.0.1:9150\n"}}
-[info] ✔  firestore: Firestore Emulator UI websocket is running on 9150. {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator UI websocket is running on 9150."}}
-[debug] [2025-08-03T03:48:41.464Z] API endpoint: http://127.0.0.1:8085
-If you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:
-
-   export FIRESTORE_EMULATOR_HOST=127.0.0.1:8085
-
-If you are running a Firestore in Datastore Mode project, run:
-
-   export DATASTORE_EMULATOR_HOST=127.0.0.1:8085
-
-Note: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.
-Dev App Server is now running.
-
- {"metadata":{"emulator":{"name":"firestore"},"message":"API endpoint: http://127.0.0.1:8085\nIf you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:\n\n   export FIRESTORE_EMULATOR_HOST=127.0.0.1:8085\n\nIf you are running a Firestore in Datastore Mode project, run:\n\n   export DATASTORE_EMULATOR_HOST=127.0.0.1:8085\n\nNote: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.\nDev App Server is now running.\n\n"}}
-[debug] [2025-08-03T03:48:41.516Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: connect ECONNREFUSED 127.0.0.1:40001. If you are not running the Firebase Data Connect VSCode extension, this is expected and not an issue.
-[info] 
-┌─────────────────────────────────────────────────────────────┐
-│ ✔  All emulators ready! It is now safe to connect your app. │
-│ i  View Emulator UI at http://127.0.0.1:4000/               │
-└─────────────────────────────────────────────────────────────┘
-
-┌────────────────┬────────────────┬─────────────────────────────────┐
-│ Emulator       │ Host:Port      │ View in Emulator UI             │
-├────────────────┼────────────────┼─────────────────────────────────┤
-│ Authentication │ 127.0.0.1:9095 │ http://127.0.0.1:4000/auth      │
-├────────────────┼────────────────┼─────────────────────────────────┤
-│ Firestore      │ 127.0.0.1:8085 │ http://127.0.0.1:4000/firestore │
-└────────────────┴────────────────┴─────────────────────────────────┘
-  Emulator Hub host: 127.0.0.1 port: 4400
-  Other reserved ports: 4500, 9150
-
-Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
- 
-[debug] [2025-08-03T05:25:50.305Z] Aug 03, 2025 5:25:50 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Aug 03, 2025 5:25:50 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-08-03T05:25:50.640Z] Aug 03, 2025 5:25:50 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel
-INFO: Connected to new websocket client
- {"metadata":{"emulator":{"name":"firestore"},"message":"Aug 03, 2025 5:25:50 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel\nINFO: Connected to new websocket client\n"}}
-[debug] [2025-08-03T05:25:51.977Z] Aug 03, 2025 5:25:51 AM io.grpc.netty.NettyServerTransport notifyTerminated
-INFO: Transport failed
-io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET / 
-	at io.netty.handler.codec.http2.Http2Exception.connectionError(Http2Exception.java:107)
-	at io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.readClientPrefaceString(Http2ConnectionHandler.java:315)
-	at io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.decode(Http2ConnectionHandler.java:245)
-	at io.netty.handler.codec.http2.Http2ConnectionHandler.decode(Http2ConnectionHandler.java:451)
-	at io.netty.handler.codec.ByteToMessageDecoder.decodeRemovalReentryProtection(ByteToMessageDecoder.java:530)
-	at io.netty.handler.codec.ByteToMessageDecoder.callDecode(ByteToMessageDecoder.java:469)
-	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:290)
-	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
-	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
-	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
-	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1407)
-	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
-	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
-	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:918)
-	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
-	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
-	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
-	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
-	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
-	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:994)
-	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
-	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
-	at java.base/java.lang.Thread.run(Thread.java:1583)
-
- {"metadata":{"emulator":{"name":"firestore"},"message":"Aug 03, 2025 5:25:51 AM io.grpc.netty.NettyServerTransport notifyTerminated\nINFO: Transport failed\nio.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET / \n\tat io.netty.handler.codec.http2.Http2Exception.connectionError(Http2Exception.java:107)\n\tat io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.readClientPrefaceString(Http2ConnectionHandler.java:315)\n\tat io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.decode(Http2ConnectionHandler.java:245)\n\tat io.netty.handler.codec.http2.Http2ConnectionHandler.decode(Http2ConnectionHandler.java:451)\n\tat io.netty.handler.codec.ByteToMessageDecoder.decodeRemovalReentryProtection(ByteToMessageDecoder.java:530)\n\tat io.netty.handler.codec.ByteToMessageDecoder.callDecode(ByteToMessageDecoder.java:469)\n\tat io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:290)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)\n\tat io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)\n\tat io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1407)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)\n\tat io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:918)\n\tat io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)\n\tat io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)\n\tat io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)\n\tat io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)\n\tat io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)\n\tat io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:994)\n\tat io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)\n\tat io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)\n\tat java.base/java.lang.Thread.run(Thread.java:1583)\n\n"}}
-[debug] [2025-08-03T05:25:52.099Z] Aug 03, 2025 5:25:52 AM io.grpc.netty.NettyServerTransport notifyTerminated
-INFO: Transport failed
-io.netty.handler.codec.http2.Http2Exception: HTTP/2 client preface string missing or corrupt. Hex dump for received bytes: 16030105a8010005a40303db1f4a339881db9674b7b57ec0
-	at io.netty.handler.codec.http2.Http2Exception.connectionError(Http2Exception.java:107)
-	at io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.readClientPrefaceString(Http2ConnectionHandler.java:319)
-	at io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.decode(Http2ConnectionHandler.java:245)
-	at io.netty.handler.codec.http2.Http2ConnectionHandler.decode(Http2ConnectionHandler.java:451)
-	at io.netty.handler.codec.ByteToMessageDecoder.decodeRemovalReentryProtection(ByteToMessageDecoder.java:530)
-	at io.netty.handler.codec.ByteToMessageDecoder.callDecode(ByteToMessageDecoder.java:469)
-	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:290)
-	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
-	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
-	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
-	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1407)
-	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
-	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
-	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:918)
-	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
-	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
-	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
-	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
-	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
-	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:994)
-	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
-	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
-	at java.base/java.lang.Thread.run(Thread.java:1583)
-
- {"metadata":{"emulator":{"name":"firestore"},"message":"Aug 03, 2025 5:25:52 AM io.grpc.netty.NettyServerTransport notifyTerminated\nINFO: Transport failed\nio.netty.handler.codec.http2.Http2Exception: HTTP/2 client preface string missing or corrupt. Hex dump for received bytes: 16030105a8010005a40303db1f4a339881db9674b7b57ec0\n\tat io.netty.handler.codec.http2.Http2Exception.connectionError(Http2Exception.java:107)\n\tat io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.readClientPrefaceString(Http2ConnectionHandler.java:319)\n\tat io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.decode(Http2ConnectionHandler.java:245)\n\tat io.netty.handler.codec.http2.Http2ConnectionHandler.decode(Http2ConnectionHandler.java:451)\n\tat io.netty.handler.codec.ByteToMessageDecoder.decodeRemovalReentryProtection(ByteToMessageDecoder.java:530)\n\tat io.netty.handler.codec.ByteToMessageDecoder.callDecode(ByteToMessageDecoder.java:469)\n\tat io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:290)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)\n\tat io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)\n\tat io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1407)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)\n\tat io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:918)\n\tat io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)\n\tat io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)\n\tat io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)\n\tat io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)\n\tat io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)\n\tat io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:994)\n\tat io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)\n\tat io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)\n\tat java.base/java.lang.Thread.run(Thread.java:1583)\n\n"}}
-[debug] [2025-08-03T05:25:55.183Z] Aug 03, 2025 5:25:55 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel
-INFO: Connected to new websocket client
- {"metadata":{"emulator":{"name":"firestore"},"message":"Aug 03, 2025 5:25:55 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel\nINFO: Connected to new websocket client\n"}}
-[debug] [2025-08-03T05:33:40.311Z] Aug 03, 2025 5:33:40 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel
-INFO: Connected to new websocket client
- {"metadata":{"emulator":{"name":"firestore"},"message":"Aug 03, 2025 5:33:40 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel\nINFO: Connected to new websocket client\n"}}
-[debug] [2025-08-03T05:35:31.868Z] Aug 03, 2025 5:35:31 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler channelClosed
-INFO: Websocket client disconnected
- {"metadata":{"emulator":{"name":"firestore"},"message":"Aug 03, 2025 5:35:31 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler channelClosed\nINFO: Websocket client disconnected\n"}}
-[debug] [2025-08-03T21:26:56.467Z] Aug 03, 2025 9:26:56 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler channelClosed
-INFO: Websocket client disconnected
- {"metadata":{"emulator":{"name":"firestore"},"message":"Aug 03, 2025 9:26:56 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler channelClosed\nINFO: Websocket client disconnected\n"}}
-[debug] [2025-08-04T09:45:01.415Z] ----------------------------------------------------------------------
-[debug] [2025-08-04T09:45:01.424Z] Command:       /nix/store/ws50yvm6vzlzf7jzz6n7xh4szddrack1-nodejs-20.19.1/bin/node /nix/store/fsdlxfaxdgx27856x49qycgdsyx5jxd3-firebase-tools-14.11.2/lib/node_modules/firebase-tools/lib/bin/firebase.js emulators:start --project=demo-app --only=auth,firestore
-[debug] [2025-08-04T09:45:01.427Z] CLI Version:   14.11.2
-[debug] [2025-08-04T09:45:01.427Z] Platform:      linux
-[debug] [2025-08-04T09:45:01.427Z] Node Version:  v20.19.1
-[debug] [2025-08-04T09:45:01.428Z] Time:          Mon Aug 04 2025 09:45:01 GMT+0000 (Coordinated Universal Time)
-[debug] [2025-08-04T09:45:01.428Z] ----------------------------------------------------------------------
-[debug] 
-[debug] [2025-08-04T09:45:01.433Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
-[debug] [2025-08-04T09:45:02.749Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
-[debug] [2025-08-04T09:45:02.752Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
-[debug] [2025-08-04T09:45:03.042Z] openjdk version "21.0.7" 2025-04-15
-
-[debug] [2025-08-04T09:45:03.045Z] OpenJDK Runtime Environment (build 21.0.7+6-nixos)
-OpenJDK 64-Bit Server VM (build 21.0.7+6-nixos, mixed mode, sharing)
-
-[debug] [2025-08-04T09:45:03.081Z] Parsed Java major version: 21
-[info] i  emulators: Starting emulators: auth, firestore {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth, firestore"}}
-[info] i  emulators: Detected demo project ID "demo-app", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail. {"metadata":{"emulator":{"name":"hub"},"message":"Detected demo project ID \"demo-app\", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail."}}
-[warn] ⚠  hub: Error when trying to check port 4400 on ::1: Error: listen EADDRNOTAVAIL: address not available ::1:4400 {"metadata":{"emulator":{"name":"hub"},"message":"Error when trying to check port 4400 on ::1: Error: listen EADDRNOTAVAIL: address not available ::1:4400"}}
-[warn] ⚠  hub: Port 4400 is available on 127.0.0.1 but not ::1. This may cause issues with some clients. {"metadata":{"emulator":{"name":"hub"},"message":"Port 4400 is available on 127.0.0.1 but not ::1. This may cause issues with some clients."}}
-[warn] ⚠  hub: If you encounter connectivity issues, consider switching to a different port or explicitly specifying "host": "<ip address>" instead of hostname in firebase.json {"metadata":{"emulator":{"name":"hub"},"message":"If you encounter connectivity issues, consider switching to a different port or explicitly specifying \"host\": \"<ip address>\" instead of hostname in firebase.json"}}
-[warn] ⚠  logging: Error when trying to check port 4500 on ::1: Error: listen EADDRNOTAVAIL: address not available ::1:4500 {"metadata":{"emulator":{"name":"logging"},"message":"Error when trying to check port 4500 on ::1: Error: listen EADDRNOTAVAIL: address not available ::1:4500"}}
-[warn] ⚠  logging: Port 4500 is available on 127.0.0.1 but not ::1. This may cause issues with some clients. {"metadata":{"emulator":{"name":"logging"},"message":"Port 4500 is available on 127.0.0.1 but not ::1. This may cause issues with some clients."}}
-[warn] ⚠  logging: If you encounter connectivity issues, consider switching to a different port or explicitly specifying "host": "<ip address>" instead of hostname in firebase.json {"metadata":{"emulator":{"name":"logging"},"message":"If you encounter connectivity issues, consider switching to a different port or explicitly specifying \"host\": \"<ip address>\" instead of hostname in firebase.json"}}
-[debug] [2025-08-04T09:45:03.102Z] assigned listening specs for emulators {"user":{"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9095}],"firestore":[{"address":"127.0.0.1","family":"IPv4","port":8085}],"firestore.websocket":[{"address":"127.0.0.1","family":"IPv4","port":9150}],"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}]},"metadata":{"message":"assigned listening specs for emulators"}}
-[debug] [2025-08-04T09:45:03.112Z] [hub] writing locator at /tmp/hub-demo-app.json
-[debug] [2025-08-04T09:45:03.130Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: auto_download"}}
-[debug] [2025-08-04T09:45:03.130Z] Ignoring unsupported arg: single_project_mode_error {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: single_project_mode_error"}}
-[debug] [2025-08-04T09:45:03.130Z] Starting Firestore Emulator with command {"binary":"java","args":["-Dgoogle.cloud_firestore.debug_log_level=FINE","-Duser.language=en","-jar","/nix/store/n1m2a7x1hx6vgvmanjin6yd0b16nafz0-emulators/cloud-firestore-emulator-v1.19.8.jar","--host","127.0.0.1","--port",8085,"--websocket_port",9150,"--project_id","demo-app","--rules","/home/user/studio/firestore.rules","--single_project_mode",true],"optionalArgs":["port","webchannel_port","host","rules","websocket_port","functions_emulator","seed_from_export","project_id","single_project_mode"],"joinArgs":false,"shell":false,"port":8085} {"metadata":{"emulator":{"name":"firestore"},"message":"Starting Firestore Emulator with command {\"binary\":\"java\",\"args\":[\"-Dgoogle.cloud_firestore.debug_log_level=FINE\",\"-Duser.language=en\",\"-jar\",\"/nix/store/n1m2a7x1hx6vgvmanjin6yd0b16nafz0-emulators/cloud-firestore-emulator-v1.19.8.jar\",\"--host\",\"127.0.0.1\",\"--port\",8085,\"--websocket_port\",9150,\"--project_id\",\"demo-app\",\"--rules\",\"/home/user/studio/firestore.rules\",\"--single_project_mode\",true],\"optionalArgs\":[\"port\",\"webchannel_port\",\"host\",\"rules\",\"websocket_port\",\"functions_emulator\",\"seed_from_export\",\"project_id\",\"single_project_mode\"],\"joinArgs\":false,\"shell\":false,\"port\":8085}"}}
-[info] i  firestore: Firestore Emulator logging to firestore-debug.log {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator logging to firestore-debug.log"}}
-[debug] [2025-08-04T09:45:07.347Z] Aug 04, 2025 9:45:07 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start
-INFO: Started WebSocket server on ws://127.0.0.1:9150
- {"metadata":{"emulator":{"name":"firestore"},"message":"Aug 04, 2025 9:45:07 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start\nINFO: Started WebSocket server on ws://127.0.0.1:9150\n"}}
-[debug] [2025-08-04T09:45:07.431Z] API endpoint: http://127.0.0.1:8085
-If you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:
-
-   export FIRESTORE_EMULATOR_HOST=127.0.0.1:8085
-
-If you are running a Firestore in Datastore Mode project, run:
-
-   export DATASTORE_EMULATOR_HOST=127.0.0.1:8085
-
-Note: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.
-Dev App Server is now running.
-
- {"metadata":{"emulator":{"name":"firestore"},"message":"API endpoint: http://127.0.0.1:8085\nIf you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:\n\n   export FIRESTORE_EMULATOR_HOST=127.0.0.1:8085\n\nIf you are running a Firestore in Datastore Mode project, run:\n\n   export DATASTORE_EMULATOR_HOST=127.0.0.1:8085\n\nNote: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.\nDev App Server is now running.\n\n"}}
-[info] ✔  firestore: Firestore Emulator UI websocket is running on 9150. {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator UI websocket is running on 9150."}}
-[debug] [2025-08-04T09:45:33.004Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: connect ECONNREFUSED 127.0.0.1:40001. If you are not running the Firebase Data Connect VSCode extension, this is expected and not an issue.
-[info] 
-┌─────────────────────────────────────────────────────────────┐
-│ ✔  All emulators ready! It is now safe to connect your app. │
-│ i  View Emulator UI at http://127.0.0.1:4000/               │
-└─────────────────────────────────────────────────────────────┘
-
-┌────────────────┬────────────────┬─────────────────────────────────┐
-│ Emulator       │ Host:Port      │ View in Emulator UI             │
-├────────────────┼────────────────┼─────────────────────────────────┤
-│ Authentication │ 127.0.0.1:9095 │ http://127.0.0.1:4000/auth      │
-├────────────────┼────────────────┼─────────────────────────────────┤
-│ Firestore      │ 127.0.0.1:8085 │ http://127.0.0.1:4000/firestore │
-└────────────────┴────────────────┴─────────────────────────────────┘
-  Emulator Hub host: 127.0.0.1 port: 4400
-  Other reserved ports: 4500, 9150
-
-Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
- 
-[debug] [2025-08-05T08:37:42.646Z] ----------------------------------------------------------------------
-[debug] [2025-08-05T08:37:42.650Z] Command:       /nix/store/ws50yvm6vzlzf7jzz6n7xh4szddrack1-nodejs-20.19.1/bin/node /nix/store/fsdlxfaxdgx27856x49qycgdsyx5jxd3-firebase-tools-14.11.2/lib/node_modules/firebase-tools/lib/bin/firebase.js emulators:start --project=demo-app --only=auth,firestore
-[debug] [2025-08-05T08:37:42.651Z] CLI Version:   14.11.2
-[debug] [2025-08-05T08:37:42.652Z] Platform:      linux
-[debug] [2025-08-05T08:37:42.652Z] Node Version:  v20.19.1
-[debug] [2025-08-05T08:37:42.652Z] Time:          Tue Aug 05 2025 08:37:42 GMT+0000 (Coordinated Universal Time)
-[debug] [2025-08-05T08:37:42.653Z] ----------------------------------------------------------------------
-[debug] 
-[debug] [2025-08-05T08:37:43.931Z] openjdk version "21.0.7" 2025-04-15
-OpenJDK Runtime Environment (build 21.0.7+6-nixos)
-OpenJDK 64-Bit Server VM (build 21.0.7+6-nixos, mixed mode, sharing)
-
-[debug] [2025-08-05T08:37:43.988Z] Parsed Java major version: 21
-[info] i  emulators: Starting emulators: auth, firestore {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth, firestore"}}
-[info] i  emulators: Detected demo project ID "demo-app", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail. {"metadata":{"emulator":{"name":"hub"},"message":"Detected demo project ID \"demo-app\", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail."}}
-[warn] ⚠  hub: Error when trying to check port 4400 on ::1: Error: listen EADDRNOTAVAIL: address not available ::1:4400 {"metadata":{"emulator":{"name":"hub"},"message":"Error when trying to check port 4400 on ::1: Error: listen EADDRNOTAVAIL: address not available ::1:4400"}}
-[warn] ⚠  hub: Port 4400 is available on 127.0.0.1 but not ::1. This may cause issues with some clients. {"metadata":{"emulator":{"name":"hub"},"message":"Port 4400 is available on 127.0.0.1 but not ::1. This may cause issues with some clients."}}
-[warn] ⚠  hub: If you encounter connectivity issues, consider switching to a different port or explicitly specifying "host": "<ip address>" instead of hostname in firebase.json {"metadata":{"emulator":{"name":"hub"},"message":"If you encounter connectivity issues, consider switching to a different port or explicitly specifying \"host\": \"<ip address>\" instead of hostname in firebase.json"}}
-[warn] ⚠  logging: Error when trying to check port 4500 on ::1: Error: listen EADDRNOTAVAIL: address not available ::1:4500 {"metadata":{"emulator":{"name":"logging"},"message":"Error when trying to check port 4500 on ::1: Error: listen EADDRNOTAVAIL: address not available ::1:4500"}}
-[warn] ⚠  logging: Port 4500 is available on 127.0.0.1 but not ::1. This may cause issues with some clients. {"metadata":{"emulator":{"name":"logging"},"message":"Port 4500 is available on 127.0.0.1 but not ::1. This may cause issues with some clients."}}
-[warn] ⚠  logging: If you encounter connectivity issues, consider switching to a different port or explicitly specifying "host": "<ip address>" instead of hostname in firebase.json {"metadata":{"emulator":{"name":"logging"},"message":"If you encounter connectivity issues, consider switching to a different port or explicitly specifying \"host\": \"<ip address>\" instead of hostname in firebase.json"}}
-[debug] [2025-08-05T08:37:44.005Z] assigned listening specs for emulators {"user":{"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9095}],"firestore":[{"address":"127.0.0.1","family":"IPv4","port":8085}],"firestore.websocket":[{"address":"127.0.0.1","family":"IPv4","port":9150}],"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}]},"metadata":{"message":"assigned listening specs for emulators"}}
-[debug] [2025-08-05T08:37:44.016Z] [hub] writing locator at /tmp/hub-demo-app.json
-[debug] [2025-08-05T08:37:44.041Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: auto_download"}}
-[debug] [2025-08-05T08:37:44.041Z] Ignoring unsupported arg: single_project_mode_error {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: single_project_mode_error"}}
-[debug] [2025-08-05T08:37:44.042Z] Starting Firestore Emulator with command {"binary":"java","args":["-Dgoogle.cloud_firestore.debug_log_level=FINE","-Duser.language=en","-jar","/nix/store/n1m2a7x1hx6vgvmanjin6yd0b16nafz0-emulators/cloud-firestore-emulator-v1.19.8.jar","--host","127.0.0.1","--port",8085,"--websocket_port",9150,"--project_id","demo-app","--rules","/home/user/studio/firestore.rules","--single_project_mode",true],"optionalArgs":["port","webchannel_port","host","rules","websocket_port","functions_emulator","seed_from_export","project_id","single_project_mode"],"joinArgs":false,"shell":false,"port":8085} {"metadata":{"emulator":{"name":"firestore"},"message":"Starting Firestore Emulator with command {\"binary\":\"java\",\"args\":[\"-Dgoogle.cloud_firestore.debug_log_level=FINE\",\"-Duser.language=en\",\"-jar\",\"/nix/store/n1m2a7x1hx6vgvmanjin6yd0b16nafz0-emulators/cloud-firestore-emulator-v1.19.8.jar\",\"--host\",\"127.0.0.1\",\"--port\",8085,\"--websocket_port\",9150,\"--project_id\",\"demo-app\",\"--rules\",\"/home/user/studio/firestore.rules\",\"--single_project_mode\",true],\"optionalArgs\":[\"port\",\"webchannel_port\",\"host\",\"rules\",\"websocket_port\",\"functions_emulator\",\"seed_from_export\",\"project_id\",\"single_project_mode\"],\"joinArgs\":false,\"shell\":false,\"port\":8085}"}}
-[info] i  firestore: Firestore Emulator logging to firestore-debug.log {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator logging to firestore-debug.log"}}
-[debug] [2025-08-05T08:37:50.735Z] Aug 05, 2025 8:37:50 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start
-INFO: Started WebSocket server on ws://127.0.0.1:9150
- {"metadata":{"emulator":{"name":"firestore"},"message":"Aug 05, 2025 8:37:50 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start\nINFO: Started WebSocket server on ws://127.0.0.1:9150\n"}}
-[debug] [2025-08-05T08:37:50.843Z] API endpoint: http://127.0.0.1:8085
-If you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:
-
-   export FIRESTORE_EMULATOR_HOST=127.0.0.1:8085
-
-If you are running a Firestore in Datastore Mode project, run:
-
-   export DATASTORE_EMULATOR_HOST= {"metadata":{"emulator":{"name":"firestore"},"message":"API endpoint: http://127.0.0.1:8085\nIf you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:\n\n   export FIRESTORE_EMULATOR_HOST=127.0.0.1:8085\n\nIf you are running a Firestore in Datastore Mode project, run:\n\n   export DATASTORE_EMULATOR_HOST="}}
-[debug] [2025-08-05T08:37:50.845Z] 127.0.0.1:8085
-
-Note: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.
-Dev App Server is now running.
-
- {"metadata":{"emulator":{"name":"firestore"},"message":"127.0.0.1:8085\n\nNote: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.\nDev App Server is now running.\n\n"}}
-[info] ✔  firestore: Firestore Emulator UI websocket is running on 9150. {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator UI websocket is running on 9150."}}
-[debug] [2025-08-05T08:38:24.732Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: connect ECONNREFUSED 127.0.0.1:40001. If you are not running the Firebase Data Connect VSCode extension, this is expected and not an issue.
-[info] 
-┌─────────────────────────────────────────────────────────────┐
-│ ✔  All emulators ready! It is now safe to connect your app. │
-│ i  View Emulator UI at http://127.0.0.1:4000/               │
-└─────────────────────────────────────────────────────────────┘
-
-┌────────────────┬────────────────┬─────────────────────────────────┐
-│ Emulator       │ Host:Port      │ View in Emulator UI             │
-├────────────────┼────────────────┼─────────────────────────────────┤
-│ Authentication │ 127.0.0.1:9095 │ http://127.0.0.1:4000/auth      │
-├────────────────┼────────────────┼─────────────────────────────────┤
-│ Firestore      │ 127.0.0.1:8085 │ http://127.0.0.1:4000/firestore │
-└────────────────┴────────────────┴─────────────────────────────────┘
-  Emulator Hub host: 127.0.0.1 port: 4400
-  Other reserved ports: 4500, 9150
-
-Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
- 
-[debug] [2025-08-05T10:50:07.381Z] ----------------------------------------------------------------------
-[debug] [2025-08-05T10:50:07.387Z] Command:       /nix/store/ws50yvm6vzlzf7jzz6n7xh4szddrack1-nodejs-20.19.1/bin/node /nix/store/fsdlxfaxdgx27856x49qycgdsyx5jxd3-firebase-tools-14.11.2/lib/node_modules/firebase-tools/lib/bin/firebase.js emulators:start --project=demo-app --only=auth,firestore
-[debug] [2025-08-05T10:50:07.388Z] CLI Version:   14.11.2
-[debug] [2025-08-05T10:50:07.389Z] Platform:      linux
-[debug] [2025-08-05T10:50:07.389Z] Node Version:  v20.19.1
-[debug] [2025-08-05T10:50:07.389Z] Time:          Tue Aug 05 2025 10:50:07 GMT+0000 (Coordinated Universal Time)
-[debug] [2025-08-05T10:50:07.390Z] ----------------------------------------------------------------------
-[debug] 
-[debug] [2025-08-05T10:50:07.397Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
-[debug] [2025-08-05T10:50:08.802Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
-[debug] [2025-08-05T10:50:08.802Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
-[debug] [2025-08-05T10:50:09.069Z] openjdk version "21.0.7" 2025-04-15
-
-[debug] [2025-08-05T10:50:09.070Z] OpenJDK Runtime Environment (build 21.0.7+6-nixos)
-OpenJDK 64-Bit Server VM (build 21.0.7+6-nixos, mixed mode, sharing)
-
-[debug] [2025-08-05T10:50:09.102Z] Parsed Java major version: 21
-[info] i  emulators: Starting emulators: auth, firestore {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth, firestore"}}
-[info] i  emulators: Detected demo project ID "demo-app", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail. {"metadata":{"emulator":{"name":"hub"},"message":"Detected demo project ID \"demo-app\", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail."}}
-[warn] ⚠  hub: Error when trying to check port 4400 on ::1: Error: listen EADDRNOTAVAIL: address not available ::1:4400 {"metadata":{"emulator":{"name":"hub"},"message":"Error when trying to check port 4400 on ::1: Error: listen EADDRNOTAVAIL: address not available ::1:4400"}}
-[warn] ⚠  hub: Port 4400 is available on 127.0.0.1 but not ::1. This may cause issues with some clients. {"metadata":{"emulator":{"name":"hub"},"message":"Port 4400 is available on 127.0.0.1 but not ::1. This may cause issues with some clients."}}
-[warn] ⚠  hub: If you encounter connectivity issues, consider switching to a different port or explicitly specifying "host": "<ip address>" instead of hostname in firebase.json {"metadata":{"emulator":{"name":"hub"},"message":"If you encounter connectivity issues, consider switching to a different port or explicitly specifying \"host\": \"<ip address>\" instead of hostname in firebase.json"}}
-[warn] ⚠  logging: Error when trying to check port 4500 on ::1: Error: listen EADDRNOTAVAIL: address not available ::1:4500 {"metadata":{"emulator":{"name":"logging"},"message":"Error when trying to check port 4500 on ::1: Error: listen EADDRNOTAVAIL: address not available ::1:4500"}}
-[warn] ⚠  logging: Port 4500 is available on 127.0.0.1 but not ::1. This may cause issues with some clients. {"metadata":{"emulator":{"name":"logging"},"message":"Port 4500 is available on 127.0.0.1 but not ::1. This may cause issues with some clients."}}
-[warn] ⚠  logging: If you encounter connectivity issues, consider switching to a different port or explicitly specifying "host": "<ip address>" instead of hostname in firebase.json {"metadata":{"emulator":{"name":"logging"},"message":"If you encounter connectivity issues, consider switching to a different port or explicitly specifying \"host\": \"<ip address>\" instead of hostname in firebase.json"}}
-[debug] [2025-08-05T10:50:09.115Z] assigned listening specs for emulators {"user":{"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9095}],"firestore":[{"address":"127.0.0.1","family":"IPv4","port":8085}],"firestore.websocket":[{"address":"127.0.0.1","family":"IPv4","port":9150}],"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}]},"metadata":{"message":"assigned listening specs for emulators"}}
-[debug] [2025-08-05T10:50:09.122Z] [hub] writing locator at /tmp/hub-demo-app.json
-[debug] [2025-08-05T10:50:09.142Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: auto_download"}}
-[debug] [2025-08-05T10:50:09.142Z] Ignoring unsupported arg: single_project_mode_error {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: single_project_mode_error"}}
-[debug] [2025-08-05T10:50:09.143Z] Starting Firestore Emulator with command {"binary":"java","args":["-Dgoogle.cloud_firestore.debug_log_level=FINE","-Duser.language=en","-jar","/nix/store/n1m2a7x1hx6vgvmanjin6yd0b16nafz0-emulators/cloud-firestore-emulator-v1.19.8.jar","--host","127.0.0.1","--port",8085,"--websocket_port",9150,"--project_id","demo-app","--rules","/home/user/studio/firestore.rules","--single_project_mode",true],"optionalArgs":["port","webchannel_port","host","rules","websocket_port","functions_emulator","seed_from_export","project_id","single_project_mode"],"joinArgs":false,"shell":false,"port":8085} {"metadata":{"emulator":{"name":"firestore"},"message":"Starting Firestore Emulator with command {\"binary\":\"java\",\"args\":[\"-Dgoogle.cloud_firestore.debug_log_level=FINE\",\"-Duser.language=en\",\"-jar\",\"/nix/store/n1m2a7x1hx6vgvmanjin6yd0b16nafz0-emulators/cloud-firestore-emulator-v1.19.8.jar\",\"--host\",\"127.0.0.1\",\"--port\",8085,\"--websocket_port\",9150,\"--project_id\",\"demo-app\",\"--rules\",\"/home/user/studio/firestore.rules\",\"--single_project_mode\",true],\"optionalArgs\":[\"port\",\"webchannel_port\",\"host\",\"rules\",\"websocket_port\",\"functions_emulator\",\"seed_from_export\",\"project_id\",\"single_project_mode\"],\"joinArgs\":false,\"shell\":false,\"port\":8085}"}}
-[info] i  firestore: Firestore Emulator logging to firestore-debug.log {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator logging to firestore-debug.log"}}
-[debug] [2025-08-05T10:50:15.384Z] Aug 05, 2025 10:50:15 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start
-INFO: Started WebSocket server on ws://127.0.0.1:9150
- {"metadata":{"emulator":{"name":"firestore"},"message":"Aug 05, 2025 10:50:15 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start\nINFO: Started WebSocket server on ws://127.0.0.1:9150\n"}}
-[debug] [2025-08-05T10:50:15.459Z] API endpoint: http:// {"metadata":{"emulator":{"name":"firestore"},"message":"API endpoint: http://"}}
-[debug] [2025-08-05T10:50:15.460Z] 127.0.0.1:8085 {"metadata":{"emulator":{"name":"firestore"},"message":"127.0.0.1:8085"}}
-[debug] [2025-08-05T10:50:15.461Z] 
-If you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:
-
-   export FIRESTORE_EMULATOR_HOST=127.0.0.1:8085
-
-If you are running a Firestore in Datastore Mode project, run:
-
-   export DATASTORE_EMULATOR_HOST=127.0.0.1:8085
-
-Note: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.
-Dev App Server is now running.
-
- {"metadata":{"emulator":{"name":"firestore"},"message":"\nIf you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:\n\n   export FIRESTORE_EMULATOR_HOST=127.0.0.1:8085\n\nIf you are running a Firestore in Datastore Mode project, run:\n\n   export DATASTORE_EMULATOR_HOST=127.0.0.1:8085\n\nNote: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.\nDev App Server is now running.\n\n"}}
-[info] ✔  firestore: Firestore Emulator UI websocket is running on 9150. {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator UI websocket is running on 9150."}}
-[debug] [2025-08-05T10:50:44.432Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: connect ECONNREFUSED 127.0.0.1:40001. If you are not running the Firebase Data Connect VSCode extension, this is expected and not an issue.
-[info] 
-┌─────────────────────────────────────────────────────────────┐
-│ ✔  All emulators ready! It is now safe to connect your app. │
-│ i  View Emulator UI at http://127.0.0.1:4000/               │
-└─────────────────────────────────────────────────────────────┘
-
-┌────────────────┬────────────────┬─────────────────────────────────┐
-│ Emulator       │ Host:Port      │ View in Emulator UI             │
-├────────────────┼────────────────┼─────────────────────────────────┤
-│ Authentication │ 127.0.0.1:9095 │ http://127.0.0.1:4000/auth      │
-├────────────────┼────────────────┼─────────────────────────────────┤
-│ Firestore      │ 127.0.0.1:8085 │ http://127.0.0.1:4000/firestore │
-└────────────────┴────────────────┴─────────────────────────────────┘
-  Emulator Hub host: 127.0.0.1 port: 4400
-  Other reserved ports: 4500, 9150
-
-Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
- 
-[debug] [2025-08-06T02:58:03.497Z] ----------------------------------------------------------------------
-[debug] [2025-08-06T02:58:03.500Z] Command:       /nix/store/ws50yvm6vzlzf7jzz6n7xh4szddrack1-nodejs-20.19.1/bin/node /nix/store/fsdlxfaxdgx27856x49qycgdsyx5jxd3-firebase-tools-14.11.2/lib/node_modules/firebase-tools/lib/bin/firebase.js emulators:start --project=demo-app --only=auth,firestore
-[debug] [2025-08-06T02:58:03.501Z] CLI Version:   14.11.2
-[debug] [2025-08-06T02:58:03.502Z] Platform:      linux
-[debug] [2025-08-06T02:58:03.502Z] Node Version:  v20.19.1
-[debug] [2025-08-06T02:58:03.502Z] Time:          Wed Aug 06 2025 02:58:03 GMT+0000 (Coordinated Universal Time)
-[debug] [2025-08-06T02:58:03.502Z] ----------------------------------------------------------------------
-[debug] 
-[debug] [2025-08-06T02:58:04.720Z] openjdk version "21.0.7" 2025-04-15
-
-[debug] [2025-08-06T02:58:04.722Z] OpenJDK Runtime Environment (build 21.0.7+6-nixos)
-OpenJDK 64-Bit Server VM (build 21.0.7+6-nixos, mixed mode, sharing)
-
-[debug] [2025-08-06T02:58:04.758Z] Parsed Java major version: 21
-[info] i  emulators: Starting emulators: auth, firestore {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth, firestore"}}
-[info] i  emulators: Detected demo project ID "demo-app", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail. {"metadata":{"emulator":{"name":"hub"},"message":"Detected demo project ID \"demo-app\", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail."}}
-[warn] ⚠  hub: Error when trying to check port 4400 on ::1: Error: listen EADDRNOTAVAIL: address not available ::1:4400 {"metadata":{"emulator":{"name":"hub"},"message":"Error when trying to check port 4400 on ::1: Error: listen EADDRNOTAVAIL: address not available ::1:4400"}}
-[warn] ⚠  hub: Port 4400 is available on 127.0.0.1 but not ::1. This may cause issues with some clients. {"metadata":{"emulator":{"name":"hub"},"message":"Port 4400 is available on 127.0.0.1 but not ::1. This may cause issues with some clients."}}
-[warn] ⚠  hub: If you encounter connectivity issues, consider switching to a different port or explicitly specifying "host": "<ip address>" instead of hostname in firebase.json {"metadata":{"emulator":{"name":"hub"},"message":"If you encounter connectivity issues, consider switching to a different port or explicitly specifying \"host\": \"<ip address>\" instead of hostname in firebase.json"}}
-[warn] ⚠  logging: Error when trying to check port 4500 on ::1: Error: listen EADDRNOTAVAIL: address not available ::1:4500 {"metadata":{"emulator":{"name":"logging"},"message":"Error when trying to check port 4500 on ::1: Error: listen EADDRNOTAVAIL: address not available ::1:4500"}}
-[warn] ⚠  logging: Port 4500 is available on 127.0.0.1 but not ::1. This may cause issues with some clients. {"metadata":{"emulator":{"name":"logging"},"message":"Port 4500 is available on 127.0.0.1 but not ::1. This may cause issues with some clients."}}
-[warn] ⚠  logging: If you encounter connectivity issues, consider switching to a different port or explicitly specifying "host": "<ip address>" instead of hostname in firebase.json {"metadata":{"emulator":{"name":"logging"},"message":"If you encounter connectivity issues, consider switching to a different port or explicitly specifying \"host\": \"<ip address>\" instead of hostname in firebase.json"}}
-[debug] [2025-08-06T02:58:04.771Z] assigned listening specs for emulators {"user":{"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9095}],"firestore":[{"address":"127.0.0.1","family":"IPv4","port":8085}],"firestore.websocket":[{"address":"127.0.0.1","family":"IPv4","port":9150}],"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}]},"metadata":{"message":"assigned listening specs for emulators"}}
-[debug] [2025-08-06T02:58:04.778Z] [hub] writing locator at /tmp/hub-demo-app.json
-[debug] [2025-08-06T02:58:04.802Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: auto_download"}}
-[debug] [2025-08-06T02:58:04.803Z] Ignoring unsupported arg: single_project_mode_error {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: single_project_mode_error"}}
-[debug] [2025-08-06T02:58:04.803Z] Starting Firestore Emulator with command {"binary":"java","args":["-Dgoogle.cloud_firestore.debug_log_level=FINE","-Duser.language=en","-jar","/nix/store/n1m2a7x1hx6vgvmanjin6yd0b16nafz0-emulators/cloud-firestore-emulator-v1.19.8.jar","--host","127.0.0.1","--port",8085,"--websocket_port",9150,"--project_id","demo-app","--rules","/home/user/studio/firestore.rules","--single_project_mode",true],"optionalArgs":["port","webchannel_port","host","rules","websocket_port","functions_emulator","seed_from_export","project_id","single_project_mode"],"joinArgs":false,"shell":false,"port":8085} {"metadata":{"emulator":{"name":"firestore"},"message":"Starting Firestore Emulator with command {\"binary\":\"java\",\"args\":[\"-Dgoogle.cloud_firestore.debug_log_level=FINE\",\"-Duser.language=en\",\"-jar\",\"/nix/store/n1m2a7x1hx6vgvmanjin6yd0b16nafz0-emulators/cloud-firestore-emulator-v1.19.8.jar\",\"--host\",\"127.0.0.1\",\"--port\",8085,\"--websocket_port\",9150,\"--project_id\",\"demo-app\",\"--rules\",\"/home/user/studio/firestore.rules\",\"--single_project_mode\",true],\"optionalArgs\":[\"port\",\"webchannel_port\",\"host\",\"rules\",\"websocket_port\",\"functions_emulator\",\"seed_from_export\",\"project_id\",\"single_project_mode\"],\"joinArgs\":false,\"shell\":false,\"port\":8085}"}}
-[info] i  firestore: Firestore Emulator logging to firestore-debug.log {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator logging to firestore-debug.log"}}
-[debug] [2025-08-06T02:58:08.238Z] Aug 06, 2025 2:58:08 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start
-INFO: Started WebSocket server on ws://127.0.0.1:9150
- {"metadata":{"emulator":{"name":"firestore"},"message":"Aug 06, 2025 2:58:08 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start\nINFO: Started WebSocket server on ws://127.0.0.1:9150\n"}}
-[debug] [2025-08-06T02:58:08.316Z] API endpoint: http://127.0.0.1:8085
-If you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:
-
-   export FIRESTORE_EMULATOR_HOST=127.0.0.1:8085
-
-If you are running a Firestore in Datastore Mode project, run:
-
-   export DATASTORE_EMULATOR_HOST=127.0.0.1:8085
-
-Note: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.
-Dev App Server is now running.
-
- {"metadata":{"emulator":{"name":"firestore"},"message":"API endpoint: http://127.0.0.1:8085\nIf you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:\n\n   export FIRESTORE_EMULATOR_HOST=127.0.0.1:8085\n\nIf you are running a Firestore in Datastore Mode project, run:\n\n   export DATASTORE_EMULATOR_HOST=127.0.0.1:8085\n\nNote: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.\nDev App Server is now running.\n\n"}}
-[info] ✔  firestore: Firestore Emulator UI websocket is running on 9150. {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator UI websocket is running on 9150."}}
-[debug] [2025-08-06T02:58:27.049Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: connect ECONNREFUSED 127.0.0.1:40001. If you are not running the Firebase Data Connect VSCode extension, this is expected and not an issue.
-[info] 
-┌─────────────────────────────────────────────────────────────┐
-│ ✔  All emulators ready! It is now safe to connect your app. │
-│ i  View Emulator UI at http://127.0.0.1:4000/               │
-└─────────────────────────────────────────────────────────────┘
-
-┌────────────────┬────────────────┬─────────────────────────────────┐
-│ Emulator       │ Host:Port      │ View in Emulator UI             │
-├────────────────┼────────────────┼─────────────────────────────────┤
-│ Authentication │ 127.0.0.1:9095 │ http://127.0.0.1:4000/auth      │
-├────────────────┼────────────────┼─────────────────────────────────┤
-│ Firestore      │ 127.0.0.1:8085 │ http://127.0.0.1:4000/firestore │
-└────────────────┴────────────────┴─────────────────────────────────┘
-  Emulator Hub host: 127.0.0.1 port: 4400
-  Other reserved ports: 4500, 9150
-
-Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
- 
-[debug] [2025-08-06T04:25:42.465Z] Aug 06, 2025 4:25:42 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel
-INFO: Connected to new websocket client
- {"metadata":{"emulator":{"name":"firestore"},"message":"Aug 06, 2025 4:25:42 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel\nINFO: Connected to new websocket client\n"}}
-[debug] [2025-08-06T04:25:42.601Z] Aug 06, 2025 4:25:42 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Aug 06, 2025 4:25:42 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-08-06T04:25:44.124Z] Aug 06, 2025 4:25:44 AM io.grpc.netty.NettyServerTransport notifyTerminated
-INFO: Transport failed
-io.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET / 
-	at io.netty.handler.codec.http2.Http2Exception.connectionError(Http2Exception.java:107)
-	at io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.readClientPrefaceString(Http2ConnectionHandler.java:315)
-	at io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.decode(Http2ConnectionHandler.java:245)
-	at io.netty.handler.codec.http2.Http2ConnectionHandler.decode(Http2ConnectionHandler.java:451)
-	at io.netty.handler.codec.ByteToMessageDecoder.decodeRemovalReentryProtection(ByteToMessageDecoder.java:530)
-	at io.netty.handler.codec.ByteToMessageDecoder.callDecode(ByteToMessageDecoder.java:469)
-	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:290)
-	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
-	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
-	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
-	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1407)
-	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
-	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
-	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:918)
-	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
-	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
-	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
-	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
-	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
-	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:994)
-	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
-	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
-	at java.base/java.lang.Thread.run(Thread.java:1583)
-
- {"metadata":{"emulator":{"name":"firestore"},"message":"Aug 06, 2025 4:25:44 AM io.grpc.netty.NettyServerTransport notifyTerminated\nINFO: Transport failed\nio.netty.handler.codec.http2.Http2Exception: Unexpected HTTP/1.x request: GET / \n\tat io.netty.handler.codec.http2.Http2Exception.connectionError(Http2Exception.java:107)\n\tat io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.readClientPrefaceString(Http2ConnectionHandler.java:315)\n\tat io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.decode(Http2ConnectionHandler.java:245)\n\tat io.netty.handler.codec.http2.Http2ConnectionHandler.decode(Http2ConnectionHandler.java:451)\n\tat io.netty.handler.codec.ByteToMessageDecoder.decodeRemovalReentryProtection(ByteToMessageDecoder.java:530)\n\tat io.netty.handler.codec.ByteToMessageDecoder.callDecode(ByteToMessageDecoder.java:469)\n\tat io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:290)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)\n\tat io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)\n\tat io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1407)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)\n\tat io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:918)\n\tat io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)\n\tat io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)\n\tat io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)\n\tat io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)\n\tat io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)\n\tat io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:994)\n\tat io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)\n\tat io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)\n\tat java.base/java.lang.Thread.run(Thread.java:1583)\n\n"}}
-[debug] [2025-08-06T04:25:44.253Z] Aug 06, 2025 4:25:44 AM io.grpc.netty.NettyServerTransport notifyTerminated
-INFO: Transport failed
-io.netty.handler.codec.http2.Http2Exception: HTTP/2 client preface string missing or corrupt. Hex dump for received bytes: 16030105a8010005a403031e66f86a8b51668cf2ac1dd627
-	at io.netty.handler.codec.http2.Http2Exception.connectionError(Http2Exception.java:107)
-	at io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.readClientPrefaceString(Http2ConnectionHandler.java:319)
-	at io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.decode(Http2ConnectionHandler.java:245)
-	at io.netty.handler.codec.http2.Http2ConnectionHandler.decode(Http2ConnectionHandler.java:451)
-	at io.netty.handler.codec.ByteToMessageDecoder.decodeRemovalReentryProtection(ByteToMessageDecoder.java:530)
-	at io.netty.handler.codec.ByteToMessageDecoder.callDecode(ByteToMessageDecoder.java:469)
-	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:290)
-	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
-	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
-	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
-	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1407)
-	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
-	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
-	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:918)
-	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
-	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
-	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
-	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
-	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
-	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:994)
-	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
-	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
-	at java.base/java.lang.Thread.run(Thread.java:1583)
-
- {"metadata":{"emulator":{"name":"firestore"},"message":"Aug 06, 2025 4:25:44 AM io.grpc.netty.NettyServerTransport notifyTerminated\nINFO: Transport failed\nio.netty.handler.codec.http2.Http2Exception: HTTP/2 client preface string missing or corrupt. Hex dump for received bytes: 16030105a8010005a403031e66f86a8b51668cf2ac1dd627\n\tat io.netty.handler.codec.http2.Http2Exception.connectionError(Http2Exception.java:107)\n\tat io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.readClientPrefaceString(Http2ConnectionHandler.java:319)\n\tat io.netty.handler.codec.http2.Http2ConnectionHandler$PrefaceDecoder.decode(Http2ConnectionHandler.java:245)\n\tat io.netty.handler.codec.http2.Http2ConnectionHandler.decode(Http2ConnectionHandler.java:451)\n\tat io.netty.handler.codec.ByteToMessageDecoder.decodeRemovalReentryProtection(ByteToMessageDecoder.java:530)\n\tat io.netty.handler.codec.ByteToMessageDecoder.callDecode(ByteToMessageDecoder.java:469)\n\tat io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:290)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)\n\tat io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)\n\tat io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1407)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)\n\tat io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:918)\n\tat io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)\n\tat io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)\n\tat io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)\n\tat io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)\n\tat io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)\n\tat io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:994)\n\tat io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)\n\tat io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)\n\tat java.base/java.lang.Thread.run(Thread.java:1583)\n\n"}}
-[debug] [2025-08-06T04:25:49.490Z] Aug 06, 2025 4:25:49 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel
-INFO: Connected to new websocket client
- {"metadata":{"emulator":{"name":"firestore"},"message":"Aug 06, 2025 4:25:49 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel\nINFO: Connected to new websocket client\n"}}
+[info] i  === Import a GitHub repository 
+[debug] [2025-08-06T05:09:49.523Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:49.523Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:49.523Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-08-06T05:09:49.523Z] > authorizing via signed-in user (julishaphotography@gmail.com)
+[debug] [2025-08-06T05:09:49.524Z] >>> [apiv2][query] GET https://developerconnect.googleapis.com/v1/projects/ggr1-4fa1c/locations/us-central1/connections pageSize=1000&pageToken=
+[debug] [2025-08-06T05:09:50.232Z] <<< [apiv2][status] GET https://developerconnect.googleapis.com/v1/projects/ggr1-4fa1c/locations/us-central1/connections 200
+[debug] [2025-08-06T05:09:50.233Z] <<< [apiv2][body] GET https://developerconnect.googleapis.com/v1/projects/ggr1-4fa1c/locations/us-central1/connections {"connections":[{"name":"projects/ggr1-4fa1c/locations/us-central1/connections/apphosting-github-conn-6p211ns","createTime":"2025-07-15T08:15:05.558524796Z","updateTime":"2025-08-04T16:02:17.569897046Z","githubConfig":{"githubApp":"FIREBASE","authorizerCredential":{"oauthTokenSecretVersion":"projects/ggr1-4fa1c/secrets/apphosting-github-conn-6p211ns-github-oauthtoken-3ca447/versions/latest","username":"julishaSolutions"},"appInstallationId":"75932108","installationUri":"https://github.com/settings/installations/75932108"},"installationState":{"stage":"COMPLETE"}}]}
+[debug] [2025-08-06T05:09:50.234Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:50.236Z] No OAuth tokens found
+[debug] [2025-08-06T05:09:50.236Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-08-06T05:09:50.237Z] > authorizing via signed-in user (julishaphotography@gmail.com)
+[debug] [2025-08-06T05:09:50.237Z] >>> [apiv2][query] GET https://developerconnect.googleapis.com/v1/projects/ggr1-4fa1c/locations/us-central1/connections/apphosting-github-conn-6p211ns:fetchGitHubInstallations [none]
+[debug] [2025-08-06T05:09:50.632Z] <<< [apiv2][status] GET https://developerconnect.googleapis.com/v1/projects/ggr1-4fa1c/locations/us-central1/connections/apphosting-github-conn-6p211ns:fetchGitHubInstallations 200
+[debug] [2025-08-06T05:09:50.633Z] <<< [apiv2][body] GET https://developerconnect.googleapis.com/v1/projects/ggr1-4fa1c/locations/us-central1/connections/apphosting-github-conn-6p211ns:fetchGitHubInstallations {"installations":[{"id":"75932108","name":"julishaSolutions","type":"user"}]}
+[debug] [2025-08-06T05:10:07.040Z] No OAuth tokens found
+[debug] [2025-08-06T05:10:07.040Z] No OAuth tokens found
+[debug] [2025-08-06T05:10:07.041Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-08-06T05:10:07.041Z] > authorizing via signed-in user (julishaphotography@gmail.com)
+[debug] [2025-08-06T05:10:07.041Z] >>> [apiv2][query] GET https://developerconnect.googleapis.com/v1/projects/ggr1-4fa1c/locations/us-central1/connections pageSize=1000&pageToken=
+[debug] [2025-08-06T05:10:07.769Z] <<< [apiv2][status] GET https://developerconnect.googleapis.com/v1/projects/ggr1-4fa1c/locations/us-central1/connections 200
+[debug] [2025-08-06T05:10:07.769Z] <<< [apiv2][body] GET https://developerconnect.googleapis.com/v1/projects/ggr1-4fa1c/locations/us-central1/connections {"connections":[{"name":"projects/ggr1-4fa1c/locations/us-central1/connections/apphosting-github-conn-6p211ns","createTime":"2025-07-15T08:15:05.558524796Z","updateTime":"2025-08-04T16:02:17.569897046Z","githubConfig":{"githubApp":"FIREBASE","authorizerCredential":{"oauthTokenSecretVersion":"projects/ggr1-4fa1c/secrets/apphosting-github-conn-6p211ns-github-oauthtoken-3ca447/versions/latest","username":"julishaSolutions"},"appInstallationId":"75932108","installationUri":"https://github.com/settings/installations/75932108"},"installationState":{"stage":"COMPLETE"}}]}
+[info] i  Reusing matching connection apphosting-github-conn-6p211ns 
+[debug] [2025-08-06T05:10:07.774Z] No OAuth tokens found
+[debug] [2025-08-06T05:10:07.774Z] No OAuth tokens found
+[debug] [2025-08-06T05:10:07.774Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-08-06T05:10:07.776Z] > authorizing via signed-in user (julishaphotography@gmail.com)
+[debug] [2025-08-06T05:10:07.777Z] >>> [apiv2][query] GET https://developerconnect.googleapis.com/v1/projects/ggr1-4fa1c/locations/us-central1/connections/apphosting-github-conn-6p211ns:fetchLinkableGitRepositories pageSize=1000&pageToken=
+[debug] [2025-08-06T05:10:08.191Z] <<< [apiv2][status] GET https://developerconnect.googleapis.com/v1/projects/ggr1-4fa1c/locations/us-central1/connections/apphosting-github-conn-6p211ns:fetchLinkableGitRepositories 200
+[debug] [2025-08-06T05:10:08.191Z] <<< [apiv2][body] GET https://developerconnect.googleapis.com/v1/projects/ggr1-4fa1c/locations/us-central1/connections/apphosting-github-conn-6p211ns:fetchLinkableGitRepositories {"linkableGitRepositories":[{"cloneUri":"https://github.com/julishaSolutions/outreach-ai-web.git"}]}
+[info] i  Manage the Firebase App Hosting GitHub app to enable access to GitHub repositories 
+[info] i  https://github.com/settings/installations/75932108 
+[debug] [2025-08-06T05:15:22.173Z] No OAuth tokens found
+[debug] [2025-08-06T05:15:22.174Z] No OAuth tokens found
+[debug] [2025-08-06T05:15:22.174Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-08-06T05:15:22.174Z] > authorizing via signed-in user (julishaphotography@gmail.com)
+[debug] [2025-08-06T05:15:22.178Z] >>> [apiv2][query] GET https://developerconnect.googleapis.com/v1/projects/ggr1-4fa1c/locations/us-central1/connections/apphosting-github-conn-6p211ns:fetchLinkableGitRepositories pageSize=1000&pageToken=
+[debug] [2025-08-06T05:15:23.189Z] <<< [apiv2][status] GET https://developerconnect.googleapis.com/v1/projects/ggr1-4fa1c/locations/us-central1/connections/apphosting-github-conn-6p211ns:fetchLinkableGitRepositories 200
+[debug] [2025-08-06T05:15:23.190Z] <<< [apiv2][body] GET https://developerconnect.googleapis.com/v1/projects/ggr1-4fa1c/locations/us-central1/connections/apphosting-github-conn-6p211ns:fetchLinkableGitRepositories {"linkableGitRepositories":[{"cloneUri":"https://github.com/julishaSolutions/greens-green-retreat-app.git"}]}
+[debug] [2025-08-06T05:15:36.614Z] No OAuth tokens found
+[debug] [2025-08-06T05:15:36.614Z] No OAuth tokens found
+[debug] [2025-08-06T05:15:36.616Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-08-06T05:15:36.616Z] > authorizing via signed-in user (julishaphotography@gmail.com)
+[debug] [2025-08-06T05:15:36.617Z] >>> [apiv2][query] GET https://developerconnect.googleapis.com/v1/projects/ggr1-4fa1c/locations/us-central1/connections/apphosting-github-conn-6p211ns [none]
+[debug] [2025-08-06T05:15:37.340Z] <<< [apiv2][status] GET https://developerconnect.googleapis.com/v1/projects/ggr1-4fa1c/locations/us-central1/connections/apphosting-github-conn-6p211ns 200
+[debug] [2025-08-06T05:15:37.340Z] <<< [apiv2][body] GET https://developerconnect.googleapis.com/v1/projects/ggr1-4fa1c/locations/us-central1/connections/apphosting-github-conn-6p211ns {"name":"projects/ggr1-4fa1c/locations/us-central1/connections/apphosting-github-conn-6p211ns","createTime":"2025-07-15T08:15:05.558524796Z","updateTime":"2025-08-04T16:02:17.569897046Z","githubConfig":{"githubApp":"FIREBASE","authorizerCredential":{"oauthTokenSecretVersion":"projects/ggr1-4fa1c/secrets/apphosting-github-conn-6p211ns-github-oauthtoken-3ca447/versions/latest","username":"julishaSolutions"},"appInstallationId":"75932108","installationUri":"https://github.com/settings/installations/75932108"},"installationState":{"stage":"COMPLETE"}}
+[debug] [2025-08-06T05:15:37.342Z] No OAuth tokens found
+[debug] [2025-08-06T05:15:37.343Z] No OAuth tokens found
+[debug] [2025-08-06T05:15:37.343Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-08-06T05:15:37.343Z] > authorizing via signed-in user (julishaphotography@gmail.com)
+[debug] [2025-08-06T05:15:37.343Z] >>> [apiv2][query] GET https://developerconnect.googleapis.com/v1/projects/ggr1-4fa1c/locations/us-central1/connections/apphosting-github-conn-6p211ns/gitRepositoryLinks/julishaSolutions-greens-green-retreat-app [none]
+[debug] [2025-08-06T05:15:37.501Z] <<< [apiv2][status] GET https://developerconnect.googleapis.com/v1/projects/ggr1-4fa1c/locations/us-central1/connections/apphosting-github-conn-6p211ns/gitRepositoryLinks/julishaSolutions-greens-green-retreat-app 200
+[debug] [2025-08-06T05:15:37.502Z] <<< [apiv2][body] GET https://developerconnect.googleapis.com/v1/projects/ggr1-4fa1c/locations/us-central1/connections/apphosting-github-conn-6p211ns/gitRepositoryLinks/julishaSolutions-greens-green-retreat-app {"name":"projects/ggr1-4fa1c/locations/us-central1/connections/apphosting-github-conn-6p211ns/gitRepositoryLinks/julishaSolutions-greens-green-retreat-app","cloneUri":"https://github.com/julishaSolutions/greens-green-retreat-app.git","createTime":"2025-07-15T09:13:01.038358866Z","updateTime":"2025-08-04T16:02:17.591312625Z"}
