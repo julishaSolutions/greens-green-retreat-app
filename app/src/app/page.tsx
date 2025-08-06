@@ -130,12 +130,12 @@ export default async function Home() {
           </div>
           <div className="relative h-96 w-full rounded-lg overflow-hidden shadow-xl">
              <Image
-                src="https://res.cloudinary.com/dx6zxdlts/image/upload/v1751714095/Beautiful_afternoon_by_the_dam_nothing_beats_it_..._outdoorlife_outdoorliving_outdoor_hgsrny.jpg"
-                alt="A serene view of the dam at Green's Green Retreat"
+                src="https://res.cloudinary.com/desbmrrdo/image/upload/v1754315787/Did_you_knowThat_you_can_plan_a_custom_table_setting_get-together_or_private_soiree_at_GGRTal_ulodnb.jpg"
+                alt="A custom table setting for a private get-together at Green's Green Retreat"
                 fill
                 className="object-cover"
                 sizes="(min-width: 768px) 50vw, 100vw"
-                data-ai-hint="dam retreat"
+                data-ai-hint="table setting event"
               />
           </div>
         </div>
