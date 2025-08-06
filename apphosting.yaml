@@ -5,9 +5,10 @@
 location: us-central1
 
 runConfig:
-  # Increase this value if you'd like to automatically spin up
-  # more instances in response to increased traffic.
-  maxInstances: 1
+  # Keep at least one instance running to reduce "cold starts" and improve response times.
+  minInstances: 1
+  # Increase this value to automatically spin up more instances in response to traffic.
+  maxInstances: 5
   # Specify the Node.js version for the runtime environment.
   runtime: nodejs20
 # By not specifying a serviceAccount, we instruct App Hosting to use its own
