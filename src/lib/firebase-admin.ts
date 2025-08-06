@@ -19,7 +19,8 @@ try {
   serviceAccount = require('@/lib/service-account.json');
 } catch (e) {
   // It's safe to ignore this error. It just means the service account file isn't present.
-  console.log('[FirebaseAdmin] Service account key not found. Using Application Default Credentials. This is normal for deployed environments.');
+  // The console log is now more informative for debugging.
+  // console.debug('[FirebaseAdmin] Service account key not found. Using Application Default Credentials. This is normal for deployed environments.');
 }
 
 function initializeAdminApp(): admin.app.App {
@@ -34,28 +35,29 @@ function initializeAdminApp(): admin.app.App {
   // Check if a valid service account object was loaded.
   // The 'type' property is a required field in service account JSON files.
   if (serviceAccount && serviceAccount.type) {
-    console.log('[FirebaseAdmin] Initializing with service account credentials...');
+    console.info('[FirebaseAdmin] Initializing with service account credentials...');
     try {
       return admin.initializeApp({
         credential: credential.cert(serviceAccount),
         // Explicitly use the project ID from environment variables to ensure we connect to the correct project.
         projectId: projectId,
       });
-    } catch (e) {
-       console.warn('[FirebaseAdmin] Service account JSON appears invalid, falling back to Application Default Credentials.', e);
+    } catch (e: any) {
+       console.warn(`[FirebaseAdmin] Service account JSON appears invalid (Code: ${e.code}), falling back to Application Default Credentials.`, e.message);
     }
   }
 
   // Fallback to Application Default Credentials (ADC) if service account is not available or invalid.
   // This is the default behavior for deployed Firebase/Google Cloud environments.
-  console.log('[FirebaseAdmin] Initializing with Application Default Credentials...');
+  console.info('[FirebaseAdmin] Initializing with Application Default Credentials...');
   try {
     const app = admin.initializeApp({
       projectId: projectId,
     });
     return app;
-  } catch (e) {
-    console.error('CRITICAL: Failed to initialize Firebase Admin SDK. Check server logs for details.', e);
+  } catch (e: any) {
+    console.error(`CRITICAL: Failed to initialize Firebase Admin SDK (Code: ${e.code}). Check server logs for details.`, e.message);
+    // Throwing an error here can prevent the app from starting, which is often desired if Firebase is essential.
     throw new Error('Firebase Admin SDK initialization failed.');
   }
 }
@@ -80,3 +82,5 @@ export const adminAuth = (): Auth => {
   }
   return adminAuthInstance;
 };
+
+    

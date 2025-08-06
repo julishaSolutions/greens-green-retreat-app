@@ -45,10 +45,10 @@ export function CottageDetailView({ cottage, allCottages }: CottageDetailViewPro
       const nextIndex = (cottageIndex + 1) % allCottages.length;
   
       // Only set the nav item if it's different from the current cottage.
-      if (allCottages[prevIndex].slug !== cottage.slug) {
+      if (allCottages[prevIndex]?.slug !== cottage.slug) {
           prevCottage = allCottages[prevIndex];
       }
-      if (allCottages[nextIndex].slug !== cottage.slug) {
+      if (allCottages[nextIndex]?.slug !== cottage.slug) {
           nextCottage = allCottages[nextIndex];
       }
   }
@@ -136,17 +136,15 @@ export function CottageDetailView({ cottage, allCottages }: CottageDetailViewPro
             <div className="flex justify-between items-center w-full">
               {prevCottage ? (
                 <Button asChild variant="outline" size="icon">
-                  <Link href={`/cottages/${prevCottage.slug}`}>
+                  <Link href={`/cottages/${prevCottage.slug}`} aria-label={`Previous Cottage: ${prevCottage.name}`}>
                     <ChevronLeft className="h-4 w-4" />
-                    <span className="sr-only">Previous Cottage: {prevCottage.name}</span>
                   </Link>
                 </Button>
               ) : <div className="w-10 h-10" />}
               {nextCottage ? (
                 <Button asChild variant="outline" size="icon">
-                  <Link href={`/cottages/${nextCottage.slug}`}>
+                  <Link href={`/cottages/${nextCottage.slug}`} aria-label={`Next Cottage: ${nextCottage.name}`}>
                     <ChevronRight className="h-4 w-4" />
-                    <span className="sr-only">Next Cottage: {nextCottage.name}</span>
                   </Link>
                 </Button>
               ) : <div className="w-10 h-10" />}
@@ -204,3 +202,5 @@ export function CottageDetailView({ cottage, allCottages }: CottageDetailViewPro
     </div>
   );
 }
+
+    
