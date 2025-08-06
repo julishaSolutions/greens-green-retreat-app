@@ -20,7 +20,7 @@ try {
 } catch (e) {
   // It's safe to ignore this error. It just means the service account file isn't present.
   // The console log is now more informative for debugging.
-  // console.debug('[FirebaseAdmin] Service account key not found. Using Application Default Credentials. This is normal for deployed environments.');
+  console.debug('[FirebaseAdmin] Service account key not found. Using Application Default Credentials. This is normal for deployed environments.');
 }
 
 function initializeAdminApp(): admin.app.App {
