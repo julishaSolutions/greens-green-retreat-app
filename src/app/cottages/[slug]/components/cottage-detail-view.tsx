@@ -39,18 +39,18 @@ export function CottageDetailView({ cottage, allCottages }: CottageDetailViewPro
   let prevCottage: CottageNavItem | null = null;
   let nextCottage: CottageNavItem | null = null;
   
+  // Corrected logic: Ensure there are at least two cottages to cycle through.
   if (cottageIndex !== -1 && allCottages.length > 1) {
-    const prevIndex = (cottageIndex - 1 + allCottages.length) % allCottages.length;
-    const nextIndex = (cottageIndex + 1) % allCottages.length;
-
-    // Ensure the next/prev item is not the same as the current one.
-    // This prevents linking to the same page which can happen with only 2 items.
-    if (allCottages[prevIndex].slug !== cottage.slug) {
-      prevCottage = allCottages[prevIndex];
-    }
-    if (allCottages[nextIndex].slug !== cottage.slug) {
-      nextCottage = allCottages[nextIndex];
-    }
+      const prevIndex = (cottageIndex - 1 + allCottages.length) % allCottages.length;
+      const nextIndex = (cottageIndex + 1) % allCottages.length;
+  
+      // Only set the nav item if it's different from the current cottage.
+      if (allCottages[prevIndex].slug !== cottage.slug) {
+          prevCottage = allCottages[prevIndex];
+      }
+      if (allCottages[nextIndex].slug !== cottage.slug) {
+          nextCottage = allCottages[nextIndex];
+      }
   }
 
 
@@ -133,23 +133,23 @@ export function CottageDetailView({ cottage, allCottages }: CottageDetailViewPro
           {/* Mobile Header */}
           <div className="md:hidden">
             <h1 className={cn('text-4xl font-bold font-headline text-primary mb-4')}>{cottage.name}</h1>
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center w-full">
               {prevCottage ? (
                 <Button asChild variant="outline" size="icon">
                   <Link href={`/cottages/${prevCottage.slug}`}>
                     <ChevronLeft className="h-4 w-4" />
-                    <span className="sr-only">Previous Cottage</span>
+                    <span className="sr-only">Previous Cottage: {prevCottage.name}</span>
                   </Link>
                 </Button>
-              ) : <div className="w-48" />}
+              ) : <div className="w-10 h-10" />}
               {nextCottage ? (
                 <Button asChild variant="outline" size="icon">
                   <Link href={`/cottages/${nextCottage.slug}`}>
                     <ChevronRight className="h-4 w-4" />
-                    <span className="sr-only">Next Cottage</span>
+                    <span className="sr-only">Next Cottage: {nextCottage.name}</span>
                   </Link>
                 </Button>
-              ) : <div className="w-48" />}
+              ) : <div className="w-10 h-10" />}
             </div>
           </div>
         </div>

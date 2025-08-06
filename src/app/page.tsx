@@ -130,7 +130,7 @@ export default async function Home() {
           </div>
           <div className="relative h-96 w-full rounded-lg overflow-hidden shadow-xl">
              <Image
-                src="https://res.cloudinary.com/desbmrrdo/image/upload/v1754401261/Double_Almer_camping_site_w6xozj.jpg"
+                src="https://res.cloudinary.com/dx6zxdlts/image/upload/v1751714095/Beautiful_afternoon_by_the_dam_nothing_beats_it_..._outdoorlife_outdoorliving_outdoor_hgsrny.jpg"
                 alt="A serene view of the dam at Green's Green Retreat"
                 fill
                 className="object-cover"
