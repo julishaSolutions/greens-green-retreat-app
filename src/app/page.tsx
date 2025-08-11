@@ -8,6 +8,7 @@ import Link from 'next/link';
 import type { Cottage as Suite } from '@/services/contentService';
 import { getCottagesForHomepage } from './page/actions';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Suspense } from 'react';
 
 const experiences = [
   {
@@ -27,27 +28,33 @@ const experiences = [
   },
 ];
 
-function SuitesList({ suites }: { suites: Suite[] }) {
+function SuitesSkeleton() {
+  return (
+     <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {Array.from({ length: 3 }).map((_, i) => (
+        <Card key={i} className="overflow-hidden flex flex-col group">
+          <CardHeader className="p-0">
+            <Skeleton className="h-60 w-full" />
+          </CardHeader>
+          <CardContent className="pt-6 flex-grow">
+            <Skeleton className="h-6 w-2/3 mb-2" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-5/6 mt-2" />
+          </CardContent>
+          <CardFooter>
+            <Skeleton className="h-10 w-full" />
+          </CardFooter>
+        </Card>
+      ))}
+    </div>
+  )
+}
+
+async function SuitesList() {
+  const suites = await getCottagesForHomepage();
+
   if (!suites || suites.length === 0) {
-    return (
-       <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <Card key={i} className="overflow-hidden flex flex-col group">
-            <CardHeader className="p-0">
-              <Skeleton className="h-60 w-full" />
-            </CardHeader>
-            <CardContent className="pt-6 flex-grow">
-              <Skeleton className="h-6 w-2/3 mb-2" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-5/6 mt-2" />
-            </CardContent>
-            <CardFooter>
-              <Skeleton className="h-10 w-full" />
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-    )
+    return <p className="mt-12 text-center text-muted-foreground">Could not load suites at this time.</p>
   }
 
   return (
@@ -87,9 +94,7 @@ function SuitesList({ suites }: { suites: Suite[] }) {
   )
 }
 
-export default async function Home() {
-  const suites = await getCottagesForHomepage();
-
+export default function Home() {
   return (
     <div className="flex flex-col">
       <section className="relative h-[90vh] min-h-[600px] w-full flex items-center justify-center text-center text-white overflow-hidden">
@@ -149,7 +154,9 @@ export default async function Home() {
               Restorative luxury, rooted in nature.
             </p>
           </div>
-          <SuitesList suites={suites} />
+          <Suspense fallback={<SuitesSkeleton />}>
+            <SuitesList />
+          </Suspense>
         </div>
       </section>
 
