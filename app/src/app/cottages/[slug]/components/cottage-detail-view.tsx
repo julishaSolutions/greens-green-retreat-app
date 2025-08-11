@@ -202,3 +202,5 @@ export function CottageDetailView({ cottage, allCottages }: CottageDetailViewPro
     </div>
   );
 }
+
+    
